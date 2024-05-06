@@ -1,0 +1,96 @@
+HOW TO USE:
+
+Please read the instructions below: 
+The following is made by MJ Lopez. Ask me if you have any inquiries, you will have an answer if I am not busy.
+
+1. Copy this whole directory and name it to your system name. 
+(NOTE: Do not edit the files in system_template)
+
+Database configuration
+1. Go to db_config and open config.php
+2. Replace the values accordingly
+
+Setting up your page
+1. On the main directory, open index.php
+2. Replace the value on include with your homepage. This is made so that you can use any other page 
+as your homepage without changing the URL.
+
+Class
+1. Please change the class name from class/oop.php
+Class YourClassNamed
+
+Handler
+1. Do not forget to change:
+YourClassNameHere::getInstance()->delete_query($table,$pkid);
+
+Pages folder
+1. Save all your folder here
+
+
+Libraries
+1. php file linked to the media folder.
+Libraries being called are the following:
+1. Jquery
+2. Bootstrap
+3. Fontawesome
+
+Server side scripts (OPTIONAL)
+1. Open the server side scripts and edit the code accordingly.
+2. If you are not sure what you are doing please contact MJ Lopez
+
+Images
+1. Place your images here
+
+CSS
+1. Place stylesheet here
+
+JS 
+1. Place your additional JS File here
+
+
+
+
+----------------------------------------------------
+ADD IQC_APPROVAL AND UPDATE EMAILER
+
+database 
+- tbl_qfr_sa_approver_qc
+-special_acceptance
+- tbl_qfr_sa_approver_main
+
+check the emailer
+pages
+js
+handler
+dt
+send_email_qfr_sa (Change TS, CN, PPS, YF)
+reports/common -(TS,CN)
+reports/excel_sa (TS,CN)
+
+
+few changes
+bcc in email with attachment function
+
+
+
+---------------------------------------------------
+ADDING SAVE DISPOSITION FROM YEC
+pages
+js
+handler
+dt
+
+change to location of folder from (reports/excel_download to /reports/qfr/sa/excel_download)
+reports/qfr/sa/for_dispo
+reports/qfr/sa/common
+reports/qfr/sa/sa
+
+tbl_file_path (sa_treatment-34) /
+tbl_qrf_sa_treatment /
+tbl_qfr_sa_disposition_list /
+tbl_qfr_disposition_attachment (comment) /
+
+
+check the php_mailer
+check the sar series number
+check the uploaded file

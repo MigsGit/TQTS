@@ -1,0 +1,21 @@
+<div>
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#itn_itn" aria-controls="itn_itn" role="tab" data-toggle="tab">ITN</a></li>
+    <li role="presentation"><a href="#itn_qcfr" aria-controls="itn_qcfr" role="tab" data-toggle="tab">QCFR</a></li>
+    <li role="presentation"><a href="#itn_attention_tag" aria-controls="itn_attention_tag" role="tab" data-toggle="tab">Attention Tag</a></li>
+    <li role="presentation"><a href="#itn_8d" aria-controls="itn_8d" role="tab" data-toggle="tab">8D</a></li>
+    <li role="presentation"><a href="#itn_capa" aria-controls="itn_capa" role="tab" data-toggle="tab">CAPA Monitoring Report</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="itn_itn">...</div>
+    <div role="tabpanel" class="tab-pane" id="itn_qcfr">...</div>
+    <div role="tabpanel" class="tab-pane" id="itn_attention_tag">...</div>
+    <div role="tabpanel" class="tab-pane" id="itn_8d">...</div>
+    <div role="tabpanel" class="tab-pane" id="itn_capa">...</div>
+  </div>
+
+</div>

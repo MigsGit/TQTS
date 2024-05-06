@@ -1,0 +1,50 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+/* call connectio information from text file */
+$db_config = '../../../db_config/config_tqts.php';
+if(file_exists($db_config)){
+	require_once($db_config);
+	
+}else{
+	echo 'Database config file does not exist.';
+}
+
+/* connect to database  */
+$conn 		= mysqli_connect($server,$username,$password) or die("cannot connect server");
+$database 	= mysqli_select_db($conn,$db_name) or die("cannot connect database");
+
+/* Seach tags mag use $_GET or $_POST */
+$search = trim(strip_tags($_GET['q']));
+// $search = trim(strip_tags($_GET['searchTerms']));
+
+/* Query Here  */
+$sql  = "SELECT `emp_name`,`user` FROM `vw_user_roles` WHERE `subsystem_code`='IPQC' AND `module`='Visual Inspection Result' AND `emp_name` LIKE '%$search%' AND `update`='1' AND `logdel`=0 LIMIT 0,10";
+$result = mysqli_query($conn,$sql);
+
+if(!$result){
+	echo 'fail query';
+}
+
+$list = array();
+while($row = mysqli_fetch_assoc($result)){
+	if($row['user'] != ""){
+		$list[] = $row;
+	}	
+}
+
+/* Make sure we have a result */
+if(count($list) > 0){
+   foreach ($list as $key => $value) {
+		$data[] = array('id' => $value['user'], 'text' => $value['emp_name']);              
+   } 
+} else {
+   $data[] = array('id' => '0', 'text' => 'No Employee Found');
+}
+
+/* return the result in json */
+echo json_encode($data); 
+
+?>

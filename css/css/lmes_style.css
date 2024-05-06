@@ -1,0 +1,121 @@
+
+th.dt-center, td.dt-center { 
+    text-align: center!important; 
+}
+
+.btn-quality{
+    background-color: purple;
+    color: white;
+}
+
+.btn-order{
+    background-color: yellow;
+    color: black;
+    border: 1px solid #999999;
+}
+
+.ppc-style{
+    background-color: #FFB6C1 !important; 
+    color: #000;
+    border: 1px solid #C0C0C0 !important;
+    padding: 10px;
+    text-align: center;
+    margin:0;
+}
+
+.prd-style{
+    background-color: #9ACD32 !important; 
+    color: #000;
+    border: 1px solid #C0C0C0 !important;
+    padding: 10px;
+    text-align: center;
+    margin:0;
+}
+
+.plain-style{
+    background-color: #FFFFFF !important; 
+    color: #000;
+    border: 1px solid #C0C0C0 !important;
+    padding: 5px;
+    text-align: center;
+    margin:0;
+}
+
+.plainx-style{
+    background-color: #FFFFFF !important; 
+    color: #000;
+    border: 1px solid #C0C0C0 !important;
+    text-align: center;
+    padding-top: 5px!important;
+    padding-bottom: 5px!important;
+    margin:0;
+}
+
+.gold-style{
+    background-color: #FFD700 !important; 
+    color: #000;
+    border: 1px solid #C0C0C0 !important;
+    text-align: center;
+    padding-top: 2px!important;
+    padding-bottom: 2px!important;
+    margin:0;
+}
+
+.date-style{
+    background-color: #000080 !important; 
+    color: #FFF;
+    border: 1px solid #C0C0C0 !important;
+    padding: 5px;
+    text-align: center;
+    margin:0;
+}
+
+.gray-style{
+    background-color: #778899 !important; 
+    color: #FFF;
+    border: 1px solid #C0C0C0 !important;
+    padding: 5px;
+    text-align: center;
+    margin:0;
+}
+
+.yellow-style{
+    background-color: #FFD700 !important; 
+    color: #000;
+    border: 1px solid #C0C0C0 !important;
+    padding: 5px;
+    text-align: center;
+    margin:0;
+}
+
+.cyan-style{
+    background-color: #008B8B !important; 
+    color: #FFF;
+    border: 1px solid #C0C0C0 !important;
+    padding: 5px;
+    text-align: center;
+    margin:0;
+}
+
+.orange-style{
+    background-color: #FFA07A !important; 
+    color: #FFF;
+    border: 1px solid #C0C0C0 !important;
+    padding: 5px;
+    text-align: center;
+    margin:0;
+}
+
+.hide-element{
+    display: none;
+}
+
+.manhour{
+    background-color: #008B8B !important; 
+    color: #FFF;
+    border: 1px solid #C0C0C0 !important;
+    padding: 2px!important;
+    text-align: center;
+    margin:0;
+}
+

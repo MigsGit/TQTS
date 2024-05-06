@@ -1,0 +1,270 @@
+pkid,field_name,field_type,text_display,logdel
+,a_date,date,Analysis Date,0
+,a_validated_by,text,Analysis Validated By,0
+,ac_re,text,AC/RE,0
+,accept,text,Accept,0
+,affected_quantity,number,Affected Quantity,0
+,analysis,text,Analysis,0
+,approved_by,text,Approved By,0
+,approved_by_logs,text,Approved By Logs,0
+,approved_by_remarks,text,Remarks,0
+,approved_by_status,text,Status,0
+,approver_comment,text,Comment,0
+,approver_esignature,text,E Signature,0
+,approver_name,text,Approver Name,0
+,approver_remarks,text,Remarks,0
+,approver_type,text,Approver Type,0
+,approver_username,text,Approver Username,0
+,aql,number,AQL,0
+,attention,text,Attention,0
+,attention_logs,text,Attention Logs,0
+,attention_remarks,text,Attention Remarks,0
+,attn,text,Attn,0
+,aye_judgement,text,AYE Judgement,0
+,batch_no_lot_no,text,Batch No. Lot No.,0
+,ca_date,date,Corrective Action Date,0
+,ca_responsible,text,Corrective Action Responsible,0
+,cancel_by,text,Cancelled By,0
+,cancel_logs,text,Cancel Logs,0
+,cancel_remarks,text,Cancel Remarks,0
+,capa_due_date,date,CAPA Due Date,0
+,category,text,Category,0
+,category_code,text,Category Code,0
+,cc,text,CC,0
+,cc_recipient,text,CC Recipient,0
+,cell_ordinate,text,Cell Ordinate,0
+,cell_position,text,Cell Position,0
+,checked_by,text,Checked By,0
+,checked_by_logs,text,Checked By Logs,0
+,checked_by_remarks,text,Checked By Remarks,0
+,checked_by_status,text,Checked By Status,0
+,checked_qty,text,Checked Qty,0
+,conform_by,text,Conformed By,0
+,conform_by_logs,text,Conformed By Logs,0
+,conform_by_remarks,text,Conformed By Remarks,0
+,conform_by_status,text,Conformed By Status,0
+,conformed_by,text,Conformed By,0
+,control_no,text,Control No.,0
+,control_no_count,text,Control No. Count,0
+,control_number,text,Control Number,0
+,corrective_action,text,Corrective Action,0
+,create,text,Create,0
+,created_by,text,Created By,0
+,current_monitoring_time,text,Current Monitoring Time,0
+,customer,text,Customer,0
+,customer_name,text,Customer Name,0
+,date,date,Date,0
+,date_conformed,date,Date Conformed,0
+,date_created,date,Date Created,0
+,date_inspected,date,Date Inspected,0
+,date_issued,date,Date Issued,0
+,date_received,date,Date Received,0
+,date_time,date,Date / Time,0
+,date_time_approved,date,Date Time Approved,0
+,date_time_checked,date,Date Time Checked,0
+,date_time_created,date,Date Time Created,0
+,date_time_loaded,date,Date Time Loaded,0
+,date_time_sent,date,Date Time Sent,0
+,defect_mode,text,Defect Code,0
+,defect_phenomenon,number,Defect Phenomenon,0
+,defect_qty,text,Defect Qty,0
+,delete,text,Delete,0
+,description,text,Description,0
+,device_code,text,Device Code,0
+,device_name,text,Device Name,0
+,dimension_file,text,Dimension File,0
+,disposition,text,Disposition,0
+,disposition_by,text,Disposition By,0
+,disposition_date,text,Disposition Date,0
+,disposition_file_name,text,Disposition Filename,0
+,disposition_history,text,Disposition History,0
+,disposition_remarks,text,Disposition Remarks,0
+,disposition_required_date_reply,date,Diposition Required Date Reply,0
+,disposition_rev,text,Disposition Revision,0
+,disposition_sent_by,text,Disposition Sent By,0
+,disposition_sent_date,date,Disposition Sent Date,0
+,disposition_sent_remarks,date,Disposition Sent Remarks,0
+,disposition_time,date,Disposition Time,0
+,division_name,text,Division Name,0
+,drawing_number,text,Drawing Number,0
+,due_date,date,Due Date,0
+,emp_name,text,Employee Name,0
+,fail_mode,text,Fail Mode,0
+,field_name,text,Field Name,0
+,field_type,text,Field Type,0
+,file_name,text,Filename,0
+,file_path,text,File Path,0
+,filename,text,Filename,0
+,final_remarks,text,Final Remarks,0
+,final_reply_date,text,Final Reply Date,0
+,final_reply_file_name,text,Final Reply Filename,0
+,final_reply_remarks,text,Final Reply Remarks,0
+,final_reply_status,text,Final Reply Status,0
+,final_reply_time,text,Final Reply Time,0
+,findings_problem,text,Findings / Problem,0
+,fiscal_year,text,Fiscal Year,0
+,fk_aye,number,fk ye,0
+,fk_file_path,number,fk file path,0
+,fk_module,number,fk module,0
+,fk_report,number,fk report,0
+,fk_subsystem,number,fk subsystem,0
+,fk8d,number,fk8d,0
+,fk8d_attachment_initial,number,fk8d attachment initial,0
+,fkfile_path,number,fk file path,0
+,fklon,number,fklon,0
+,fkmachine,number,fk machine,0
+,fkmeasdata,number,fk measdata,0
+,fkng,number,fkng,0
+,fkreport_category,number,fk report category,0
+,fkspecial_acceptance,number,fk special acceptance,0
+,fksupplier_group,number,Supplier Group,0
+,fkvi,number,fkvi,0
+,fkvid,number,fkvid,0
+,fp_conformed_by,text,fk conformed by,0
+,fp_inspected_by,text,fk inspected by,0
+,fp_verfied_by,text,fk verified by,0
+,gate,text,Gate,0
+,guaranteed_lot,number,Guaranteed Lot,0
+,ic,text,IC,0
+,illustration_fkfile_path,number,Illustration fk file path,0
+,illustration_name,text,Illustration Name,0
+,incharge,text,In-Charge,0
+,inspection_date,date,Inspection Date,0
+,inspection_file,text,Inspection File,0
+,inspection_time,date,Inspection Time,0
+,invoice_no,text,Invoice Number,0
+,invoice_number,text,Invoice Number,0
+,issuance_date,date,Issuance Date,0
+,issued_by,text,Issued By,0
+,judged_by,text,Judged By,0
+,judged_by_approver,text,Judged By Approver,0
+,judgement,text,Judgement,0
+,judgement_application,text,Judgement Application,0
+,judgement_date,date,Judgement Date,0
+,judgement_file,text,Judgement File,0
+,judgement_fkfile_path,number,Judgement fk File Path,0
+,judgement_remarks,text,Judgement Remarks,0
+,lastupdate,text,Last Update,0
+,line,text,Line,0
+,line_number,text,Line Number,0
+,loaded_by,text,Loaded By,0
+,location_of_defect,text,Location of Defect,0
+,logdel,number,Logdel,0
+,lon_no,text,LON Number,0
+,lot_name,text,Lot Name,0
+,lot_no,text,Lot Number,0
+,lot_number,text,Lot Number,0
+,lot_qty,number,Lot Qty,0
+,lot_submission,text,Lot Submission,0
+,machine,text,Machine,0
+,material_type,text,Material Type,0
+,max_count,number,Max Count,0
+,meas_type,text,Meas Type,0
+,meas_year_month,date,Meas Year Month,0
+,measurescope_file,text,Measures Scope File,0
+,measurescope_no,text,Measure Scope No,0
+,mode_defect,text,Mode of Defect,0
+,mode_of_defect,text,Mode of Defect,0
+,model,text,Model,0
+,model_no,text,Model Number,0
+,module,text,Module,0
+,monitoring_time,text,Monitoring Time,0
+,name,text,Name,0
+,ng_condition_files,text,NG Condition File,0
+,ng_condition_text,text,NG Condition,0
+,ng_qty,number,NG Qty,0
+,ng_rate,number,NG Rate,0
+,ng_report_no,text,NG Report Number,0
+,normal,text,Normal,0
+,notations_remarks,text,Notification Remarks,0
+,ok_condition_files,text,OK Condition Files,0
+,ok_condition_text,text,OK Condition,0
+,ok_qty,number,OK Qty,0
+,operator,text,Operator,0
+,operator_name,text,Operator Name,0
+,operators_category,text,Operators Category,0
+,order,text,Order,0
+,other_details,text,Other Details,0
+,part_code,text,Part Code,0
+,part_name,text,Part Name,0
+,partcode,text,Part Code,0
+,partname,text,Part Name,0
+,parts_affected_device,text,Parts Affected Device,0
+,parts_affected_parts,text,Parts Affected Parts,0
+,partscode_pono,text,Part Code / PO #,0
+,percent_ng,number,Percent NG,0
+,pkid,number,pkid,0
+,po_no_inv_no,text,PO No / Invoice No.,0
+,po_number,text,PO Number,0
+,po_qty,text,PO Qty,0
+,problem_device,text,Problem Device,0
+,problem_parts,text,Problem Parts,0
+,product,text,Product,0
+,product_conformance,text,Product Conformance,0
+,product_name,text,Product Name,0
+,production_remarks,text,Production Remarks,0
+,project,text,Project,0
+,qar_history,text,QAR History,0
+,qc_name,text,QC Name,0
+,qc_supervisor,text,QC Supervisor,0
+,qcfr_no,text,QCFR No.,0
+,quantity,text,Qty,0
+,rc_date,date,RC ,0
+,rc_responsible,text,RC Responsible,0
+,read,text,Read,0
+,reason,text,Reason,0
+,reason_delete,text,Reason Delete,0
+,recipients_cc,text,CC,0
+,recipients_to,text,TO,0
+,reduced,text,Reduced,0
+,reel_batch_no,text,Reel Batch No.,0
+,reference,text,Reference,0
+,reference_conformance,text,Reference Conformance,0
+,reject,text,Reject,0
+,remarks,text,Remarks,0
+,report,text,Report,0
+,result_confirmation,text,Result Confirmation,0
+,return_date,text,Return Date,0
+,rev_no,text,Revision No.,0
+,role,text,Role,0
+,sample,text,Sample,0
+,sample_size,text,Sample Size,0
+,section,text,Section,0
+,series_name,text,Series Name,0
+,sheet_no,text,Sheet No.,0
+,sheet_number,text,Sheet No.,0
+,shift,text,Shift,0
+,shift_a,text,Shift A,0
+,shift_b,text,Shift B,0
+,shift_c,text,Shift C,0
+,shipment_date,date,Shipment Date,0
+,sorted_qty,number,Sorted Qty,0
+,ss,number,SS,0
+,standard_specification,text,Standard Specification,0
+,station,text,Station,0
+,status,text,Status,0
+,status_num,text,Status Num,0
+,submission,text,Submission,0
+,subsystem_code,text,Subsystem Code,0
+,subsystem_name,text,Subsystem Name,0
+,supplier,text,Supplier,0
+,supplier_group,text,Supplier Group,0
+,surveillance,text,Surveillance,0
+,text_display,text,Text Display,0
+,tightened,text,Tightened,0
+,to,text,TO,0
+,to_recipient,text,TO,0
+,total_reject,text,Total Reject,0
+,total_samples,text,Total Samples,0
+,tracecode,text,Trace Code,0
+,treatment,text,Treatment,0
+,update,text,Update,0
+,user,text,User,0
+,user_type,text,User Type,0
+,username,text,Username,0
+,verification_result,text,Verification Resul,0
+,verified_by,text,Verified By,0
+,vi_pkid,text,vi pkid,0
+,vid_pkid,text,vid pkid,0
+,wbs_id,text,wbs id,0
+,workweek,text,Work Week,0
