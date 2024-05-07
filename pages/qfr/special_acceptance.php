@@ -41,10 +41,10 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 						<li class="nav-item">
 							<a class="nav-link " data-toggle="tab" href="#home">Home</a>
 						</li>
-						<li class="nav-item">
+						<li class="nav-item active">
 							<a class="nav-link " data-toggle="tab" href="#for_sar_disposition">For Disposition</a>
 						</li>
-						<li class="nav-item active">
+						<li class="nav-item">
 							<a class="nav-link " data-toggle="tab" href="#for_approval">For Approval</a>
 						</li>
 						<li class="nav-item">
@@ -108,7 +108,7 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 	</div>
 
     <!-- <div id="menu2" class="tab-pane fade"><br> --> 
-    <div id="for_sar_disposition" class="tab-pane"><br>
+    <div id="for_sar_disposition" class="tab-pane <?php echo $is_active ?>"><br>
 		<div class="col-sm-12">
 			<div class="panel panel-info">
 				<div class="panel-heading"><i class="fa fa-file fa-lg"> For Disposition</i></div>
@@ -173,7 +173,7 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 			</div>
 		</div>
 	</div>
-    <div id="for_approval" class="tab-pane <?php echo $is_active ?>"><br>
+    <div id="for_approval" class="tab-pane"><br>
 		<div class="col-sm-12">
 			<div class="panel panel-info">
 				<div class="panel-heading"><i class="fa fa-file fa-lg">For Approval</i></i></div>
@@ -202,11 +202,6 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 							
 					</div>
 				</div>
-				<!-- <div class="col-sm-12">
-					<div class="alert alert-warning" style="display:block;" role="alert" id="container_upload_sa_reminder">
-						NOTE: Report approval will reset once this data changed.
-					</div>
-				</div> -->
 			</div>
 			<div class="row">
 				<div class="col-sm-2">
@@ -228,7 +223,7 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 				</div>
 				<div class="col-sm-4">
 					<select class="form-control" id="txt_category" name="category" required>
-						<option value=""></option>
+						<option value="" disabled>--Select--</option>
 						<option value="Parts">Parts</option>
 						<option value="Device">Device</option>
 					</select>
@@ -257,12 +252,8 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 					<div class="col-sm-4">
 						<input type="text" class="form-control" id="" name="parts_affected_parts" required>
 					</div>
-					<div class="col-sm-2">
-						<label class="fa fa-md">Problem: </label>
-					</div>
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="" name="problem_parts">
-					</div>
+					
+				
 					<!-- <div class="col-sm-2">
 						<label class="fa fa-md">Customer: </label>
 					</div>
@@ -275,11 +266,38 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 					<div class="col-sm-4">
 						<input type="text" class="form-control" id="" name="lot_number" list="">
 					</div>
+				</div>
+				<div class="row display-field-none deletedField">
 					<div class="col-sm-2">
-						<label class="fa fa-md">Quantity: </label>
+						<label class="fa fa-md">Problem: </label>
 					</div>
 					<div class="col-sm-4">
+						<input value="N/A" type="text" class="form-control" id="" name="problem_parts">
+					</div>
+					<div class="col-sm-2">
+							<label class="fa fa-md">Quantity: </label>
+						</div>
+					<div class="col-sm-4">
 						<input type="number" class="form-control" id="" name="quantity">
+					</div>
+
+					<div class="col-sm-2">
+						<label class="fa fa-md">Affected Qty: </label>
+					</div>
+					<div class="col-sm-4">
+						<input type="text" class="form-control" id="" name="affected_quantity">
+					</div>
+					<div class="col-sm-2">
+						<label class="fa fa-md">Product Supplier: </label>
+					</div>
+					<div class="col-sm-4">
+						<input value="N/A" type="text" class="form-control" id="" name="customer_name">
+					</div>
+					<div class="col-sm-2">
+						<label class="fa fa-md">Shipment Date: </label>
+					</div>
+					<div class="col-sm-4">
+						<input type="date" class="form-control" id="" name="shipment_date">
 					</div>
 				</div>
 				<div id="container_device">
@@ -312,24 +330,6 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 					</div>
 					<div class="col-sm-4">
 						<input type="text" class="form-control" id="" name="parts_affected_device">
-					</div>
-					<div class="col-sm-2">
-						<label class="fa fa-md">Affected Qty: </label>
-					</div>
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="" name="affected_quantity">
-					</div>
-					<div class="col-sm-2">
-						<label class="fa fa-md">Product Supplier: </label>
-					</div>
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="" name="customer_name" required>
-					</div>
-					<div class="col-sm-2">
-						<label class="fa fa-md">Shipment Date: </label>
-					</div>
-					<div class="col-sm-4">
-						<input type="date" class="form-control" id="" name="shipment_date">
 					</div>
 				</div>
 				<div class="col-sm-2">
@@ -523,35 +523,28 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
       </div>
 	  <form id="frm_sa" method="post" enctype="multipart/form-data">
 		  <div class="modal-body">
-			<!-- <div class="row">
-				<div class="col-sm-12">
-					<div class="alert alert-danger" style="display:none;" role="alert" id="container_upload_sa_message">					
-					</div>
-				</div>
-			</div> -->
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="alert alert-danger" style="display:none;" role="alert" id="container_upload_sa_message">					
 					</div>
-				</div>
-				<div class="col-sm-2 col-sm-offset-6">
-					<label class="fa fa-md">Control No: </label>
-				</div>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id="txt_control_number" name="control_number"required readonly>
 				</div>
 			</div>
 			<div class="row">
-				
 				<div class="col-sm-2">
 					<label class="fa fa-md">Category: </label>
 				</div>
 				<div class="col-sm-4">
 					<select class="form-control" id="txt_category" name="category" required>
-						<option value=""></option>
+						<option value="" disabled>--Select--</option>
 						<option value="Parts">Parts</option>
 						<option value="Device">Device</option>
 					</select>
+				</div>
+				<div class="col-sm-2">
+					<label class="fa fa-md">Control No: </label>
+				</div>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id="txt_control_number" name="control_number"required readonly>
 				</div>
 				<div class="col-sm-2 deletedField">
 					<label class="fa fa-md">Choose File: </label>
@@ -576,29 +569,52 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 						<input type="text" class="form-control" id="" name="parts_affected_parts" required>
 					</div>
 					<div class="col-sm-2">
-						<label class="fa fa-md">Problem: </label>
-					</div>
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="" name="problem_parts">
-					</div>
-					<!-- <div class="col-sm-2">
-						<label class="fa fa-md">Supplier: </label>
-					</div> 
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="" name="supplier" list="" readonly required>
-					</div>-->
-					<div class="col-sm-2">
 						<label class="fa fa-md">Fail Mode: </label>
 					</div> 
 					<div class="col-sm-4">
 						<input type="text" class="form-control" id="" name="lot_number" list="">
 					</div>
+				
+				</div>
+				<div class="row display-field-none deletedField">
+					<div class="col-sm-2">
+							<label class="fa fa-md">Problem: </label>
+					</div>
+					<div class="col-sm-4">
+						<input value="N/A" type="text" class="form-control" id="" name="problem_parts">
+					</div>
+					<div class="col-sm-2">
+						<label class="fa fa-md">Drawing Number: </label>
+					</div>
+					<div class="col-sm-4">
+						<input value="N/A" type="text" class="form-control" id="" name="drawing_number">
+					</div>
 					<div class="col-sm-2">
 						<label class="fa fa-md">Quantity: </label>
 					</div>
 					<div class="col-sm-4">
-						<input type="number" class="form-control" id="" name="quantity">
+						<input value="0" type="number" class="form-control" id="" name="quantity">
 					</div>
+
+					<div class="col-sm-2">
+						<label class="fa fa-md">Product Supplier Name: </label>
+					</div>
+					<div class="col-sm-4">
+						<input value="N/A" type="text" class="form-control" id="" name="customer_name">
+					</div>
+					<div class="col-sm-2">
+						<label class="fa fa-md">Shipment Date: </label>
+					</div>
+					<div class="col-sm-4">
+						<input type="date" class="form-control" id="" name="shipment_date">
+					</div>
+					<div class="col-sm-2">
+						<label class="fa fa-md">Affected Qty: </label>
+					</div>
+					<div class="col-sm-4">
+						<input type="number" class="form-control" id="" name="affected_quantity">
+					</div>
+					
 				</div>
 				<div id="container_device">
 					<div class="col-sm-2">
@@ -632,33 +648,15 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 					<div class="col-sm-4">
 						<input type="text" class="form-control" id="" name="parts_affected_device">
 					</div>
-					<div class="col-sm-2">
-						<label class="fa fa-md">Affected Qty: </label>
-					</div>
-					<div class="col-sm-4">
-						<input type="number" class="form-control" id="" name="affected_quantity">
-					</div>
-					<div class="col-sm-2">
-						<label class="fa fa-md">Product Supplier Name: </label>
-					</div>
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="" name="customer_name" required>
-					</div>
-					<div class="col-sm-2">
-						<label class="fa fa-md">Shipment Date: </label>
-					</div>
-					<div class="col-sm-4">
-						<input type="date" class="form-control" id="" name="shipment_date">
-					</div>
-				</div>
-				<div class="col-sm-2">
-					<label class="fa fa-md">Drawing Number: </label>
-				</div>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id="" name="drawing_number" required>
 				</div>
               </div>
 			  <div class="row">
+					<div class="col-sm-2">
+						<label class="fa fa-md">Date Issued: </label>
+					</div> 
+					<div class="col-sm-4">
+						<input type="date" class="form-control" id="txt_date_issued" name="date_issued" >
+					</div>
 					<div class="col-sm-2">
 							<label class="fa fa-md">Customer Name: </label>
 					</div>
@@ -666,6 +664,7 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 						<select class="" id="supplier" name="supplier" style="width:100%;" required>
 						</select>
 					</div>
+					
 					<div class="container_checked_by_qc" style = "display:none;">
 						<div class="col-sm-2">
 							<label class="fa fa-md">Checked by QC:</label>
@@ -686,10 +685,34 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 								</select>
 						</div>
 					</div>
+					<div class="col-sm-12">
+						<label class="fa fa-md">Immediate Action: </label>
+					</div>
+					<div class="col-sm-6" style="padding-top:5px;">
+						<textarea class="form-control" id="txt_immediate_action" name="immediate_action"></textarea>
+					</div>
 					<div class="col-sm-2">
+						<label class="fa fa-md">Due Date/ICP: </label>
+					</div> 
+					<div class="col-sm-4">
+						<input type="date" class="form-control" id="txt_immediate_action_due_date" name="immediate_action_due_date" >
+					</div>
+					<div class="col-sm-12">
+						<label class="fa fa-md">Permanent Action: </label>
+					</div>
+					<div class="col-sm-6" style="padding-top:5px;">
+						<textarea class="form-control" id="txt_permanent_action name="permanent_action></textarea>
+					</div>
+					<div class="col-sm-2">
+						<label class="fa fa-md">Due Date/ICP: </label>
+					</div>
+					<div class="col-sm-4">
+						<input type="date" class="form-control" id="txt_permanent_action_due_date" name="permanent_action_due_date" >
+					</div> 
+					<div class="col-sm-12">
 						<label class="fa fa-md">Other Details: </label>
 					</div>
-					<div class="col-sm-10" style="padding-top:5px;">
+					<div class="col-sm-12" style="padding-top:5px;">
 						<textarea class="form-control" name="other_details"></textarea>
 					</div>
 					<div id="container_main_approver_name" class="deletedField">

@@ -672,8 +672,40 @@
 	}
 	
 	function save_special_acceptance(){ //nmodify
+		// {
+		// 	"category": "Parts",
+		// 	"control_number": "SAR-TS---2405-005",
+		// 	"part_code": "108141601",
+		// 	"parts_affected_parts": "CONTACT 5643 (NAISEI PLATE)",
+		// 	"lot_number": "problem",
+		// 	"problem_parts": "",
+		// 	"drawing_number": "",
+		// 	"quantity": "",
+		// 	"customer_name": "Hitachi High-Tech Materials Co., Ltd. (Musashi)",
+		// 	"shipment_date": "",
+		// 	"affected_quantity": "",
+		// 	"po_number": "450180078100010",
+		// 	"po_qty": "245",
+		// 	"device_name": "IC51-0202-779",
+		// 	"problem_device": "",
+		// 	"parts_affected_device": "",
+		// 	"date_issued": "",
+		// 	"supplier": " ASSY100",
+		// 	"immediate_action": "test",
+		// 	"immediate_action_due_date": "2024-05-06",
+		// 	"permanent_action_due_date": "2024-05-07",
+		// 	"other_details": "test",
+		// 	"judgement_application": "",
+		// 	"notations_remarks": "",
+		// 	"action": "save_special_acceptance",
+		// 	"pkid": "0",
+		// 	"upload_type": "new",
+		// 	"username": "mclegaspi"
+		// }
 		require_once('../class/oop_tqts.php');
 		$return 		= $_POST;
+		echo json_encode($return);
+		return 
 		$username = $return ['username'];
 		$date_time_today = date('Y-m-d H:i:s');
 		$control_number = generate_sa_control_number(date('Y-m-d'),$return['username']);

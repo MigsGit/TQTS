@@ -651,14 +651,13 @@ $(document).ready(function(){
 			/* display parts container */
 			$('#'+frm_id+' #container_parts').show();
 			$('#'+frm_id+' #container_parts select, #'+frm_id+' #container_parts input').prop('required',true);
-			$('#'+frm_id+' #container_parts input').val('');
-			
+			$('#'+frm_id+' #container_device input').val('');
 
 		}else if(category == 'Device'){
 			/* display device container */
 			$('#'+frm_id+' #container_device').show();
 			$('#'+frm_id+' #container_device select, #'+frm_id+' #container_device input').prop('required',true);
-			$('#'+frm_id+' #container_device input').val('');
+			$('#'+frm_id+' #container_parts input').val('');
 		}
 	}
 	function fn_generate_sa_control_number_view(){
