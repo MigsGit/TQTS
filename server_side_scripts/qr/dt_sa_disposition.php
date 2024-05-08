@@ -353,6 +353,9 @@
 			// if($user_sa_access['qc_supervisor'] && $username == $aRow['created_by']){
 			$button[] = '<button class="btn btn-default fa fa-eye" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> View</button>';
 			if($username == $aRow['created_by']){
+				if( $user_sa_access['update']){
+					$button[] = '<button class="btn btn-primary fa fa-edit" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Edit</button>';
+				}
 				if($aRow['status'] == '1'){
 					$button[] = '<button class="btn btn-info fa fa-send-o" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Send Disposition</button>';
 				}

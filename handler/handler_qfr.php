@@ -601,26 +601,24 @@
 			$return['category'] 			= $row['category'];
 			$return['parts_affected_parts'] = $row['parts_affected_parts'];
 			$return['part_code'] 			= $row['part_code'];
-			$return['problem_parts'] 		= $row['problem_parts'];
 			$return['supplier'] 			= $row['supplier'];
-			$return['lot_number'] 			= $row['lot_number'];
-			$return['quantity'] 			= $row['quantity'];
 			$return['device_name']	 		= $row['device_name'];
-			$return['problem_device'] 		= $row['problem_device'];
 			$return['parts_affected_device'] = $row['parts_affected_device'];
 			$return['po_number'] 			= $row['po_number'];
 			$return['po_qty'] 				= $row['po_qty'];
-			$return['affected_quantity'] 	= $row['affected_quantity'];
 			$return['customer_name'] 		= $row['customer_name'];
-			$return['shipment_date'] 		= $row['shipment_date'];
-			$return['drawing_number'] 		= $row['drawing_number'];
-			$return['judgement_application'] = $row['judgement_application'];
-			$return['notations_remarks'] 	= $row['notations_remarks'];
 			$return['status'] 				= $row['status'];
 			$return['lastupdate'] 			= $row['lastupdate'];
 			$return['created_by'] 			= $row['created_by'];
 			$return['username'] 			= $row['username'];
-			$return['logdel'] 				= $row['logdel'];
+			$return['problem'] 				= $row['problem'];
+			$return['factory_location'] 	= $row['factory_location'];
+			$return['date_issued'] 			= $row['date_issued'];
+			$return['immediate_action'] 	= $row['immediate_action'];
+			$return['immediate_action_due_date'] 	= $row['immediate_action_due_date'];
+			$return['permanent_action'] 			= $row['permanent_action'];
+			$return['permanent_action_due_date'] 	= $row['permanent_action_due_date'];
+			$return['other_details'] 	= $row['other_details'];
 		}
 		echo json_encode($return);
 	}
@@ -671,58 +669,91 @@
 		return $returns;
 	}
 	
-	function save_special_acceptance(){ //nmodify
-		// {
-		// 	"category": "Parts",
-		// 	"control_number": "SAR-TS---2405-005",
-		// 	"part_code": "108141601",
-		// 	"parts_affected_parts": "CONTACT 5643 (NAISEI PLATE)",
-		// 	"lot_number": "problem",
-		// 	"problem_parts": "",
-		// 	"drawing_number": "",
-		// 	"quantity": "",
-		// 	"customer_name": "Hitachi High-Tech Materials Co., Ltd. (Musashi)",
-		// 	"shipment_date": "",
-		// 	"affected_quantity": "",
-		// 	"po_number": "450180078100010",
-		// 	"po_qty": "245",
-		// 	"device_name": "IC51-0202-779",
-		// 	"problem_device": "",
-		// 	"parts_affected_device": "",
-		// 	"date_issued": "",
-		// 	"supplier": " ASSY100",
-		// 	"immediate_action": "test",
-		// 	"immediate_action_due_date": "2024-05-06",
-		// 	"permanent_action_due_date": "2024-05-07",
-		// 	"other_details": "test",
-		// 	"judgement_application": "",
-		// 	"notations_remarks": "",
-		// 	"action": "save_special_acceptance",
-		// 	"pkid": "0",
-		// 	"upload_type": "new",
-		// 	"username": "mclegaspi"
-		// }
-		require_once('../class/oop_tqts.php');
-		$return 		= $_POST;
-		echo json_encode($return);
-		return 
-		$username = $return ['username'];
-		$date_time_today = date('Y-m-d H:i:s');
-		$control_number = generate_sa_control_number(date('Y-m-d'),$return['username']);
-		/* get field data from post */
-		$field_data 	= get_fields_values($_POST,array('action','pkid','upload_type','control_number'));
-		$table			= 'tbl_qfr_special_acceptance';
-		$array_fields   = $field_data['array_fields'];
-		$array_values   = $field_data['array_values'];
-		/* add additional fields */
-		$array_fields[]	= 'lastupdate'; 	$array_values[] = date('Y-m-d H:i:s');
-		$array_fields[]	= 'created_by'; 	$array_values[] = $_POST['username'];
-		$array_fields[]	= 'date_created'; 	$array_values[] = date('Y-m-d H:i:s');
-		$array_fields[]	= 'control_number'; $array_values[] = $control_number;
-	    $pkid 			= TQTS::getInstance()->insert_query_id($table,$array_fields,$array_values);
+	function save_special_acceptance(){
+		try {
+			require_once('../class/oop_tqts.php');
+			$return 		= $_POST;
+			$date_time_today = date('Y-m-d H:i:s');
+			$special_acceptance_id =  $return['special_acceptance_id'];
 
-		/* get the executed script - used for testing */
-		echo json_encode($return);
+			if($special_acceptance_id == ""){
+				echo 'true';
+				$username = $return ['username'];
+				$control_number = generate_sa_control_number(date('Y-m-d'),$return['username']);
+				/* get field data from post */
+				$field_data 	= get_fields_values($_POST,array('action','pkid','upload_type','control_number'));
+				$table			= 'tbl_qfr_special_acceptance';
+				$array_fields   = $field_data['array_fields'];
+				$array_values   = $field_data['array_values'];
+				/* add additional fields */
+				$array_fields[]	= 'lastupdate'; 	$array_values[] = date('Y-m-d H:i:s');
+				$array_fields[]	= 'created_by'; 	$array_values[] = $_POST['username'];
+				$array_fields[]	= 'date_created'; 	$array_values[] = date('Y-m-d H:i:s');
+				$array_fields[]	= 'control_number'; $array_values[] = $control_number;
+				// $pkid 			= TQTS::getInstance()->insert_query_id($table,$array_fields,$array_values);
+				$script 			= TQTS::getInstance()->insert_query_script($table,$array_fields,$array_values);
+				
+				/* get the executed script - used for testing */
+				echo json_encode($return);
+			}else{
+				echo 'false';
+			}
+		} catch (\Throwable $th) {
+			throw $th;
+		}
+		
+	}
+	function edit_special_acceptance(){
+		require_once('../class/oop_tqts.php');
+		$date_time_today = date('Y-m-d H:i:s');
+		$return 		= $_POST;
+		$return['error']= array();	
+		$pkid			= $return['pkid'];
+		$username = $return ['username'];
+		$table			= 'tbl_qfr_special_acceptance';
+		$array_fields 	= array(
+								'category','parts_affected_parts','part_code',
+								'problem_parts','supplier','lot_number',
+								'quantity','device_name','problem_device',
+								'parts_affected_device','po_number','po_qty',
+								'affected_quantity','customer_name','shipment_date',
+								'drawing_number','other_details','lastupdate','status'
+								);
+		if($return['category'] == 'Parts'){
+			$return['po_number']				= '';
+			$return['po_qty']					= '';
+			$return['device_name']				= '';
+			$return['problem_device']			= '';
+			$return['affected_quantity']		= '';
+			$return['parts_affected_device']	= '';
+			$return['customer_name']			= '';
+			$return['shipment_date']			= '';
+			
+		}else{
+			$return['partcode']					= '';
+			$return['parts_affected_parts']     = '';
+			$return['problem_parts']			= '';
+			$return['lot_number']				= '';
+			$return['quantity']					= '';
+		}
+		/* add blanks to undefined or empty values */
+		foreach($array_fields as $key => $value){
+			if(!isset($return[$value]) || $return[$value] == ""){
+				$return[$value] = "";
+			}
+		}
+		$array_values	= array(
+								$return['category'],$return['parts_affected_parts'],$return['part_code'],
+								$return['problem_parts'],$return['supplier'],$return['lot_number'],
+								$return['quantity'],$return['device_name'],$return['problem_device'],
+								$return['parts_affected_device'],$return['po_number'],$return['po_qty'],
+								$return['affected_quantity'],$return['customer_name'],$return['shipment_date'],
+								$return['drawing_number'],$return['other_details'],date('Y-m-d H:i:s'),1
+								);
+		$where 			= "WHERE pkid = '$pkid'";
+		
+		$result 			= TQTS::getInstance()->update_query_detailed($table,$array_fields,$array_values,$where);
+		echo json_encode($result); //hmodifynow
 	}
 	function generate_sa_control_number($date,$username){
 		require_once('../class/oop_tqts.php');
@@ -957,58 +988,7 @@
 		}
 		echo json_encode($return);
 	}
-	function edit_special_acceptance(){ //NOTE : nmodify
-		require_once('../class/oop_tqts.php');
-		$date_time_today = date('Y-m-d H:i:s');
-		$return 		= $_POST;
-		$return['error']= array();	
-		$pkid			= $return['pkid'];
-		$username = $return ['username'];
-		$table			= 'tbl_qfr_special_acceptance';
-		$array_fields 	= array(
-								'category','parts_affected_parts','part_code',
-								'problem_parts','supplier','lot_number',
-								'quantity','device_name','problem_device',
-								'parts_affected_device','po_number','po_qty',
-								'affected_quantity','customer_name','shipment_date',
-								'drawing_number','other_details','lastupdate','status'
-								);
-		if($return['category'] == 'Parts'){
-			$return['po_number']				= '';
-			$return['po_qty']					= '';
-			$return['device_name']				= '';
-			$return['problem_device']			= '';
-			$return['affected_quantity']		= '';
-			$return['parts_affected_device']	= '';
-			$return['customer_name']			= '';
-			$return['shipment_date']			= '';
-			
-		}else{
-			$return['partcode']					= '';
-			$return['parts_affected_parts']     = '';
-			$return['problem_parts']			= '';
-			$return['lot_number']				= '';
-			$return['quantity']					= '';
-		}
-		/* add blanks to undefined or empty values */
-		foreach($array_fields as $key => $value){
-			if(!isset($return[$value]) || $return[$value] == ""){
-				$return[$value] = "";
-			}
-		}
-		$array_values	= array(
-								$return['category'],$return['parts_affected_parts'],$return['part_code'],
-								$return['problem_parts'],$return['supplier'],$return['lot_number'],
-								$return['quantity'],$return['device_name'],$return['problem_device'],
-								$return['parts_affected_device'],$return['po_number'],$return['po_qty'],
-								$return['affected_quantity'],$return['customer_name'],$return['shipment_date'],
-								$return['drawing_number'],$return['other_details'],date('Y-m-d H:i:s'),1
-								);
-		$where 			= "WHERE pkid = '$pkid'";
-		
-		$result 			= TQTS::getInstance()->update_query_detailed($table,$array_fields,$array_values,$where);
-		echo json_encode($result); //hmodifynow
-	}
+	
 	
 	function load_approver_table(){ 
 		require_once('../class/oop_tqts.php');
@@ -2105,7 +2085,6 @@
 				$return['supplier'][]		= $array_data_supp;
 			}
 			$return['supplier_name'] = $row['supplier'];
-			// $return['supplier_name'] = $row['supplier'];
 		}
 		echo json_encode($return);
     }

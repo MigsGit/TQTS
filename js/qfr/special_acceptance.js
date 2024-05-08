@@ -205,21 +205,7 @@ $(document).ready(function(){
 		$('#modal_sa_cancel').modal('show');
 	});
 
-	// $('#'+tbl_special_acceptance_disposition+' tbody').on('click', 'tr .fa-eye', function(){
-	// $('#'+tbl_special_acceptance_disposition+' tbody').on('click','tr .fa-eye',function(){
-	$('#'+tbl_special_acceptance_disposition).on('click', 'tr .fa-eye', function(){
-		var pkid = this.id;
-		var current_status 	= $(this).closest('tr').find('td:eq(0)').text();
-		$('#modal_sa_edit').modal('show');
-		$('#modal_sa_edit').data('id',pkid);
-		$('#tbl_approver_view tbody').empty();
-		$('#edit_btn_add_approver').prop('disabled',false);
-		$('#modal_sa_edit #container_upload_sa_message').hide();
-		fn_load_special_acceptance(pkid,'view',current_status);
-		fn_sa_hide_text_fields('frm_sa_edit','');
-	});
 
-	//Other Event
 
 	$('#frm_sa_edit a[id="uploaded_file').click(function () { 
 		var pkid = $(this).data('id');
@@ -231,7 +217,6 @@ $(document).ready(function(){
 		var category = $(this).val();
 		fn_sa_hide_text_fields('frm_sa_edit',category);
 	});
-	fn_sa_hide_text_fields('frm_sa','');
 	$('#frm_sa select[name="category"]').change(function(){
 		var category = $(this).val();
 		fn_sa_hide_text_fields('frm_sa',category);
@@ -461,8 +446,6 @@ $(document).ready(function(){
 				dt_special_acceptance_disposition.draw();
 				dt_special_acceptance_with_treatment.draw();
 				notif_success('Saved Successfully !');
-
-
 			},error	: function(result){
 			}
 		});
@@ -537,112 +520,77 @@ $(document).ready(function(){
 			"username"	: username
 		}
 		call_ajax(data, handler_qfr, function(result){
+			fn_sa_hide_text_fields('frm_sa',result['category'],'edit');
+			
 			$('#frm_sa_for_revision #pkid').val(result['pkid']);
+			
+
 			$('#frm_send_report_internal_sa #txt_control_number').val(result['control_number']).prop('readonly',true);
 			$('#modal_for_qc_checking #pkid, #modal_for_qc_checking #frm_sa_for_qc_checking').val(result['pkid']);
-
-			/** Edit and View Side */
-			$('#frm_sa_edit .fa-save').show();
+		
 			var status = result['status']; 
 			if(status == "1"){
-				$('#frm_sa_edit #badge_status').text('FOR DISPOSITION');
-				$('#frm_sa_edit #badge_status').attr('class','badge highlight-color-blue');
+				$('#frm_sa #badge_status').text('FOR DISPOSITION');
+				$('#frm_sa #badge_status').attr('class','badge highlight-color-blue');
 			}else if(status == "4"){
-				$('#frm_sa_edit #badge_status').text('FOR APPROVAL');
-				$('#frm_sa_edit #badge_status').attr('class','badge highlight-color-lime');
+				$('#frm_sa #badge_status').text('FOR APPROVAL');
+				$('#frm_sa #badge_status').attr('class','badge highlight-color-lime');
 			}
 			else if(status == "2"){
-				$('#frm_sa_edit #badge_status').text('DISAPPROVED');
-				$('#frm_sa_edit #badge_status').attr('class','badge highlight-color-red');
+				$('#frm_sa #badge_status').text('DISAPPROVED');
+				$('#frm_sa #badge_status').attr('class','badge highlight-color-red');
 			}
 			else if(status == "5"){
-				$('#frm_sa_edit #badge_status').text('WAITING FOR DISPOSITION');
-				$('#frm_sa_edit #badge_status').attr('class','badge highlight-color-lime');
+				$('#frm_sa #badge_status').text('WAITING FOR DISPOSITION');
+				$('#frm_sa #badge_status').attr('class','badge highlight-color-lime');
 			}else if(status == "8"){
-				$('#frm_sa_edit #badge_status').text('CANCELLED');
-				$('#frm_sa_edit #badge_status').attr('class','badge highlight-color-red');
+				$('#frm_sa #badge_status').text('CANCELLED');
+				$('#frm_sa #badge_status').attr('class','badge highlight-color-red');
 			}else{
-				$('#frm_sa_edit #badge_status').text('Unknown Status');
-				$('#frm_sa_edit #badge_status').attr('class','badge');
+				$('#frm_sa #badge_status').text('Unknown Status');
+				$('#frm_sa #badge_status').attr('class','badge');
 			}
-			$('#frm_sa_edit input[name="control_number"]').val(result['control_number']);
-			$('#frm_sa_edit select[name="category"]').val(result['category']);
-			fn_sa_hide_text_fields('frm_sa_edit',result['category']);
-			// $('#frm_sa_edit a[id="uploaded_file"]').attr("href",result['attached_file_link']);
-			$('#frm_sa_edit a[id="uploaded_file"]').data("id",result['fkspecial_acceptance']);
-			$('#frm_sa_edit a[id="uploaded_file"]').data("file_name",result['file_name']);
-			$('#frm_sa_edit a[id="uploaded_file"]').text(result['file_name']);
+			$('#frm_sa').find('[name="special_acceptance_id"]').val(pkid);
+		
+			$('#frm_sa').find('[name="control_number"]').val(result['control_number']);
+			$('#frm_sa').find('select[name="category"]').val(result['category']);
+			
 			if(result['category'] == 'Parts'){
-				$('#frm_sa_edit input[name="part_code"]').val(result['part_code']);
-				$('#frm_sa_edit input[name="parts_affected_parts"]').val(result['parts_affected_parts']);
-				$('#frm_sa_edit input[name="problem_parts"]').val(result['problem_parts']);
-				$('#frm_sa_edit input[name="supplier"]').val(result['supplier']);
-				$('#frm_sa_edit input[name="lot_number"]').val(result['lot_number']);
-				$('#frm_sa_edit input[name="quantity"]').val(result['quantity']);
+				$('#frm_sa').find('[name="part_code"]').val(result['part_code']);
+				$('#frm_sa').find('[name="parts_affected_parts"]').val(result['parts_affected_parts']);
+				$('#frm_sa').find('[name="supplier"]').val(result['supplier']);
+				$('#frm_sa').find('[name="quantity"]').val(result['quantity']);
 			}else{
-				$('#frm_sa_edit input[name="po_number"]').val(result['po_number']);
-				$('#frm_sa_edit input[name="po_qty"]').val(result['po_qty']);
-				$('#frm_sa_edit input[name="device_name"]').val(result['device_name']);
-				$('#frm_sa_edit input[name="problem_device"]').val(result['problem_device']);
-				$('#frm_sa_edit input[name="parts_affected_device"]').val(result['parts_affected_device']);
-				$('#frm_sa_edit input[name="affected_quantity"]').val(result['affected_quantity']);
-				$('#frm_sa_edit input[name="customer_name"]').val(result['customer_name']);
-				$('#frm_sa_edit input[name="shipment_date"]').val(result['shipment_date']);
+				$('#frm_sa').find('[name="po_number"]').val(result['po_number']);
+				$('#frm_sa').find('[name="po_qty"]').val(result['po_qty']);
+				$('#frm_sa').find('[name="device_name"]').val(result['device_name']);
+				$('#frm_sa').find('[name="parts_affected_device"]').val(result['parts_affected_device']);
+				$('#frm_sa').find('[name="customer_name"]').val(result['customer_name']);
 			}
-			$('#frm_sa_edit input[name="drawing_number"]').val(result['drawing_number']);
-			$('#frm_sa_edit select[name="judged_by"]').val(result['judged_by']);
-			$('#frm_sa_edit select[name="judgement_application"]').val(result['judgement_application']);
-			$('#frm_sa_edit textarea[name="notation_remarks"]').text(result['notations_remarks']);
-			$('#frm_sa_edit textarea[name="other_details"]').text(result['other_details']);
-
-			// assign_value_select2('#frm_sa_edit #supplier',result['supplier']);
-			re_initialize_select2_server_side('#modal_sa_edit #supplier','#modal_sa_edit #frm_sa_edit',[],"server_side_scripts/dropdown/qfr/dd_ng_supplier_list.php");
-			if(mode == 'edit'){	//NOTE : load the Approver Table
-				$('#frm_sa_edit #replace_file').prop('disabled',false);
-				$('#frm_sa_edit #container_disposition').hide();
-				$('#frm_sa_edit #container_remarks').hide();
-				$('#frm_sa_edit input,#frm_sa_edit select').prop('disabled',false);
-				$('#frm_sa_edit input,#frm_sa_edit textarea').prop('disabled',false);
-				$('#frm_sa_edit #edit_order_id').prop('readonly',true);
-
-				$('#frm_sa_edit #tbl_approver_ng_view').hide(10);
-				$('#frm_sa_edit #btn_ng_approve').hide(10);
-				$('#frm_sa_edit  #btn_ng_disapprove').hide(10);
-				$('#frm_sa_edit #tbl_main_approver_sa_view').hide(10);
-				$('#frm_sa_edit  #btn_sa_main_approve').hide(10);
-				$('#frm_sa_edit  #btn_sa_main_disapprove').hide(10);
+			$('#frm_sa').find('textarea[name="other_details"]').text(result['other_details']);
+			$('#frm_sa').find('[name="factory_location"]').val(result['factory_location']);
+			$('#frm_sa').find('[name="problem"]').val(result['problem']);
+			$('#frm_sa').find('[name="date_issued"]').val(result['date_issued']);
+			$('#frm_sa').find('[name="immediate_action"]').val(result['immediate_action']);
+			$('#frm_sa').find('[name="permanent_action"]').val(result['permanent_action']);
+			$('#frm_sa').find('[name="immediate_action_due_date"]').val(result['immediate_action_due_date']);
+			$('#frm_sa').find('[name="permanent_action_due_date"]').val(result['permanent_action_due_date']);
+			
+			// assign_value_select2('#frm_sa #supplier', result['supplier']);
+			re_initialize_select2_server_side('#modal_sa #supplier','#modal_sa #frm_sa',[],"server_side_scripts/dropdown/qfr/dd_ng_supplier_list.php");
+			fn_get_supplier_by_pkid(result['pkid'],'edit');
+			
+			if(mode == 'edit'){
+				$('#frm_sa .fa-save').show();
 			}
-			else if(mode == 'view'){ //NOTE : fedit fviews validate if the approver is current login to the account
-					$('#frm_sa_edit  #btn_sa_main_approve').hide(10);
-					$('#frm_sa_edit  #btn_sa_main_disapprove').hide(10);
-					$('#frm_sa_edit #btn_ng_approve').hide(10);
-					$('#frm_sa_edit  #btn_ng_disapprove').hide(10);
-					$('#frm_sa_edit .fa-save').hide(10);
-
-					$('#frm_sa_edit #container_main_approver_name').hide(10);
-					$('#frm_sa_edit #container_column').hide(10);
-					$('#frm_sa_edit #container_row').hide(10);
-
-					$('#frm_sa_edit #tbl_approver_ng_view').hide(10);
-					$('#frm_sa_edit #tbl_main_approver_sa_view').hide(10);
-					fnValidateIsApprover(pkid,current_status);
-				$('#frm_sa_edit #replace_file').prop('disabled',true);
-				$('#frm_sa_edit input,#frm_sa_edit select,#frm_sa_edit textarea').prop('disabled',true);
-				if(status == 1){
-					return false;
-				}
+			else if(mode == 'view'){
+				$('#frm_sa .fa-save').hide();
 			}
-/*
-	 fetch the qc approver, every modification will reset the approval from the first approver.
-*/
-			fn_get_supplier_by_pkid(result['pkid']);
-			// re_initialize_select2_server_side('#modal_sa_edit #supplier','#modal_sa_edit #frm_sa_edit',[],"server_side_scripts/dropdown/qfr/dd_ng_supplier_list.php");
 		});
-
 	}
-	function fn_sa_hide_text_fields(frm_id,category){
+
+	function fn_sa_hide_text_fields(frm_id,category,mode=null){
 		/* hide containers for parts and device */
-		$('#'+frm_id+' input[name="drawing_number"]').val(""); //empty drawing number
 		$('#'+frm_id+' #container_parts').hide();
 		$('#'+frm_id+' #container_device').hide();
 		$('#'+frm_id+' #container_parts select, #'+frm_id+' #container_parts input').prop('required',false);
@@ -652,12 +600,16 @@ $(document).ready(function(){
 			$('#'+frm_id+' #container_parts').show();
 			$('#'+frm_id+' #container_parts select, #'+frm_id+' #container_parts input').prop('required',true);
 			$('#'+frm_id+' #container_device input').val('');
-
+	
 		}else if(category == 'Device'){
 			/* display device container */
 			$('#'+frm_id+' #container_device').show();
 			$('#'+frm_id+' #container_device select, #'+frm_id+' #container_device input').prop('required',true);
 			$('#'+frm_id+' #container_parts input').val('');
+		}
+		if(mode == null){
+			$('#'+frm_id+' #global_input_field input').val('N/A');
+			$('#'+frm_id+' textarea').text('N/A');
 		}
 	}
 	function fn_generate_sa_control_number_view(){
@@ -885,6 +837,24 @@ $(document).ready(function(){
 		
 	});
 
+	$('#'+tbl_special_acceptance_disposition +' tbody').on('click', 'tr .fa-eye', function(){
+		var pkid = this.id;
+		var current_status 	= $(this).closest('tr').find('td:eq(0)').text();
+		$('#modal_sa_edit').modal('show');
+		$('#modal_sa_edit').data('id',pkid);
+		$('#tbl_approver_view tbody').empty();
+		$('#edit_btn_add_approver').prop('disabled',false);
+		$('#modal_sa_edit #container_upload_sa_message').hide();
+		fn_load_special_acceptance(pkid,'view',current_status);
+		fn_sa_hide_text_fields('frm_sa_edit','');
+	});
+	$('#'+tbl_special_acceptance_disposition +' tbody').on('click', 'tr .fa-edit', function(){
+		$('#modal_sa').data('id',this.id);
+		$('#modal_sa').modal({backdrop: 'static',
+		keyboard: false},'show');
+		fn_load_special_acceptance(this.id,'edit');
+	});
+	//omodify fa-edit
 	/*NOTE : fdisposition fetch all External and Internal Recipients  - PMI and Suppliers */
 	$('#'+tbl_special_acceptance_disposition+' tbody').on('click','tr .fa-send-o', function() {
 		fn_empty_sa_fields('frm_send_report_internal_sa');
@@ -1099,7 +1069,7 @@ $(document).ready(function(){
 			}
 		});
 	}
-	function fn_get_supplier_by_pkid(pkid) {
+	function fn_get_supplier_by_pkid(pkid,mode=null) {
 		var data = {
 			"action" 	: "get_supplier_by_pkid",
 			"pkid"		: pkid
@@ -1111,18 +1081,21 @@ $(document).ready(function(){
 			dataType: "json",
 			success: function (result) {
 				var supplier = result['supplier'];
-				assign_value_select2('#frm_send_report_internal_sa #supplier', supplier);
-		// /* get the email recipeients external group by the supplier*/
+				if( mode != null){
+					assign_value_select2('#frm_sa #supplier', supplier);
+					re_initialize_select2_server_side('#modal_sa #supplier','#modal_sa #frm_sa',[],"server_side_scripts/dropdown/qfr/dd_ng_supplier_list.php");
+					return;
+				}
+				assign_value_select2('#frm_send_report_internal_sa #supplier', supplier); 
+				/* get the email recipeients external group by the supplier*/
 				fn_get_supplier_email_address(result['supplier_name'], 'recipients_to', 'cmb_sa_send_external_to');
 				fn_get_supplier_email_address(result['supplier_name'], 'recipients_cc', 'cmb_sa_send_external_cc');
-		// /* get the email recipients internal */
+				/* get the email recipients internal */
 				fn_ng_load_email_recipients('cmb_sa_send_to','cmb_sa_send_cc'); 
-		/* get the supplier */
+				/* get the supplier */
 				re_initialize_select2_server_side('#modal_send_supplier_sa #supplier','#modal_send_supplier_sa #frm_send_report_internal_sa',[],"server_side_scripts/dropdown/qfr/dd_ng_supplier_list.php");
-		
-		/** Get the supplier for modal VIEW	*/
-				assign_value_select2('#frm_sa_edit #supplier', supplier);
-				re_initialize_select2_server_side('#modal_sa_edit #supplier','#modal_sa_edit #frm_sa_edit',[],"server_side_scripts/dropdown/qfr/dd_ng_supplier_list.php");
+				/** Get the supplier for modal VIEW	*/
+				
 			}
 		});
 	}

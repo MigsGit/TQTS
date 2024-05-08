@@ -253,27 +253,8 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 						<input type="text" class="form-control" id="" name="parts_affected_parts" required>
 					</div>
 					
-				
-					<!-- <div class="col-sm-2">
-						<label class="fa fa-md">Customer: </label>
-					</div>
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="" name="supplier" list="" readonly required>
-					</div> -->
-					<div class="col-sm-2">
-						<label class="fa fa-md">Fail Mode: </label>
-					</div>
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="" name="lot_number" list="">
-					</div>
 				</div>
 				<div class="row display-field-none deletedField">
-					<div class="col-sm-2">
-						<label class="fa fa-md">Problem: </label>
-					</div>
-					<div class="col-sm-4">
-						<input value="N/A" type="text" class="form-control" id="" name="problem_parts">
-					</div>
 					<div class="col-sm-2">
 							<label class="fa fa-md">Quantity: </label>
 						</div>
@@ -320,12 +301,6 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 						<input type="text" class="form-control" id="" name="device_name" required>
 					</div>
 					<div class="col-sm-2">
-						<label class="fa fa-md">Fail Mode: </label>
-					</div>
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="" name="problem_device">
-					</div>
-					<div class="col-sm-2">
 						<label class="fa fa-md">Parts Affected: </label>
 					</div>
 					<div class="col-sm-4">
@@ -366,7 +341,6 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 									</select>
 							</div>
 					</div>
-
 					<div class="col-sm-2">
 						<label class="fa fa-md">Other Details: </label>
 					</div>
@@ -531,6 +505,12 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 			</div>
 			<div class="row">
 				<div class="col-sm-2">
+					<label class="fa fa-md">SpecialAcceptanceId</label>
+				</div>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id="special_acceptance_id" name="special_acceptance_id" readonly>
+				</div>
+				<div class="col-sm-2">
 					<label class="fa fa-md">Category: </label>
 				</div>
 				<div class="col-sm-4">
@@ -545,12 +525,6 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 				</div>
 				<div class="col-sm-4">
 					<input type="text" class="form-control" id="txt_control_number" name="control_number"required readonly>
-				</div>
-				<div class="col-sm-2 deletedField">
-					<label class="fa fa-md">Choose File: </label>
-				</div>
-				<div class="col-sm-4 deletedField">
-					<input type="file" class="form-control" id="file_sa" name="file_sa" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
 				</div>
 			</div>
 			<div class="row">
@@ -568,53 +542,6 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 					<div class="col-sm-4">
 						<input type="text" class="form-control" id="" name="parts_affected_parts" required>
 					</div>
-					<div class="col-sm-2">
-						<label class="fa fa-md">Fail Mode: </label>
-					</div> 
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="" name="lot_number" list="">
-					</div>
-				
-				</div>
-				<div class="row display-field-none deletedField">
-					<div class="col-sm-2">
-							<label class="fa fa-md">Problem: </label>
-					</div>
-					<div class="col-sm-4">
-						<input value="N/A" type="text" class="form-control" id="" name="problem_parts">
-					</div>
-					<div class="col-sm-2">
-						<label class="fa fa-md">Drawing Number: </label>
-					</div>
-					<div class="col-sm-4">
-						<input value="N/A" type="text" class="form-control" id="" name="drawing_number">
-					</div>
-					<div class="col-sm-2">
-						<label class="fa fa-md">Quantity: </label>
-					</div>
-					<div class="col-sm-4">
-						<input value="0" type="number" class="form-control" id="" name="quantity">
-					</div>
-
-					<div class="col-sm-2">
-						<label class="fa fa-md">Product Supplier Name: </label>
-					</div>
-					<div class="col-sm-4">
-						<input value="N/A" type="text" class="form-control" id="" name="customer_name">
-					</div>
-					<div class="col-sm-2">
-						<label class="fa fa-md">Shipment Date: </label>
-					</div>
-					<div class="col-sm-4">
-						<input type="date" class="form-control" id="" name="shipment_date">
-					</div>
-					<div class="col-sm-2">
-						<label class="fa fa-md">Affected Qty: </label>
-					</div>
-					<div class="col-sm-4">
-						<input type="number" class="form-control" id="" name="affected_quantity">
-					</div>
-					
 				</div>
 				<div id="container_device">
 					<div class="col-sm-2">
@@ -637,20 +564,38 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 						<input type="text" class="form-control" id="" name="device_name" required>
 					</div>
 					<div class="col-sm-2">
-						<label class="fa fa-md">Fail Mode: </label>
-					</div>
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="" name="problem_device">
-					</div>
-					<div class="col-sm-2">
 						<label class="fa fa-md">Parts Affected: </label>
 					</div>
 					<div class="col-sm-4">
 						<input type="text" class="form-control" id="" name="parts_affected_device">
 					</div>
 				</div>
-              </div>
-			  <div class="row">
+            </div>
+
+			<!-- DELETED FIELDS -->
+			<div class="col-sm-2 deletedField">
+				<label class="fa fa-md">Choose File: </label>
+			</div>
+			<div class="col-sm-4 deletedField">
+				<input type="file" class="form-control" id="file_sa" name="file_sa" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+			</div>
+			<div class="row" id="global_input_field">
+					<div class="col-sm-2">
+						<label class="fa fa-md">Fail Mode: </label>
+					</div>
+					<div class="col-sm-4">
+						<input type="text" class="form-control" id="problem" name="problem" list="">
+					</div>
+					<div class="col-sm-2">
+						<label class="fa fa-md">Factory Location: </label>
+					</div>
+					<div class="col-sm-4">
+						<select type="text" class="form-control" id="factory_location" name="factory_location">
+							<option value="" disabled>--Select--</option>
+							<option value="Cabuyao" >Cabuyao</option>
+							<option value="Malvar" >Malvar</option>
+						</select>
+					</div>
 					<div class="col-sm-2">
 						<label class="fa fa-md">Date Issued: </label>
 					</div> 
@@ -664,7 +609,6 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 						<select class="" id="supplier" name="supplier" style="width:100%;" required>
 						</select>
 					</div>
-					
 					<div class="container_checked_by_qc" style = "display:none;">
 						<div class="col-sm-2">
 							<label class="fa fa-md">Checked by QC:</label>
@@ -673,97 +617,128 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 							<select class="form-control" id="txt_judged_by_qc" name="judged_by_qc[]" style="width:100%;" multiple = "multiple"></select>
 						</div>
 					</div>
-			  </div>
-				<div class="row">
-					
-					<div id="container_approver_name" class="deletedField">
-						<div class="col-sm-2">
-								<label class="fa fa-md">Checked /Approved by: </label>
-						</div>	
-						<div class="col-sm-10" style="padding-top:5px;">
-								<select class="form-control" name="judged_by_approver[]" id="judged_by_approver" style="width:100%;" multiple="multiple"> 
-								</select>
-						</div>
-					</div>
-					<div class="col-sm-12">
-						<label class="fa fa-md">Immediate Action: </label>
-					</div>
-					<div class="col-sm-6" style="padding-top:5px;">
-						<textarea class="form-control" id="txt_immediate_action" name="immediate_action"></textarea>
-					</div>
-					<div class="col-sm-2">
-						<label class="fa fa-md">Due Date/ICP: </label>
-					</div> 
-					<div class="col-sm-4">
-						<input type="date" class="form-control" id="txt_immediate_action_due_date" name="immediate_action_due_date" >
-					</div>
-					<div class="col-sm-12">
-						<label class="fa fa-md">Permanent Action: </label>
-					</div>
-					<div class="col-sm-6" style="padding-top:5px;">
-						<textarea class="form-control" id="txt_permanent_action name="permanent_action></textarea>
-					</div>
-					<div class="col-sm-2">
-						<label class="fa fa-md">Due Date/ICP: </label>
-					</div>
-					<div class="col-sm-4">
-						<input type="date" class="form-control" id="txt_permanent_action_due_date" name="permanent_action_due_date" >
-					</div> 
-					<div class="col-sm-12">
-						<label class="fa fa-md">Other Details: </label>
-					</div>
-					<div class="col-sm-12" style="padding-top:5px;">
-						<textarea class="form-control" name="other_details"></textarea>
-					</div>
-					<div id="container_main_approver_name" class="deletedField">
-						<fieldset class="form-control" style="border-color: #D3D3D3;">
-							<legend style="font-size: 15px; color: #FF8C00">
-								<strong>APPROVAL</strong>
-							</legend>
-						</fieldset>
-						<div class="col-sm-11 col-sm-offset-10 deletedField">
-							<button class = "btn-success fa fa-plus" id="btn_add_approver" style = "padding:5px;">Add Approvers</button>
-						</div>
-						<table class="table table-condensed table-bordered dataTable no-footer" id = "tbl_approver">
-							<thead>
-								<tr>
-									<th>Order No.</th>
-									<th>Approver's Name</th>
-									<th>Column</th>
-									<th>Row</th>
-									<th> <span class="fa fa-cogs"></span> </th>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-							
-						</table>
-					</div>
+			</div>
+			<div class="row display-field-none deletedField">
+				<div class="col-sm-2">
+					<label class="fa fa-md">Drawing Number: </label>
 				</div>
-				<div class="row" id="container_disposition">
-					<div class="col-sm-2">
-						<label class="fa fa-md">Judgement Application: </label>
-					</div>
-					<div class="col-sm-4">
-						<select class="form-control" name="judgement_application" required>
-							<option value=""></option>
-							<option value="All incoming Parts">All incoming Parts</option>
-							<option value="All incoming P.O.">All incoming P.O.</option>
-							<option value="Specific Parts Lot no.">Specific Parts Lot no.</option>
-							<option value="Specific Product P.O. no.">Specific Product P.O. no.</option>
-							<option value="Others">Others, please specify</option>
-						</select>
-					</div>
-					<div class="col-sm-2">
-						<label class="fa fa-md">Remarks: </label>
-					</div>
-					<div class="col-sm-10">
-						<textarea class="form-control" id="" name="notations_remarks"></textarea>
-					</div>
+				<div class="col-sm-4">
+					<input value="N/A" type="text" class="form-control" id="" name="drawing_number">
 				</div>
-				<div class="row">
+				<div class="col-sm-2">
+					<label class="fa fa-md">Quantity: </label>
+				</div>
+				<div class="col-sm-4">
+					<input value="0" type="number" class="form-control" id="" name="quantity">
+				</div>
+				<div class="col-sm-2">
+					<label class="fa fa-md">Product Supplier Name: </label>
+				</div>
+				<div class="col-sm-4">
+					<input value="N/A" type="text" class="form-control" id="" name="customer_name">
+				</div>
+				<div class="col-sm-2">
+					<label class="fa fa-md">Shipment Date: </label>
+				</div>
+				<div class="col-sm-4">
+					<input type="date" class="form-control" id="" name="shipment_date">
+				</div>
+				<div class="col-sm-2">
+					<label class="fa fa-md">Affected Qty: </label>
+				</div>
+				<div class="col-sm-4">
+					<input type="number" class="form-control" id="" name="affected_quantity">
+				</div>
 				
+			</div>
+			<div class="row">
+				<div id="container_approver_name" class="deletedField">
+					<div class="col-sm-2">
+							<label class="fa fa-md">Checked /Approved by: </label>
+					</div>	
+					<div class="col-sm-10" style="padding-top:5px;">
+							<select class="form-control" name="judged_by_approver[]" id="judged_by_approver" style="width:100%;" multiple="multiple"> 
+							</select>
+					</div>
 				</div>
+				<div class="col-sm-12">
+					<label class="fa fa-md">Immediate Action: </label>
+				</div>
+				<div class="col-sm-6" style="padding-top:5px;">
+					<textarea class="form-control" id="txt_immediate_action" name="immediate_action"></textarea>
+				</div>
+				<div class="col-sm-2">
+					<label class="fa fa-md">Due Date/ICP: </label>
+				</div> 
+				<div class="col-sm-4">
+					<input type="date" class="form-control" id="txt_immediate_action_due_date" name="immediate_action_due_date" >
+				</div>
+				<div class="col-sm-12">
+					<label class="fa fa-md">Permanent Action: </label>
+				</div>
+				<div class="col-sm-6" style="padding-top:5px;">
+					<textarea class="form-control" id="txt_permanent_action" name="permanent_action"></textarea>
+				</div>
+				<div class="col-sm-2">
+					<label class="fa fa-md">Due Date/ICP: </label>
+				</div>
+				<div class="col-sm-4">
+					<input type="date" class="form-control" id="txt_permanent_action_due_date" name="permanent_action_due_date" >
+				</div> 
+				<div class="col-sm-12">
+					<label class="fa fa-md">Other Details: </label>
+				</div>
+				<div class="col-sm-12" style="padding-top:5px;">
+					<textarea class="form-control" name="other_details"></textarea>
+				</div>
+				<div id="container_main_approver_name" class="deletedField">
+					<fieldset class="form-control" style="border-color: #D3D3D3;">
+						<legend style="font-size: 15px; color: #FF8C00">
+							<strong>APPROVAL</strong>
+						</legend>
+					</fieldset>
+					<div class="col-sm-11 col-sm-offset-10 deletedField">
+						<button class = "btn-success fa fa-plus" id="btn_add_approver" style = "padding:5px;">Add Approvers</button>
+					</div>
+					<table class="table table-condensed table-bordered dataTable no-footer" id = "tbl_approver">
+						<thead>
+							<tr>
+								<th>Order No.</th>
+								<th>Approver's Name</th>
+								<th>Column</th>
+								<th>Row</th>
+								<th> <span class="fa fa-cogs"></span> </th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+						
+					</table>
+				</div>
+			</div>
+			<div class="row" id="container_disposition">
+				<div class="col-sm-2">
+					<label class="fa fa-md">Judgement Application: </label>
+				</div>
+				<div class="col-sm-4">
+					<select class="form-control" name="judgement_application" >
+						<option value=""></option>
+						<option value="All incoming Parts">All incoming Parts</option>
+						<option value="All incoming P.O.">All incoming P.O.</option>
+						<option value="Specific Parts Lot no.">Specific Parts Lot no.</option>
+						<option value="Specific Product P.O. no.">Specific Product P.O. no.</option>
+						<option value="Others">Others, please specify</option>
+					</select>
+				</div>
+				<div class="col-sm-2">
+					<label class="fa fa-md">Remarks: </label>
+				</div>
+				<div class="col-sm-10">
+					<textarea class="form-control" id="" name="notations_remarks"></textarea>
+				</div>
+			</div>
+			<div class="row">
+			</div>
 		   </div>
 		  <div class="modal-footer">
 			<button type="submit" class="btn btn-primary fa fa-save"> Save</button>
