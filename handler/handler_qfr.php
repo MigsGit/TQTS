@@ -2,6 +2,7 @@
 	ini_set('display_errors', 1);
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
+	use HandlerQfr;
 	
 	include('common_function.php');
 	if(is_ajax()) {
@@ -607,7 +608,6 @@
 			$return['po_number'] 			= $row['po_number'];
 			$return['po_qty'] 				= $row['po_qty'];
 			$return['customer_name'] 		= $row['customer_name'];
-			$return['status'] 				= $row['status'];
 			$return['lastupdate'] 			= $row['lastupdate'];
 			$return['created_by'] 			= $row['created_by'];
 			$return['username'] 			= $row['username'];
@@ -619,6 +619,8 @@
 			$return['permanent_action'] 			= $row['permanent_action'];
 			$return['permanent_action_due_date'] 	= $row['permanent_action_due_date'];
 			$return['other_details'] 	= $row['other_details'];
+
+			$return['status'] 				= HandlerQfr::getInstance()->getSarStatusByCode($row['status']);
 		}
 		echo json_encode($return);
 	}
@@ -675,31 +677,43 @@
 			$return 		= $_POST;
 			$date_time_today = date('Y-m-d H:i:s');
 			$special_acceptance_id =  $return['special_acceptance_id'];
+			$field_data 	= get_fields_values($_POST,array('action','pkid','upload_type','control_number','special_acceptance_id'));
+			$array_fields   = $field_data['array_fields'];
+			$array_values   = $field_data['array_values'];
+			$table			= 'tbl_qfr_special_acceptance';
 
-			if($special_acceptance_id == ""){
-				echo 'true';
+			if($special_acceptance_id == ""){ //ADD
 				$username = $return ['username'];
 				$control_number = generate_sa_control_number(date('Y-m-d'),$return['username']);
 				/* get field data from post */
-				$field_data 	= get_fields_values($_POST,array('action','pkid','upload_type','control_number'));
-				$table			= 'tbl_qfr_special_acceptance';
-				$array_fields   = $field_data['array_fields'];
-				$array_values   = $field_data['array_values'];
 				/* add additional fields */
 				$array_fields[]	= 'lastupdate'; 	$array_values[] = date('Y-m-d H:i:s');
 				$array_fields[]	= 'created_by'; 	$array_values[] = $_POST['username'];
 				$array_fields[]	= 'date_created'; 	$array_values[] = date('Y-m-d H:i:s');
 				$array_fields[]	= 'control_number'; $array_values[] = $control_number;
-				// $pkid 			= TQTS::getInstance()->insert_query_id($table,$array_fields,$array_values);
-				$script 			= TQTS::getInstance()->insert_query_script($table,$array_fields,$array_values);
+				$script 		= TQTS::getInstance()->insert_query_script($table,$array_fields,$array_values);
+				$pkid 			= TQTS::getInstance()->insert_query_id($table,$array_fields,$array_values);
 				
-				/* get the executed script - used for testing */
-				echo json_encode($return);
-			}else{
-				echo 'false';
+			}else{ //EDIT
+				/* add blanks to undefined or empty values */
+				foreach($array_fields as $key => $value){
+					if(!isset($return[$value]) || $return[$value] == ""){
+						$return[$value] = "";
+					}
+				}
+				$where 			= "WHERE pkid = '$special_acceptance_id'";
+				$result 		= TQTS::getInstance()->update_query_detailed_script($table,$array_fields,$array_values,$where);
+				$script 		= TQTS::getInstance()->update_query_detailed($table,$array_fields,$array_values,$where);
 			}
+			$reponse = array();
+			$reponse['is_success'] = 'true';
+			$reponse['message'] = 'Save Succefully';
+			echo json_encode($reponse);
 		} catch (\Throwable $th) {
-			throw $th;
+			$reponse['is_success'] = 'false';
+			$reponse['message'] = $th;
+			echo json_encode($reponse);
+			// throw $th;
 		}
 		
 	}
@@ -711,45 +725,18 @@
 		$pkid			= $return['pkid'];
 		$username = $return ['username'];
 		$table			= 'tbl_qfr_special_acceptance';
-		$array_fields 	= array(
-								'category','parts_affected_parts','part_code',
-								'problem_parts','supplier','lot_number',
-								'quantity','device_name','problem_device',
-								'parts_affected_device','po_number','po_qty',
-								'affected_quantity','customer_name','shipment_date',
-								'drawing_number','other_details','lastupdate','status'
-								);
-		if($return['category'] == 'Parts'){
-			$return['po_number']				= '';
-			$return['po_qty']					= '';
-			$return['device_name']				= '';
-			$return['problem_device']			= '';
-			$return['affected_quantity']		= '';
-			$return['parts_affected_device']	= '';
-			$return['customer_name']			= '';
-			$return['shipment_date']			= '';
-			
-		}else{
-			$return['partcode']					= '';
-			$return['parts_affected_parts']     = '';
-			$return['problem_parts']			= '';
-			$return['lot_number']				= '';
-			$return['quantity']					= '';
-		}
+	
 		/* add blanks to undefined or empty values */
 		foreach($array_fields as $key => $value){
 			if(!isset($return[$value]) || $return[$value] == ""){
 				$return[$value] = "";
 			}
 		}
-		$array_values	= array(
-								$return['category'],$return['parts_affected_parts'],$return['part_code'],
-								$return['problem_parts'],$return['supplier'],$return['lot_number'],
-								$return['quantity'],$return['device_name'],$return['problem_device'],
-								$return['parts_affected_device'],$return['po_number'],$return['po_qty'],
-								$return['affected_quantity'],$return['customer_name'],$return['shipment_date'],
-								$return['drawing_number'],$return['other_details'],date('Y-m-d H:i:s'),1
-								);
+
+		$field_data 	= get_fields_values($_POST,array('action','pkid','upload_type','control_number'));
+		$array_fields   = $field_data['array_fields'];
+		$array_values   = $field_data['array_values'];
+
 		$where 			= "WHERE pkid = '$pkid'";
 		
 		$result 			= TQTS::getInstance()->update_query_detailed($table,$array_fields,$array_values,$where);
@@ -3254,5 +3241,52 @@
 		$return['change_status'] = change_status($new_status,$fkid);
 
 		echo json_encode($return);
+	}
+
+	class HandlerQfr{
+
+		private static $instance = null;
+	
+		public static function getInstance() {
+			if(!self::$instance instanceof self) 
+			{
+				self::$instance = new self;
+			}
+			return self::$instance;
+		}
+
+		public function getSarStatusByCode($status_code){
+			switch ($status_code) {
+				case 1:
+					# code...
+					$badge = '<span class="badge highlight-color-blue">FOR DISPOSITION</span>';
+					break;
+				default:
+					$badge = '<span class="badge">Unknown Status</span>';
+					break;
+			}
+			return $badge;
+			// if(status == "1"){
+			// 	$('#frm_sa #badge_status').text('FOR DISPOSITION');
+			// 	$('#frm_sa #badge_status').attr('class','badge highlight-color-blue');
+			// }else if(status == "4"){
+			// 	$('#frm_sa #badge_status').text('FOR APPROVAL');
+			// 	$('#frm_sa #badge_status').attr('class','badge highlight-color-lime');
+			// }
+			// else if(status == "2"){
+			// 	$('#frm_sa #badge_status').text('DISAPPROVED');
+			// 	$('#frm_sa #badge_status').attr('class','badge highlight-color-red');
+			// }
+			// else if(status == "5"){
+			// 	$('#frm_sa #badge_status').text('WAITING FOR DISPOSITION');
+			// 	$('#frm_sa #badge_status').attr('class','badge highlight-color-lime');
+			// }else if(status == "8"){
+			// 	$('#frm_sa #badge_status').text('CANCELLED');
+			// 	$('#frm_sa #badge_status').attr('class','badge highlight-color-red');
+			// }else{
+			// 	$('#frm_sa #badge_status').text('Unknown Status');
+			// 	$('#frm_sa #badge_status').attr('class','badge');
+			// }
+		}
 	}
 ?>

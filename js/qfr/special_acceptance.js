@@ -440,13 +440,20 @@ $(document).ready(function(){
 			processData:false,        		// To send DOMDocument or non processed data file it is set to false
 			success: function(result){  	// A function to be called if request succeeds
 				/* $('#modal_sa #supplier').val(null).trigger('change');*/
-				$('#modal_sa #judged_by_approver').val(null).trigger('change');
-				$('.modal').modal('hide');
-				dt_special_acceptance.draw();
-				dt_special_acceptance_disposition.draw();
-				dt_special_acceptance_with_treatment.draw();
-				notif_success('Saved Successfully !');
+			
+				if( result.is_success === 'true'){
+					console.log(result.message); //omodify
+					notif_success(result.message);
+					$('#modal_sa #judged_by_approver').val(null).trigger('change');
+					$('#modal_sa').modal('hide');
+					dt_special_acceptance.draw();
+					dt_special_acceptance_disposition.draw();
+					dt_special_acceptance_with_treatment.draw();
+					notif_success('Saved Successfully !');
+				}
+				
 			},error	: function(result){
+
 			}
 		});
 	}
@@ -529,27 +536,8 @@ $(document).ready(function(){
 			$('#modal_for_qc_checking #pkid, #modal_for_qc_checking #frm_sa_for_qc_checking').val(result['pkid']);
 		
 			var status = result['status']; 
-			if(status == "1"){
-				$('#frm_sa #badge_status').text('FOR DISPOSITION');
-				$('#frm_sa #badge_status').attr('class','badge highlight-color-blue');
-			}else if(status == "4"){
-				$('#frm_sa #badge_status').text('FOR APPROVAL');
-				$('#frm_sa #badge_status').attr('class','badge highlight-color-lime');
-			}
-			else if(status == "2"){
-				$('#frm_sa #badge_status').text('DISAPPROVED');
-				$('#frm_sa #badge_status').attr('class','badge highlight-color-red');
-			}
-			else if(status == "5"){
-				$('#frm_sa #badge_status').text('WAITING FOR DISPOSITION');
-				$('#frm_sa #badge_status').attr('class','badge highlight-color-lime');
-			}else if(status == "8"){
-				$('#frm_sa #badge_status').text('CANCELLED');
-				$('#frm_sa #badge_status').attr('class','badge highlight-color-red');
-			}else{
-				$('#frm_sa #badge_status').text('Unknown Status');
-				$('#frm_sa #badge_status').attr('class','badge');
-			}
+			console.log(result['status']);
+			$('#frm_sa #badge_status').html(result['status']);
 			$('#frm_sa').find('[name="special_acceptance_id"]').val(pkid);
 		
 			$('#frm_sa').find('[name="control_number"]').val(result['control_number']);
@@ -854,7 +842,6 @@ $(document).ready(function(){
 		keyboard: false},'show');
 		fn_load_special_acceptance(this.id,'edit');
 	});
-	//omodify fa-edit
 	/*NOTE : fdisposition fetch all External and Internal Recipients  - PMI and Suppliers */
 	$('#'+tbl_special_acceptance_disposition+' tbody').on('click','tr .fa-send-o', function() {
 		fn_empty_sa_fields('frm_send_report_internal_sa');

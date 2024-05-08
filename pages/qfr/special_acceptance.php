@@ -208,7 +208,7 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 					<label class="fa fa-md">Status: </label>
 				</div>
 				<div class="col-sm-4">
-					<span class="badge" id="badge_status"></span>
+					<div id="badge_status"></div>
 				</div>
 				<div class="col-sm-2">
 					<label class="fa fa-md">Control #: </label>
@@ -509,7 +509,15 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 				</div>
 				<div class="col-sm-4">
 					<input type="text" class="form-control" id="special_acceptance_id" name="special_acceptance_id" readonly>
+				</div> 
+				<div class="col-sm-2">
+					<label class="fa fa-md">Status: </label>
 				</div>
+				<div class="col-sm-4">
+					<div id="badge_status"></div>
+				</div>
+			</div>
+			<div class="row">
 				<div class="col-sm-2">
 					<label class="fa fa-md">Category: </label>
 				</div>
