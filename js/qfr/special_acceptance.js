@@ -73,29 +73,7 @@ var tbl_special_acceptance_with_treatment ='tbl_special_acceptance_with_treatmen
 var tbl_special_acceptance_approval = 'tbl_special_acceptance_approval';
 $(document).ready(function(){
 
-	function fn_validate_qc_supervisor(){ //modifynow active the Checked by QC select
-		var data ={
-			'action' 	: 'validate_qc_supervisor',
-			'username'	: username
-		};
-		call_ajax(data,handler_qfr,function(result){
-			// if(result['department'] == "ENGG"){
-			// 	$('#frm_sa #txt_judged_by_qc').prop('required',true);
-			// 	$('#frm_sa .container_checked_by_qc').show();
-			// 	$('#frm_sa_edit #txt_judged_by_qc').prop('required',true);
-			// 	$('#frm_sa_edit .container_checked_by_qc').show();
-			// }else{
-			// 	$('#frm_sa .container_checked_by_qc').hide();
-			// 	$('#frm_sa #txt_judged_by_qc').prop('required',false);
-			// 	$('#frm_sa_edit .container_checked_by_qc').hide();
-			// 	$('#frm_sa_edit #txt_judged_by_qc').prop('required',false);
-			// }
-			$('#frm_sa .container_checked_by_qc').hide();
-			$('#frm_sa #txt_judged_by_qc').prop('required',false);
-			$('#frm_sa_edit .container_checked_by_qc').hide();
-			$('#frm_sa_edit #txt_judged_by_qc').prop('required',false);
-		});
-	}
+	
 	var dt_special_acceptance = $('#tbl_special_acceptance').DataTable({
 		"aaSorting"	: [],
 		"bProcessing": true,
@@ -129,14 +107,11 @@ $(document).ready(function(){
 		$('#modal_sa_edit #is_replace_file_closed').show(); //nmodify
 		$('#edit_btn_add_approver').prop('disabled',false);
 		$('#modal_sa_edit #container_upload_sa_message').hide();
-		$('#frm_sa_edit #container_upload_sa_reminder').show();
 		var html ;
 			html = '<h4>Updating the details or Re-uploading of file  will reset the approval history (from approved to pending).';
 			html += ' Please always save your report.</h4>';
 		$('#container_upload_sa_message').empty().append(html);
 		$('#container_upload_sa_message').show();
-		fn_validate_qc_supervisor();//modifynow
-		fn_sa_hide_text_fields('frm_sa_edit','');
 		fn_load_special_acceptance(this.id,'edit');
 	});
 	$('#tbl_special_acceptance tbody').on('click', 'tr .fa-plus', function(){
@@ -145,7 +120,6 @@ $(document).ready(function(){
 		$('#modal_sa_edit').modal({backdrop: 'static',
 		keyboard: false},'show');
 		fn_load_special_acceptance(pkid,'view');
-		fn_sa_hide_text_fields('frm_sa_edit','');
 	});
 	$('#tbl_special_acceptance tbody').on('click', 'tr .fa-refresh', function(){
 		var pkid = this.id;
@@ -191,7 +165,6 @@ $(document).ready(function(){
 		$('#edit_btn_add_approver').prop('disabled',false);
 		$('#modal_sa_edit #container_upload_sa_message').hide();
 		fn_load_special_acceptance(pkid,'view',current_status);
-		fn_sa_hide_text_fields('frm_sa_edit','');
 	});
 	$('#tbl_special_acceptance tbody').on('click', 'tr a#a_download_excel', function(){
 		var pkid = $(this).data('id');
@@ -207,16 +180,7 @@ $(document).ready(function(){
 
 
 
-	$('#frm_sa_edit a[id="uploaded_file').click(function () { 
-		var pkid = $(this).data('id');
-		// var file_name = $(this).data('file_name');
-		window.location.href = "reports/excel_qfr_sa_common_download.php?id="+pkid; //newcommon
-
-	});
-	$('#frm_sa_edit select[name="category"]').change(function(){
-		var category = $(this).val();
-		fn_sa_hide_text_fields('frm_sa_edit',category);
-	});
+	
 	$('#frm_sa select[name="category"]').change(function(){
 		var category = $(this).val();
 		fn_sa_hide_text_fields('frm_sa',category);
@@ -227,7 +191,6 @@ $(document).ready(function(){
 	$('#btn_sa').click(function(){
 		row_count = 1;
 		fn_empty_sa_fields('frm_sa');
-		fn_validate_qc_supervisor();
 		fn_generate_sa_control_number_view();
 		re_initialize_select2_server_side('#modal_sa #supplier','#modal_sa #frm_sa',[],"server_side_scripts/dropdown/qfr/dd_ng_supplier_list.php");
 		$('#modal_sa').data('id',0);
@@ -236,59 +199,7 @@ $(document).ready(function(){
 		keyboard: false},'show');
 	});
 
-	$('#frm_sa_edit input[name="po_number"]').keyup(function(e){
-		var key = e.which;
-		if(key == 38 || key == 40){
-			return false;
-		}
-		var pattern = $(this).val();
-		fn_get_po_list(pattern,'list_sa_po');
-	});
-	$('#frm_sa_edit  input[name="po_number"]').change(function(e){
-		var po_number = $(this).val();
-		console.log(po_number);
-		var array_fields = [
-			'input[name="device_name"]',
-			'input[name="po_qty"]',
-			'input[name="drawing_number"]',
-			'input[name="customer_name"]'
-		]
-		fn_get_po_details(po_number,'frm_sa_edit',array_fields);
-	});
-	$('#frm_sa input[name="po_number"]').keyup(function(e){
-		var key = e.which;
-		if(key == 38 || key == 40){
-			return false;
-		}
-		var pattern = $(this).val();
-		fn_get_po_list(pattern,'list_sa_po');
-	});
-	$('#frm_sa input[name="po_number"]').change(function(e){
-		var po_number = $(this).val();
-		console.log(po_number);
-
-		var array_fields = [
-			'input[name="device_name"]',
-			'input[name="po_qty"]',
-			'input[name="drawing_number"]',
-			'input[name="customer_name"]'
-		]
-		fn_get_po_details(po_number,'frm_sa',array_fields);
-	});
-	$('#frm_sa_edit input[name="part_code"]').keyup(function(e){
-		var key = e.which;
-		if(key == 38 || key == 40){
-			return false;
-		}
-		var pattern = $(this).val();
-		fn_get_partcode_list(pattern,'list_sa_part_code');
-	});
 	
-
-	$('#frm_sa_edit input[name="part_code"]').change(function(e){
-		var code = $(this).val();
-		fn_get_partname(code,'frm_sa_edit');
-	});
 	$('#frm_sa input[name="part_code"]').keyup(function(e){
 		var key = e.which;
 		if(key == 38 || key == 40){
@@ -319,52 +230,7 @@ $(document).ready(function(){
 		$('.btn').prop("disabled",false);
 	});
 
-	/** replace file if the button click */
-	$('#frm_sa_edit #replace_file').click(function(){
-		$('#modal_sa_replace_file').modal('show');
-	});
-	$('#frm_sa_replace_file').submit(function(e){
-		e.preventDefault();
-		$('#tbl_approver_view tbody').empty();
-		var form_data = new FormData(this);
-			form_data.append("action","replace_sa_file");
-			form_data.append("attachment_pkid",$('#modal_sa_edit').data('id'));
-			form_data.append("username",username);
-			fn_sa_replace_file(form_data);
-	});
-	$('#frm_sa_edit').submit(function(e){
-		e.preventDefault();
-		$(this).find('input').prop('disabled',false);
-		$(this).find('select').prop('disabled',false);
-		$(this).find('textarea').prop('disabled',false);
-		var form_data = new FormData(this);
-		
-		form_data.append("action","edit_special_acceptance");
-		form_data.append("pkid",$('#modal_sa_edit').data('id'));
-		form_data.append("username",username);
-		fn_edit_special_acceptance(form_data);
-		
-	});
-	container_approver_message = $('#frm_sa_approvers_decisions #container_approver_messages');
-	// container_approver_message = $('#frm_ng_approvers_decisions #container_approver_messages');
-	$('#frm_sa_edit .fa-thumbs-o-up').click(function(e) {
-		e.preventDefault();
-		container_approver_message.attr('class','alert alert-success');
-		container_approver_message.html('Are you sure you want to approve the request?<br><br>Remarks:<textarea name="remarks" style="width:100%;" rows="4"></textarea>');
-		// container_approver_message.html('Are you sure you want to approve the request?<br><br>'+
-		// 'Review result/decision:<textarea name="remarks" style="width:100%;" rows="4"></textarea>');
-		container_approver_message.show();
-		$('#modal_approver_messages').modal('show');
-	});
-	$('#frm_sa_edit .fa-thumbs-o-down').click(function(e) {
-		e.preventDefault();
-		container_approver_message.attr('class','alert alert-danger');
-		container_approver_message.html('Are you sure you want to disapprove the request?<br><br>Remarks:<textarea name="remarks" style="width:100%;" rows="4" required></textarea>');
-		// container_approver_message.html('Are you sure you want to disapprove the request?<br><br>'+
-		// 'Remarks:<textarea name="remarks" style="width:100%;" rows="4" required></textarea>');
-		container_approver_message.show();
-		$('#modal_approver_messages').modal('show');
-	});
+	
 
 	$('#frm_sa_approvers_decisions').on('submit', function(e) {
 		e.preventDefault();
@@ -386,26 +252,7 @@ $(document).ready(function(){
 
 	/* NOTE : fdecision */
 	decisions_container_approver_message = $('#frm_sa_main_approvers_decisions #container_approver_messages');
-	$('#frm_sa_edit .main_approve').click(function(e) {
-		e.preventDefault();
-		decisions_container_approver_message.attr('class','alert alert-success');
-		decisions_container_approver_message.html('Are you sure you want to approve the request?<br><br>'+
-		' Review result/decision: <select class="form-control" name="remarks" style="width:100%;" rows="4" required>'+
-		'<option value="" selected disabled>-Select-</option> '+
-		'<option value="No need QAD approval">No need QAD approval</option> '+
-		'<option value="No need YEC approval">No need YEC approval</option> '+
-		'<option value="NEED YEC/Customer approval">NEED YEC/Customer approval</option> '+
-		'</select>');
-		decisions_container_approver_message.show();
-		$('#modal_main_approver_messages').modal('show');
-	});
-	$('#frm_sa_edit .main_disapprove').click(function(e) {
-		e.preventDefault();
-		decisions_container_approver_message.attr('class','alert alert-danger');
-		decisions_container_approver_message.html('Are you sure you want to disapprove the request?<br><br>Remarks:<textarea name="remarks" style="width:100%;" rows="4" required></textarea>');
-		decisions_container_approver_message.show();
-		$('#modal_main_approver_messages').modal('show');
-	});
+	
 	$('#frm_sa_main_approvers_decisions').on('submit', function(e) {
 		e.preventDefault();
 		pkid= this.id;
@@ -707,43 +554,7 @@ $(document).ready(function(){
 		});
 	}
 
-	function fnValidateIsApprover(pkid,current_status){ //fviews
-		data = {'action' : 'validate_is_approver', 
-		 		'pkid' : pkid ,
-				'username' : username
-		};
-		data= $.param(data);
-		$.ajax({
-			type: "POST",
-			url: handler_qfr,
-			data: data,
-			dataType: "json",
-			success: function (result) {
-				let is_approver = result['is_approver'];
-				/*  */
-				if(current_status == 'FOR CHECKING' && is_approver == 1){
-					setTimeout(function(){
-						$('#frm_sa_edit #tbl_main_approver_sa_view').hide(10);
-						$('#frm_sa_edit  #btn_sa_main_approve').hide(10);
-						$('#frm_sa_edit  #btn_sa_main_disapprove').hide(10);
-						$('#frm_sa_edit #tbl_approver_ng_view').show(10);
-						$('#frm_sa_edit #btn_ng_approve').show(10);
-						$('#frm_sa_edit  #btn_ng_disapprove').show(10);
-					},0);
-				}else if(current_status == 'FOR CHECKING' && is_approver == 0) {
-					setTimeout(function(){
-						$('#frm_sa_edit #tbl_main_approver_sa_view').hide(10);
-						$('#frm_sa_edit  #btn_sa_main_approve').hide(10);
-						$('#frm_sa_edit  #btn_sa_main_disapprove').hide(10);
-						$('#frm_sa_edit #tbl_approver_ng_view').show(10);
-					},0);
-				}else if(current_status =='FOR APPROVAL') {
-					/* if the status is checked - the table display would be for 4 approvers,*/
-					$('#frm_sa_edit #tbl_main_approver_sa_view').show(10);
-				}
-			}
-		});
-	}
+	
 	
 	function getApproverDecision(serialized_data){
 		$.ajax({
@@ -826,7 +637,6 @@ $(document).ready(function(){
 		$('#edit_btn_add_approver').prop('disabled',false);
 		$('#modal_sa_edit #container_upload_sa_message').hide();
 		fn_load_special_acceptance(pkid,'view',current_status);
-		fn_sa_hide_text_fields('frm_sa_edit','');
 	});
 	$('#'+tbl_special_acceptance_disposition +' tbody').on('click', 'tr .fa-edit', function(){
 		$('#modal_sa').data('id',this.id);
@@ -864,15 +674,7 @@ $(document).ready(function(){
 		var status = $(this).val();
 		fn_disposition_fields(status,'frm_sa_add_disposition');
 	});
-	$('#frm_sa_edit_disposition #status').click(function (e) { 
-		e.preventDefault();
-		var status = $(this).val();
-		fn_disposition_fields(status,'frm_sa_edit_disposition');
-	});
-	$('#frm_sa_edit_disposition #fa_paperclip').click(function (e) {
-		var id = $('#frm_sa_edit_disposition #pkid').val();
-		window.location.href = "reports/excel_qfr_sa_for_disposition_download.php?id="+id;
-	});
+	
 	$('#frm_send_report_internal_sa #supplier').change(function() {
 		fn_get_supplier_email_address($(this).val(), 'recipients_to', 'cmb_sa_send_external_to');
 		fn_get_supplier_email_address($(this).val(), 'recipients_cc', 'cmb_sa_send_external_cc');
@@ -922,18 +724,7 @@ $(document).ready(function(){
 			notif_success('Saved Successfully');
 		});
 	});
-	$('#frm_sa_edit_disposition').submit(function (e) { 
-		e.preventDefault();
-		var serialized_data = new FormData(this);
-		serialized_data.append("action","update_sa_disposition");
-		call_ajax_attachment(serialized_data,handler_qfr,function(result){
-			$('#modal_sa_edit_disposition').modal('hide');
-			dt_special_acceptance_disposition.draw();
-			dt_special_acceptance_with_treatment.draw();
-			notif_success('Edit Successfully');
-		});
-		
-	});
+	
 	/** 
 	 * 	FOR DISPOSITION FUNCTION
 	 * function fn_disposition_fields
@@ -1164,10 +955,7 @@ $(document).ready(function(){
 			$('#modal_sa_cancel').data('id',this.id);
 			$('#modal_sa_cancel').modal('show');
 		});
-		$('#frm_sa_edit select[name="category"]').change(function(){
-			var category = $(this).val();
-			fn_sa_hide_text_fields('frm_sa_edit',category);
-		});
+	
 
 		/*
 		 

@@ -38,7 +38,6 @@
 				case "get_report_ordinates"						: get_report_ordinates(); break;
 				case "load_special_acceptance"					: load_special_acceptance(); break;
 				case "replace_sa_file"							: replace_sa_file(); break;
-				case "edit_special_acceptance"					: edit_special_acceptance(); break;
 				case "cancel_special_acceptance"				: cancel_special_acceptance(); break;
 				case "download_qfr_sa_report"					: download_qfr_sa_report(); break;
 				case "download_sa_excel"						: download_sa_excel(); break;
@@ -716,31 +715,7 @@
 		}
 		
 	}
-	function edit_special_acceptance(){
-		require_once('../class/oop_tqts.php');
-		$date_time_today = date('Y-m-d H:i:s');
-		$return 		= $_POST;
-		$return['error']= array();	
-		$pkid			= $return['pkid'];
-		$username = $return ['username'];
-		$table			= 'tbl_qfr_special_acceptance';
 	
-		/* add blanks to undefined or empty values */
-		foreach($array_fields as $key => $value){
-			if(!isset($return[$value]) || $return[$value] == ""){
-				$return[$value] = "";
-			}
-		}
-
-		$field_data 	= get_fields_values($_POST,array('action','pkid','upload_type','control_number'));
-		$array_fields   = $field_data['array_fields'];
-		$array_values   = $field_data['array_values'];
-
-		$where 			= "WHERE pkid = '$pkid'";
-		
-		$result 			= TQTS::getInstance()->update_query_detailed($table,$array_fields,$array_values,$where);
-		echo json_encode($result); //hmodifynow
-	}
 	function generate_sa_control_number($date,$username){
 		require_once('../class/oop_tqts.php');
 		$username 	= $_POST['username'];
@@ -2899,184 +2874,6 @@
 		}
 		return $approver_username['approver_username'];
 	}
-	// function send_email_for_disposition(){ //imail
-
-	// 	/* FOR TESTING EMAIL handler/send_email_no_link
-	// 	require_once('../class/send_email_no_link.php');
-	// 	$to = 'cdcasuyon@pricon.ph';
-	// 	$from = 'mclegaspi@pricon.ph';
-	// 	$cc = 'jgsulit@pricon.ph';
-	// 	$php_mailer = new email();
-	// 	$php_mailer->send_email($to, $from, $cc, '$subject', '$body','','$attachment_name');
-	// 	return;
-	// 	*/
-	// 	require_once('../class/oop_tqts.php');
-	// 	require_once('../class/send_email.php');
-
-	// 	$return = $_POST;
-    //     $fkid 				 = $return['pkid'];
-	// 	$username = $return['username'];
-    //    	$date_time_today 	 = date('Y-m-d H:i:s');
-    //     $ctr_number  		 = $return['control_number']; //IF NEEDED
-
-    // 	$to_recip_internal   = !isset($return['sa_send_to']) ? '' : implode(',',$return['sa_send_to']);
-    //    	$to_recip_external   = $return['sa_send_external_to'] == '' ? '' : implode(',',$return['sa_send_external_to']);
-	// 	$cc_recip_internal   = !isset($_POST['sa_send_cc'])  ? '' : implode(',',$_POST['sa_send_cc']);
-	// 	$cc_recip_external   = $_POST['sa_send_external_cc'] == '' ? '' : implode(',',$_POST['sa_send_external_cc']);
-    //     $disposition_remarks = $_POST['remarks'];        
-    //     $msg = '';
-		
-	// 	/* NOTE : upload the file with esignature of the approvers */
-	// 		/* ffunction to get the file path:  ..uploaded_file/quality_report/sa */
-	// 		$file  		     = return_file_path_by_div_mod('sa_approved');  
-	// 		$fkfile_path     = $file['pkid'];
-	// 		$target_dir      = $file['path'];
-
-	// 		if(!file_exists($target_dir.$fkid.'/')) {
-	// 			$target_dir = $target_dir.$fkid.'/';
-	// 			mkdir($target_dir, 0777, false); /* 'if not exist make a folder named by pkid' */
-	// 		} 
-
-	// 		$temp_file 	     = $_FILES["file_sa"]["tmp_name"];
-	// 		$file_name 	     = $_FILES["file_sa"]["name"];
-	// 		$target_file = $target_dir . $file_name;
-	// 		if(file_exists($target_file)){
-	// 			$msg = 'Sorry, the file already exists.';
-	// 		}else{
-	// 			if (move_uploaded_file($temp_file,$target_file)){	
-	// 				$ext= pathinfo($file_name, PATHINFO_EXTENSION);
-	// 				$get_file_extension = $ext == 'XLSX' ? 'xlsx' : $ext;
-	// 				$new_filename = $fkid.".".$get_file_extension;
-					
-	// 				if(rename ($target_file, $target_dir.'/'.$new_filename)){		
-	// 					$msg = 'File was successfully uploaded to the system.<br>';
-	// 				} else {
-	// 					$msg = 'There was an error on renaming the file.';
-	// 				}	
-	// 			}else{
-	// 				$msg = "Sorry, there was an error uploading your file.";
-	// 			}
-	// 		}
-	// 	$table			= 'tbl_qfr_sa_for_disposition_attachment';
-	// 	$array_fields 	= array(
-	// 								'date_time_created','created_by','fkspecial_acceptance',
-	// 								'file_name','fkfile_path','remarks',
-	// 								'lastupdate','username'
-	// 							);
-	// 	$array_values	= array(
-	// 								$date_time_today,$username,$fkid,
-	// 								$file_name,4,'',
-	// 								$date_time_today,$username
-	// 							);
-	// 	$pkid_attachment = TQTS::getInstance()->insert_query_id($table,$array_fields,$array_values);
-
-	// 	/* Create email notification */
-	// 	$result = "";
-	// 	$date= date('Y-m-d');
-	// 	$date_today = date('M d, Y',strtotime($date));
-	// 	/* query for select all from tbl_special_acceptance, and select file_name to tbl_attactment by pkid  */	
-	// 	$array_fields = array('*', 
-	// 	'(SELECT tbl_qfr_sa_for_disposition_attachment.file_name FROM tbl_qfr_sa_for_disposition_attachment WHERE tbl_qfr_sa_for_disposition_attachment.pkid=pkid LIMIT 0,1) as file_name'
-	// 	);
-	// 	$table 	   	= 'tbl_qfr_special_acceptance';
-	// 	$joins 	   	= '';
-	// 	$sql_where 	= 'WHERE pkid="'.$fkid.'"';
-	// 	$sql_order 	= '';
-	// 	$sql_limit 	= '';
-	// 	$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-	// 	$script = TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-	// 	if($row = mysqli_fetch_array($result)){
-	// 		$created_by			= $row['created_by'];
-	// 		$control_number		= $row['control_number'];
-	// 		$created_by 		= $row['created_by'];
-	// 		$issuance_date 		= $date_today; //date today
-	// 		$part_code 			= $row['part_code'];
-	// 		$parts_affected_parts =$row['parts_affected_parts'];
-	// 		$po_number 			= $row['po_number'];
-	// 		$device_name		= $row['device_name'];
-	// 		$lot_no				= $row['lot_number'];
-	// 		$drawing_number 	= $row['drawing_number'];
-	// 		$supplier 			= $row['supplier'];
-	// 		$file_array			= $row['file_name'];
-		
-	// 		$file  		     = return_file_path_by_div_mod('sa_approved');  
-	// 		$fkfile_path     = $file['pkid'];
-	// 		$target_dir      = $file['path'];
-
-	// 		/* get the file_name and file_path */	
-	// 		$tqts_path			= str_replace('/var/www/','',realpath(dirname(__FILE__)."/../")); /* get the folder of TQTS_TS*/
-	// 		$ext= pathinfo($target_dir, PATHINFO_EXTENSION);
-	// 		$attachment      	= str_replace('../',$tqts_path.'/',$target_dir.$fkid.'/'.$fkid.'.'.$get_file_extension); /* get the path of the attachments*/
-	// 		$attachment_name	= $file_name; /* get file names*/
-			
-	// 		if($part_code != '') {
-	// 			$subject 		 	 = 'SPECIAL ACCEPTANCE REPORT : '.$part_code.' ('.$parts_affected_parts.')';
-	// 			$part_details 		= '&emsp;Part Code: '.$part_code.' <br>';
-	// 			$part_details 	    .= '&emsp;Part Name: '.$parts_affected_parts.'<br>';
-	// 			// $body 	 	 		 = 'This is to inform you that the Special Acceptance report request with Part Code: '.$part_code.' is ready for sending to Supplier.<br> <br>';
-	// 		}else if($po_number != ''){
-	// 			$subject 		 	= 'SPECIAL ACCEPTANCE REPORT : '.$po_number.' ('.$device_name.')';
-	// 			$part_details 	   .= '&emsp;PO Number: '.$po_number.' <br>';
-	// 			$part_details 	   .= '&emsp;Device Name: '.$device_name.' <br>';
-	// 			// $body 	 	 		= 'This is to inform you that the Special Acceptance report request with PO Number: '.$po_number.' is ready for sending to Supplier.<br> <br>';
-	// 		}else if ($part_code == '' && $po_number == '' ){
-	// 			$subject 		 	= 'SPECIAL ACCEPTANCE REPORT : ';
-	// 		}
-
-	// 		$body 		 = 'Good day! <br>';
-	// 		$body 		.= $_POST['message'].'<br>';
-
-	// 		$body 	 	.= 'Attached is the Special Acceptance report generated due to the defect encountered:<br> <br>';
-	// 		$body 		.= $part_details;
-	// 		$body 		.= '&emsp;Fail Mode: '.$_POST['fail_mode'].' <br>';
-	// 		$body 		.= '&emsp;Supplier: '.$_POST['supplier'].' <br>';
-	// 		$body 		.= 'For your disposition.'.' <br><br>';
-
-	// 		$to = array();
-	// 		if($to_recip_internal != '') {
-	// 			$to_recip_internal = explode(',',$to_recip_internal);
-	// 			for($i=0;$i<count($to_recip_internal);$i++) {
-	// 				array_push($to, $to_recip_internal[$i]);
-	// 			}	
-	// 		}
-	// 		if($to_recip_external != '') {
-	// 			$to_recip_external = explode(',',$to_recip_external);
-	// 			for($i=0;$i<count($to_recip_external);$i++) {
-	// 				array_push($to, $to_recip_external[$i]);
-	// 			}	
-	// 		}
-	// 		$cc = array();
-	// 		if($cc_recip_internal != '') {
-	// 			$cc_recip_internal = explode(',',$cc_recip_internal);
-	// 			for($i=0;$i<count($cc_recip_internal);$i++) {
-	// 				array_push($cc, $cc_recip_internal[$i]);
-	// 			}	
-	// 		}
-	// 		/** NOTE: External CC for Special Acceptance Report */
-	// 		// if($cc_recip_external != '') {
-	// 		// 	$cc_recip_external = explode(',',$cc_recip_external);
-	// 		// 	for($i=0;$i<count($cc_recip_external);$i++) {
-	// 		// 		array_push($cc, $cc_recip_external[$i]);
-	// 		// 	}
-	// 		// }
-
-	// 		// $to 		 = 'cbretusto@pricon.ph';
-	// 		// $cc 		 = 'cdcasuyon@pricon.ph';
-	// 		// $from 		 =  'mclegaspi@pricon.ph';
-	// 		$to 		 = implode(',',$to); //To internal, To external
-	// 		$cc 		 = implode(',',$cc); // CC internal 
-	// 		$from 		 = return_user_email_add($username) == 'NONE' ? '' : return_user_email_add($username); //judcataya/tmmabulac is the sender of SAR
-
-	// 		$php_mailer = new email();
-	// 		$php_mailer->send_email_with_attachment($to, $from, $cc, $subject, $body, $attachment_name, $attachment); //amail
-	// 	}
-	// 	$new_status = 5;
-	// 	$return['change_status'] = change_status($new_status,$fkid);
-
-	// 	echo json_encode($return); 
-	// }
-
-	//PDF FOR DISPOSITION
 	function send_email_for_disposition(){ 
 		require_once('../class/oop_tqts.php');
 		require_once('../class/send_email_qfr_sa.php');
@@ -3240,50 +3037,5 @@
 		$return['change_status'] = change_status($new_status,$fkid);
 
 		echo json_encode($return);
-	}
-
-	class HandlerQfr{
-
-		// private static $instance = null;
-	
-		// public static function getInstance() {
-		// 	if(!self::$instance instanceof self) 
-		// 	{
-		// 		self::$instance = new self;
-		// 	}
-		// 	return self::$instance;
-		// }
-
-		public function getSarStatusByCode($status_code){
-			switch ($status_code) {
-				case 1:
-					$badge = '<span class="badge highlight-color-blue">FOR DISPOSITION</span>';
-					break;
-				case 5:
-					$badge = '<span class="badge highlight-color-lime">WAITING FOR DISPOSITION</span>';
-					break;
-				case 8:
-					$badge = '<span class="badge highlight-color-red">WAITING FOR DISPOSITION</span>';
-					break;
-				default:
-					$badge = '<span class="badge">Unknown Status</span>';
-					break;
-			}
-			return $badge;
-			// if(status == "1"){
-			// 	$('#frm_sa #badge_status').text('FOR DISPOSITION');
-			// 	$('#frm_sa #badge_status').attr('class','badge highlight-color-blue');
-		
-			// else if(status == "5"){
-			// 	$('#frm_sa #badge_status').text('WAITING FOR DISPOSITION');
-			// 	$('#frm_sa #badge_status').attr('class','badge highlight-color-lime');
-			// }else if(status == "8"){
-			// 	$('#frm_sa #badge_status').text('CANCELLED');
-			// 	$('#frm_sa #badge_status').attr('class','badge highlight-color-red');
-			// }else{
-			// 	$('#frm_sa #badge_status').text('Unknown Status');
-			// 	$('#frm_sa #badge_status').attr('class','badge');
-			// }
-		}
 	}
 ?>
