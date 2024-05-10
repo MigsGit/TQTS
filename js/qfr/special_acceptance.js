@@ -528,21 +528,22 @@ $(document).ready(function(){
 		}
 		call_ajax(data, handler_qfr, function(result){
 			fn_sa_hide_text_fields('frm_sa',result['category'],'edit');
-			
 			$('#frm_sa_for_revision #pkid').val(result['pkid']);
-			
-
 			$('#frm_send_report_internal_sa #txt_control_number').val(result['control_number']).prop('readonly',true);
 			$('#modal_for_qc_checking #pkid, #modal_for_qc_checking #frm_sa_for_qc_checking').val(result['pkid']);
 		
-			var status = result['status']; 
-			console.log(result['status']);
-			$('#frm_sa #badge_status').html(result['status']);
 			$('#frm_sa').find('[name="special_acceptance_id"]').val(pkid);
-		
 			$('#frm_sa').find('[name="control_number"]').val(result['control_number']);
 			$('#frm_sa').find('select[name="category"]').val(result['category']);
-			
+			$('#frm_sa #badge_status').html(result['status']);
+			$('#frm_sa').find('textarea[name="other_details"]').text(result['other_details']);
+			$('#frm_sa').find('[name="factory_location"]').val(result['factory_location']);
+			$('#frm_sa').find('[name="problem"]').val(result['problem']);
+			$('#frm_sa').find('[name="date_issued"]').val(result['date_issued']);
+			$('#frm_sa').find('[name="immediate_action"]').val(result['immediate_action']);
+			$('#frm_sa').find('[name="permanent_action"]').val(result['permanent_action']);
+			$('#frm_sa').find('[name="immediate_action_due_date"]').val(result['immediate_action_due_date']);
+			$('#frm_sa').find('[name="permanent_action_due_date"]').val(result['permanent_action_due_date']);
 			if(result['category'] == 'Parts'){
 				$('#frm_sa').find('[name="part_code"]').val(result['part_code']);
 				$('#frm_sa').find('[name="parts_affected_parts"]').val(result['parts_affected_parts']);
@@ -555,16 +556,7 @@ $(document).ready(function(){
 				$('#frm_sa').find('[name="parts_affected_device"]').val(result['parts_affected_device']);
 				$('#frm_sa').find('[name="customer_name"]').val(result['customer_name']);
 			}
-			$('#frm_sa').find('textarea[name="other_details"]').text(result['other_details']);
-			$('#frm_sa').find('[name="factory_location"]').val(result['factory_location']);
-			$('#frm_sa').find('[name="problem"]').val(result['problem']);
-			$('#frm_sa').find('[name="date_issued"]').val(result['date_issued']);
-			$('#frm_sa').find('[name="immediate_action"]').val(result['immediate_action']);
-			$('#frm_sa').find('[name="permanent_action"]').val(result['permanent_action']);
-			$('#frm_sa').find('[name="immediate_action_due_date"]').val(result['immediate_action_due_date']);
-			$('#frm_sa').find('[name="permanent_action_due_date"]').val(result['permanent_action_due_date']);
 			
-			// assign_value_select2('#frm_sa #supplier', result['supplier']);
 			re_initialize_select2_server_side('#modal_sa #supplier','#modal_sa #frm_sa',[],"server_side_scripts/dropdown/qfr/dd_ng_supplier_list.php");
 			fn_get_supplier_by_pkid(result['pkid'],'edit');
 			

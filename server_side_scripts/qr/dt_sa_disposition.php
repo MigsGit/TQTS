@@ -14,7 +14,7 @@
 	 */
 	// error_reporting(E_ALL);
 	// ini_set('display_errors', 1);
-
+	
 	$aColumns = array( 
 				'control_number',
 				'parts_affected_parts',
@@ -22,6 +22,7 @@
 				'notations_remarks',
 				'part_code',
 				'problem_parts',
+				'problem',
                 'supplier',
                 'lot_number',
                 'quantity',
@@ -257,7 +258,9 @@
 	
 
 	/* NOTE : extention for include the common function (get emp id by emp username) */
+
 	require_once("../../handler/common_function.php");
+
 	/* get user role */
 	$username = $_GET['username'];
 	$user_role = get_user_roles($username);
@@ -289,48 +292,34 @@
 			$user_sa_access['qc_supervisor'] = true;
 		}
 	}
-
+	
 	while ( $aRow = mysql_fetch_array( $rResult ) )
 	{
 		$row = array();
 		unset($row);
 		/*  STATUS LOG
-			A - FOR QC CHECKING
-			0 - FOR CHECKING
 			1 - FOR DISPOSITION
-			2 - DISAPPROVED
-			4 - FOR APPROVAL
-			5 - CLOSED
+			5 - WAITING FOR DISPOSITION
 			6 - APPROVED BY YEC
 			7 - DISAPPROVED BY YEC
 			8 - CANCELLED
 		 */
-		if($aRow['status'] == '1') {
-			$badge = '<span class="badge highlight-color-blue">FOR DISPOSITION</span>';
-		}else if($aRow['status'] == '5') {
-			$badge = '<span class="badge highlight-color-lime">WAITING FOR DISPOSITION</span>';
-		}
-		$row[] = '<center>'.$badge.'</center>';
+
+		$row[] = '<center>'.getSarStatusByCode($aRow['status']).'</center>';
 		$count_revision = return_count_approvers_qc($aRow['pkid']);
 		$count_revision = ($count_revision > 0) ? '<b><i><u> Revision No.'.$count_revision.'</u></i></b> <br><br>' : '';
 		$row[] = $count_revision.$aRow['control_number'];
 		if($aRow['category'] == "Parts"){
 			$details ='Part Affected :'.$aRow['parts_affected_parts'].'<br>'.
 				 'Part Code :'.$aRow['part_code'].'<br>'.
-				 'Problem :'.$aRow['problem_parts'].'<br>'.
-				 'Supplier Name :'.$aRow['supplier'].'<br>'.
-				 'Fail Mode :'.$aRow['lot_number'].'<br>'.
-				 'Drawing # :'.$aRow['drawing_number'].'<br>'.
-				 'Quantity :'.$aRow['quantity'];
+				 'Mode of Defects :'.$aRow['problem'].'<br>'.
+				 'Supplier Name :'.$aRow['supplier'].'<br>';
 		}else{
 			$details ='Device Name :'.$aRow['device_name'].'<br>'.
-				 'Parts Affected :'.$aRow['parts_affected_device'].'<br>'.
 				 'PO # :'.$aRow['po_number'].'<br>'.
 				 'PO Quantity :'.$aRow['po_qty'].'<br>'.
-				 'Fail Mode :'.$aRow['problem_device'].'<br>'.
-				 'Affected Quantity :'.$aRow['affected_quantity'].'<br>'.
+				 'Mode of Defects :'.$aRow['problem'].'<br>'.
 				 'Supplier Name :'.$aRow['customer_name'];
-				 'Shipment Date :'.$aRow['shipment_date'];
 		}
 		$row[] = $details;
 		$originators = return_sa_originators($aRow['pkid']);

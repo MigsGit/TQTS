@@ -22,6 +22,7 @@
 				'notations_remarks',
 				'part_code',
 				'problem_parts',
+				'problem',
                 'supplier',
                 'lot_number',
                 'quantity',
@@ -317,9 +318,8 @@
 		if($aRow['category'] == "Parts"){
 			$details ='Part Affected :'.$aRow['parts_affected_parts'].'<br>'.
 				 'Part Code :'.$aRow['part_code'].'<br>'.
-				 'Problem :'.$aRow['problem_parts'].'<br>'.
 				 'Supplier Name :'.$aRow['supplier'].'<br>'.
-				 'Fail Mode :'.$aRow['lot_number'].'<br>'.
+				 'Mode of Defects :'.$aRow['problem'].'<br>'.
 				 'Drawing # :'.$aRow['drawing_number'].'<br>'.
 				 'Quantity :'.$aRow['quantity'];
 		}else{
@@ -327,7 +327,7 @@
 				 'Parts Affected :'.$aRow['parts_affected_device'].'<br>'.
 				 'PO # :'.$aRow['po_number'].'<br>'.
 				 'PO Quantity :'.$aRow['po_qty'].'<br>'.
-				 'Fail Mode :'.$aRow['problem_device'].'<br>'.
+				 'Mode of Defects :'.$aRow['problem'].'<br>'.
 				 'Affected Quantity :'.$aRow['affected_quantity'].'<br>'.
 				 'Supplier Name :'.$aRow['customer_name'];
 				 'Shipment Date :'.$aRow['shipment_date'];

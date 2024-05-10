@@ -38,7 +38,23 @@
 			send_with_auto_mailer
 			close_auto_mailer
 	*******************************************/
-	
+	function getSarStatusByCode($status_code){
+		switch ($status_code) {
+			case 1:
+				$badge = '<span class="badge highlight-color-blue">FOR DISPOSITION</span>';
+				break;
+			case 5:
+				$badge = '<span class="badge highlight-color-lime">WAITING FOR DISPOSITION</span>';
+				break;
+			case 8:
+				$badge = '<span class="badge highlight-color-red">WAITING FOR DISPOSITION</span>';
+				break;
+			default:
+				$badge = '<span class="badge">Unknown Status</span>';
+				break;
+		}
+		return $badge;
+	}
 	function get_user_roles($username){
 		$oop = '../../class/oop_user_roles.php';
 		if(!file_exists($oop)){

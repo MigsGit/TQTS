@@ -2,7 +2,7 @@
 	ini_set('display_errors', 1);
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
-	use HandlerQfr;
+
 	
 	include('common_function.php');
 	if(is_ajax()) {
@@ -618,9 +618,8 @@
 			$return['immediate_action_due_date'] 	= $row['immediate_action_due_date'];
 			$return['permanent_action'] 			= $row['permanent_action'];
 			$return['permanent_action_due_date'] 	= $row['permanent_action_due_date'];
-			$return['other_details'] 	= $row['other_details'];
-
-			$return['status'] 				= HandlerQfr::getInstance()->getSarStatusByCode($row['status']);
+			$return['other_details'] 				= $row['other_details'];
+			$return['status'] 						= getSarStatusByCode($row['status']);
 		}
 		echo json_encode($return);
 	}
@@ -3245,21 +3244,26 @@
 
 	class HandlerQfr{
 
-		private static $instance = null;
+		// private static $instance = null;
 	
-		public static function getInstance() {
-			if(!self::$instance instanceof self) 
-			{
-				self::$instance = new self;
-			}
-			return self::$instance;
-		}
+		// public static function getInstance() {
+		// 	if(!self::$instance instanceof self) 
+		// 	{
+		// 		self::$instance = new self;
+		// 	}
+		// 	return self::$instance;
+		// }
 
 		public function getSarStatusByCode($status_code){
 			switch ($status_code) {
 				case 1:
-					# code...
 					$badge = '<span class="badge highlight-color-blue">FOR DISPOSITION</span>';
+					break;
+				case 5:
+					$badge = '<span class="badge highlight-color-lime">WAITING FOR DISPOSITION</span>';
+					break;
+				case 8:
+					$badge = '<span class="badge highlight-color-red">WAITING FOR DISPOSITION</span>';
 					break;
 				default:
 					$badge = '<span class="badge">Unknown Status</span>';
@@ -3269,14 +3273,7 @@
 			// if(status == "1"){
 			// 	$('#frm_sa #badge_status').text('FOR DISPOSITION');
 			// 	$('#frm_sa #badge_status').attr('class','badge highlight-color-blue');
-			// }else if(status == "4"){
-			// 	$('#frm_sa #badge_status').text('FOR APPROVAL');
-			// 	$('#frm_sa #badge_status').attr('class','badge highlight-color-lime');
-			// }
-			// else if(status == "2"){
-			// 	$('#frm_sa #badge_status').text('DISAPPROVED');
-			// 	$('#frm_sa #badge_status').attr('class','badge highlight-color-red');
-			// }
+		
 			// else if(status == "5"){
 			// 	$('#frm_sa #badge_status').text('WAITING FOR DISPOSITION');
 			// 	$('#frm_sa #badge_status').attr('class','badge highlight-color-lime');
