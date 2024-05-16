@@ -39,8 +39,6 @@
 				case "load_special_acceptance"					: load_special_acceptance(); break;
 				case "replace_sa_file"							: replace_sa_file(); break;
 				case "cancel_special_acceptance"				: cancel_special_acceptance(); break;
-				case "download_qfr_sa_report"					: download_qfr_sa_report(); break;
-				case "download_sa_excel"						: download_sa_excel(); break;
 				case "check_sa_judgement"						: check_sa_judgement(); break;
 				//Approvers
 				case "load_approver_table"						: load_approver_table(); break; //NOTE : fview get the approver table from "tbl_qfr_sa_approvers"

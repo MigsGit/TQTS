@@ -26,6 +26,7 @@
 			get_field_names
 			get_field_text_display
 			display_approvers_log
+			get_assigned_section_sa
 		Excel
 			get_excel_content
 			remove_none_english_characters
@@ -38,6 +39,33 @@
 			send_with_auto_mailer
 			close_auto_mailer
 	*******************************************/
+
+	function get_assigned_section($username) {
+		$department = array();
+		$array_fields = array('department');
+		$table      = 'vw_user_access';
+		$joins      = '';
+		$sql_where  = 'WHERE `username`="'.$username.'"';
+		// $sql_where  = '';
+		$sql_order  = '';
+		$sql_limit  = '';
+		$result = RAPID::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+		if($row=mysqli_fetch_array($result)) {
+			$engineer = 'Engineer';
+			$qc = 'LQC';
+			$return_department =  $row['department'];
+			$get_department = strstr( $return_department,$engineer );
+			$get_department_qc = strstr( $return_department,$qc );
+	/** !if the department is LIKE "Engineering" return ENGG,  if the department is LIKE "LQC" return QC , else return - */
+			$department = ($get_department == "Engineering")?"ENGG":
+			$department = ($get_department_qc == "LQC")? "LQC":"-";
+	
+		} else {
+			return 'N/A';
+		}
+		return $department;
+	}
+
 	function getSarStatusByCode($status_code){
 		switch ($status_code) {
 			case 1:

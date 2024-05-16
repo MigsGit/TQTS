@@ -29,6 +29,8 @@
 				case "get_po_number_by_series_name" 			: get_po_number_by_series_name(); break; 
 				case "get_lot_number_list" 						: get_lot_number_list(); break; 
 				case "get_quantity_by_lot_number" 				: get_quantity_by_lot_number(); break;
+
+				case "get_emp_name_by_username" 			: get_emp_name_by_username(); break;
 				
 				/* HRIS / Rapid */
 				
@@ -135,7 +137,34 @@
 		echo json_encode($return);
 	}
 	
-
+	function get_emp_name_by_username() {
+		require_once('../class/oop_tqts.php');
+		$username		= $_POST['username'];
+		$emp_name		= 'Not found!';
+		// $array_fields 	= array('`name` as emp_name');
+		// $table			= 'tbl_useraccounts';
+		// $joins			= '';
+		// $sql_where		= 'WHERE username="'.$username.'"';
+		// $sql_order		= '';
+		// $sql_limit		= 'LIMIT 0,1';
+		// $html_select	= '';
+		// $result			= RAPID::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+		// if($row = mysqli_fetch_array($result)) {
+			// $return['emp_name'] = $row['emp_name'];
+		// }
+		$array_fields 	= array('CONCAT(`firstName`," ",`lastname`) as emp_name');
+		$table			= 'db_hris.vw_EmpInfo_Rapid';
+		$joins			= '';
+		$sql_where		= 'WHERE username="'.$username.'"';
+		$sql_order		= '';
+		$sql_limit		= 'LIMIT 0,1';
+		$html_select	= '';
+		$result			= SYS1::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+		if($row = mysqli_fetch_array($result)) {
+			$return['emp_name'] = $row['emp_name'];
+		}
+		echo json_encode($return);
+	}
 	function get_emp_name_by_username2() {
 		require_once('../class/oop_tqts.php');
 		$username		= $_POST['username'];

@@ -34,6 +34,12 @@ class EXCEL extends PHPExcel{
 		$this->objPHPExcel->setTitle($this->title); //set title cont.
 	}
 	
+	public function add_row($num_row){
+		$this->objPHPExcel = $this->getActiveSheet();
+		// $num_row = $this->objPHPExcel->getHighestRow();
+		// $this->objPHPExcel->insertNewRowBefore($num_row + 1, 2);
+		$this->objPHPExcel->insertNewRowBefore(8, 2);
+	}
 	public function set_page_orientation_a4_landscape(){
 		$this->objPHPExcel->getPageSetup()
 			->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
@@ -82,9 +88,9 @@ class EXCEL extends PHPExcel{
 					->setPrintArea($cell);
 	}
 	
-	// public function set_page_break($cell){
-		// $excel->setBreak( 'A10' , PHPExcel_Worksheet::BREAK_ROW );
-	// }
+	public function set_page_break($cell){
+		$this->objPHPExcel->setBreak( 'A10' , PHPExcel_Worksheet::BREAK_ROW );
+	}
 	/*  
 		Set active sheet
 	*/
@@ -373,6 +379,12 @@ class EXCEL extends PHPExcel{
 		);
 		$this->objPHPExcel->getStyle($cell)->applyFromArray($styleArray);
 	}
+	/*
+		wrape text
+	*/
+	public function wrap_text($cell){
+		$this->objPHPExcel->getStyle($cell)->getAlignment()->setWrapText(true);
+	}
 	/* 
 		
 	*/
@@ -387,6 +399,7 @@ class EXCEL extends PHPExcel{
 		$this->objDrawing->setOffsetX(20);
 		$this->objDrawing->setOffsetY(20);
 	}
+	
 	
 	/* 
 		Generate Excel Output 

@@ -1012,6 +1012,9 @@ $(document).ready(function(){
 			$('#frm_sa_edit_disposition #container_sa_disposition').show();
 		});
 });
+window.location.href = "./reports/iqc/excel_iqc_sa_summary_report.php?pkid="+63;
+// window.location.href = "./reports/oqc/excel_oqc_lon.php?id="+19;
+
 
 /* ***************************
 	Special Acceptance - End
