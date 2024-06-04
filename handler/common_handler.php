@@ -138,7 +138,11 @@
 	}
 	
 	function get_emp_name_by_username() {
-		require_once('../class/oop_tqts.php');
+			if(file_exists('../class/oop_tqts.php')) {
+				require_once('../class/oop_tqts.php');
+			} else {
+				require_once('../../class/oop_tqts.php');
+			}
 		$username		= $_POST['username'];
 		$emp_name		= 'Not found!';
 		// $array_fields 	= array('`name` as emp_name');

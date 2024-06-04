@@ -328,7 +328,8 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 			</div>
 			<div class="row">
 				<div class="col-sm-2">
-					<label class="fa fa-md">Attention: </label>
+					<!-- <label class="fa fa-md">Attention: </label> -->
+					<label class="fa fa-md text-danger"> In-charge Supervisor </label>
 				</div>
 				<div class="col-sm-10">
 					<select class="" id="cmb_attention" name="attention[]" multiple="multiple" style="width:100%;" required>
@@ -337,21 +338,18 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-2">
-					<label class="fa fa-md">Defect Mode: </label>
+					<label class="fa fa-md text-danger">Mode of Defects: </label>
 				</div>
 				<div class="col-sm-4">
 					<input type="text" class="form-control" id="defect_mode" name="defect_mode" required>
 				</div>
 				<div class="col-sm-2">
-					<label class="fa fa-md">Lot Submission: </label>
+					<label class="fa fa-md">Defect Qty.: </label>
 				</div>
 				<div class="col-sm-4">
-					<select class="form-control" id="lot_submission" name="lot_submission" required>
-						<option value="1st Sub">1st Sub</option>
-						<option value="2nd Sub">2nd Sub</option>
-						<option value="3rd Sub">3rd Sub</option>
-					</select>
+					<input type="number" class="form-control" id="defect_qty" min="0" name="defect_qty" required>
 				</div>
+				
 				<div class="col-sm-2">
 					<label class="fa fa-md">Line: </label>
 				</div>
@@ -404,10 +402,14 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 					<input type="date" class="form-control" id="date_inspected" max="<?php echo date('Y-m-d'); ?>" name="date_inspected" required>
 				</div>
 				<div class="col-sm-2">
-					<label class="fa fa-md">Defect Qty.: </label>
+					<label class="fa fa-md">Lot Submission: </label>
 				</div>
 				<div class="col-sm-4">
-					<input type="number" class="form-control" id="defect_qty" min="0" name="defect_qty" required>
+					<select class="form-control" id="lot_submission" name="lot_submission" required>
+						<option value="1st Sub">1st Sub</option>
+						<option value="2nd Sub">2nd Sub</option>
+						<option value="3rd Sub">3rd Sub</option>
+					</select>
 				</div>
 			</div>
 			<div class="row">
@@ -418,7 +420,8 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 					<input type="text" class="form-control" id="reel_batch_no" name="reel_batch_no" required>
 				</div>
 				<div class="col-sm-2">
-					<label class="fa fa-md">Concern Operator: </label>
+					<!-- <label class="fa fa-md">Concern Operator: </label> -->
+					<label class="fa fa-md text-danger">Contributor: </label>
 				</div>
 				<div class="col-sm-4">
 					<select class="" id="cmb_operator" name="operator[]" multiple="multiple" style="width:100%;" required>

@@ -113,7 +113,7 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 			<div class="panel panel-info">
 				<div class="panel-heading"><i class="fa fa-file fa-lg"> For Disposition</i></div>
 				<div class="panel-body">
-				<div class="col-sm-12">
+					<div class="col-sm-12">
 						<?php
 							if($sa_user_access){
 								echo '<button class="btn btn-success fa fa-plus pull-right" id="btn_sa"> New Special Acceptance</button>';
@@ -143,13 +143,33 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 		</div>
 	</div>
 <?php
-// $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":'';
+// $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":'' nmodify;
 ?>
     <div id="with_treatment" class="tab-pane"><br>
 		<div class="col-sm-12">
 			<div class="panel panel-info">
-				<div class="panel-heading"><i class="fa fa-file fa-lg"> With Treatment/Disposition</i></div>
+				<div class="panel-heading"><i class="fa fa-file fa-lg"> With Treatment/Disposition</i></div> 
 				<div class="panel-body">
+					<br>
+					<div class="card">
+						<div class="card-body">
+							<fieldset>
+
+							<div class="row">
+								<div class="col-sm-2  pull-left">
+									<input type="text" class="form-control" id="txt_sar_summary_date" name="sar_summary_date" placeholder="Insert Date ...">
+								</div>
+								<div class="col-sm-2  pull-left">
+									<?php
+										if($sa_user_access){
+											echo '<button class="btn btn-primary fa fa-plus pull-right" id="export_sa_summary"> Export SAR Summary </button>';
+										}
+									?>
+								</div>
+							</div>	
+							</fieldset>
+						</div>
+					</div>
 					<div class="col-sm-3">
 					</div><br><br>
 					<div class="row">

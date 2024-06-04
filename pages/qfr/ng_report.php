@@ -171,11 +171,17 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
 					<div class="alert alert-danger" style="display:none;" role="alert" id="container_upload_ng_message">					
 					</div>
 				</div>	
-				<div class="col-sm-2 col-sm-offset-6">
+				<div class="col-sm-2">
 					<label class="fa fa-md">Issuance Date: </label>
 				</div>
 				<div class="col-sm-4">
 					<input type="date" class="form-control" id="issuance_date" name="issuance_date" required>
+				</div>
+				<div class="col-sm-2">
+					<label class="fa fa-md">Failed Mode</label>
+				</div>
+				<div class="col-sm-4">
+					<input type="input" class="form-control" id="failed_mode" name="failed_mode" required>
 				</div>
 				<div class="col-sm-2">
 					<label class="fa fa-md">Supplier: </label>
@@ -299,11 +305,17 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
 				<div class="col-sm-12">
 					<label class="fa fa-md" id="lbl_ng_status"></label>
 				</div>	
-				<div class="col-sm-2 col-sm-offset-6">
+				<div class="col-sm-2">
 					<label class="fa fa-md">Issuance Date: </label>
 				</div>
 				<div class="col-sm-4">
 					<input type="date" class="form-control" id="issuance_date" name="issuance_date" required>
+				</div>
+				<div class="col-sm-2">
+					<label class="fa fa-md">Failed Mode</label>
+				</div>
+				<div class="col-sm-4">
+					<input type="input" class="form-control" id="failed_mode" name="failed_mode" required>
 				</div>
 				<div class="col-sm-2">
 					<label class="fa fa-md">Supplier: </label>
@@ -415,11 +427,17 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
 	  <form id="frm_upload_ng_view" method="post">
 		  <div class="modal-body">
 			<div class="row">
-				<div class="col-sm-2 col-sm-offset-6">
+				<div class="col-sm-2">
 					<label class="fa fa-md">Issuance Date: </label>
 				</div>
 				<div class="col-sm-4">
 					<input type="date" class="form-control" id="issuance_date" name="issuance_date" required>
+				</div>
+				<div class="col-sm-2">
+					<label class="fa fa-md">Failed Mode</label>
+				</div>
+				<div class="col-sm-4">
+					<input type="input" class="form-control" id="failed_mode" name="failed_mode" required>
 				</div>
 				<div class="col-sm-2">
 					<label class="fa fa-md">Supplier: </label>

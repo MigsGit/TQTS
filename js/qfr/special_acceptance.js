@@ -724,6 +724,23 @@ $(document).ready(function(){
 			notif_success('Saved Successfully');
 		});
 	});
+
+	date_time_picker('txt_sar_summary_date');
+	$('#export_sa_summary').click(function (e) { //zmodify
+		e.preventDefault();
+		let sar_summary_date = $('#txt_sar_summary_date').val()
+		// console.log($('#txt_sar_summary_date').val());
+		console.log('sar_summary_date',sar_summary_date);
+		console.log('sar_summary_date',sar_summary_date.length);
+		if(sar_summary_date === "" || sar_summary_date.length != 23){
+			notif_err("Invalid date, Please try again!")
+
+		}else{
+			// console.log('aaaa');
+			window.location.href = "./reports/iqc/excel_iqc_sa_summary_report.php?sar_summary_date="+sar_summary_date;
+			notif_info("Downloading, Please Wait ...")
+		}
+	});
 	
 	/** 
 	 * 	FOR DISPOSITION FUNCTION
@@ -1012,7 +1029,8 @@ $(document).ready(function(){
 			$('#frm_sa_edit_disposition #container_sa_disposition').show();
 		});
 });
-window.location.href = "./reports/iqc/excel_iqc_sa_summary_report.php?pkid="+63;
+// alert('dsadsd')
+// window.location.href = "./reports/iqc/excel_iqc_sa_summary_report.php?pkid="+63;
 // window.location.href = "./reports/oqc/excel_oqc_lon.php?id="+19;
 
 

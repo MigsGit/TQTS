@@ -21,21 +21,21 @@ if(file_exists($oop)){
 	exit;
 }
 
+$sar_summary_date = $_GET['sar_summary_date'];
 
-$pkid = $_GET['pkid'];
-function get_special_acceptance($pkid){
+function get_special_acceptance($sar_summary_date){
+	$sar_summary_date = explode(' - ',$sar_summary_date);
 	$array_fields = array('MONTHNAME( `date_created` ) as created_at , tbl_qfr_special_acceptance.*');
 	$table 	   	= 'tbl_qfr_special_acceptance';
 	$joins 	   	= '';
 	// $sql_where 	= 'WHERE pkid="'.$pkid.'" AND logdel=0';
 	$sql_where 	= 'WHERE 1=1';
-	$sql_where .= " AND DATE(`date_created`) BETWEEN '2024-01-01' AND '2024-08-01'";
+	$sql_where  .= " AND DATE(`date_created`) BETWEEN ' " .date('Y-m-d', strtotime($sar_summary_date[0])). " ' AND ' " .date('Y-m-d', strtotime($sar_summary_date[1])). " ' ";
+	// $sql_where .= " AND DATE(`date_created`) BETWEEN '2024-01-01' AND '2024-08-01' AND logdel=0";
 	// $sql_where .= " AND date_issued IS NOT NULL";
 	$sql_order 	= 'ORDER BY pkid ASC';
 	$sql_limit 	= '';
-	// $dcc_reviewed_date = explode(' - ',$dcc_reviewed_date);
 	$script= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-	// exit;
 	$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 	$return = array();
 	while($row = mysqli_fetch_array($result)){
@@ -76,28 +76,44 @@ function get_special_acceptance($pkid){
 		// $return['username'][] 					= $row['username'];
 		// $return['logdel'][] 						= $row['logdel'];
 	}
-	
-	// if($return['category'] == 'Parts'){
-	// 	$return['po_number']				= '';
-	// 	$return['po_qty']					= '';
-	// 	$return['device_name']				= '';
-	// 	$return['parts_affected_device']	= '';
-	// 	$return['shipment_date']			= '';
-		
-	// }else{
-	// 	$return['partcode']					= '';
-	// 	$return['parts_affected_parts']     = '';
-	// 	$return['supplier']					= '';
-	// 	$return['lot_number']				= '';
-	// }
 	return $return;
+}
+function get_emp_name_by_username_systemone($username) {
+	if(file_exists('../class/oop_tqts.php')) {
+		require_once('../class/oop_tqts.php');
+	} else {
+		require_once('../../class/oop_tqts.php');
+	}
+	$emp_name		= 'Not found!';
+	$array_fields 	= array('CONCAT(`firstName`," ",`lastname`) as emp_name');
+	$table			= 'vw_EmpInfo_Rapid';
+	$joins			= '';
+	$sql_where		= 'WHERE username="'.$username.'"';
+	$sql_order		= '';
+	$sql_limit		= 'LIMIT 0,1';
+	$html_select	= '';
+	$result			= SYSTEMONE::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+	if($row = mysqli_fetch_array($result)) {
+		$emp_name = $row['emp_name'];
+	} else {
+		$array_fields 	= array('`name` as emp_name');
+		$table			= 'db_rapid.tbl_useraccounts';
+		$joins			= '';
+		$sql_where		= 'WHERE username="'.$username.'"';
+		$sql_order		= '';
+		$sql_limit		= 'LIMIT 0,1';
+		$html_select	= '';
+		$result			= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+		// $emp_name			= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+		if($row = mysqli_fetch_array($result)) {
+			$emp_name = $row['emp_name'];
+		}
+	}
+	return $emp_name;
 }
 
 
-
-$get_special_acceptance = get_special_acceptance($pkid);
-// echo json_encode ($get_special_acceptance) ;
-// exit;
+$get_special_acceptance = get_special_acceptance($sar_summary_date);
 
 $excel_class = '../../class/excel_new.php';
 if(file_exists($excel_class)){

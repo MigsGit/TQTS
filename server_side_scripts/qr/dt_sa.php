@@ -448,7 +448,8 @@ function return_sa_originators($fkid) {
 	$script = TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 	$approvers  = '';
 	while($row = mysqli_fetch_array($result)){
-		$approvers .= get_emp_name_by_username($row['username']);
+		// $approvers .= get_emp_name_by_username($row['username']);
+		$approvers .= $row['username'];
 		
 	}
 	return $approvers;

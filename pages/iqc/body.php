@@ -209,7 +209,7 @@
  <script src="js/qfr/ypics.js" type="text/javascript"></script>
 <script src="js/qfr/ng_report.js?12156" type="text/javascript"></script>
 <!-- <script src="js/qfr/special_acceptance.js?force={{ rand(0, 100000) }}" type="text/javascript"></script> -->
-<script src="js/qfr/special_acceptance.js?force={{ rand(0, 100000) }}" type="text/javascript"></script>
+<script src="js/qfr/special_acceptance.js?t=<?=time()?>" type="text/javascript"></script>
 <!-- <script src="<?php echo asset("js/qfr/ng_report.js?".date("YmdHis")) ?>"></script> -->
 <!-- <script src="<?php echo asset("js/qfr/special_acceptance.js?".date("YmdHis")) ?>"></script> -->
 <script src="js/qfr/aye_report.js" type="text/javascript"></script>
