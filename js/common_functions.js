@@ -197,6 +197,7 @@ function get_po_details(text_id,po_number,callback){
 		"po_number"	: po_number
 	}
 	call_ajax(data, handler_common_handler, function(result){
+		console.log('result',result);
 		callback(result);
 	});
 }

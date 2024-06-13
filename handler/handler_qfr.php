@@ -34,6 +34,7 @@
 				/* Special Acceptance */
 				/* Get Report Ordinates */
 				case "save_special_acceptance"					: save_special_acceptance(); break;
+				case "save_sa_control_num"						: save_sa_control_num(); break;
 				case "generate_sa_control_number_view"			: generate_sa_control_number_view(); break;
 				case "get_report_ordinates"						: get_report_ordinates(); break;
 				case "load_special_acceptance"					: load_special_acceptance(); break;
@@ -100,6 +101,33 @@
 
 	function is_ajax() {
 		return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+	}
+	/* nmodify */
+	function save_sa_control_num (){
+		$return = $_POST;
+		try {
+			require_once('../class/oop_tqts.php');
+			$date_time_today = date('Y-m-d H:i:s');
+			$table			= 'tbl_qfr_special_acceptance';
+			$field_data 	= get_fields_values($_POST,array('action','control_number'));
+			$control_number = generate_sa_control_number(date('Y-m-d'),$return['username']);
+
+			$array_fields   = $field_data['array_fields'];
+			$array_values   = $field_data['array_values'];
+			$array_fields[]	= 'created_by'; 	$array_values[] = $_POST['username'];
+			$array_fields[]	= 'control_number'; $array_values[] = $control_number;
+			$array_fields[]	= 'date_created'; 	$array_values[] = date('Y-m-d H:i:s');
+			$script 		= TQTS::getInstance()->insert_query_script($table,$array_fields,$array_values);
+			$insert_query= TQTS::getInstance()->insert_query($table,$array_fields,$array_values);
+			$reponse = array();
+			$reponse['is_success'] = 'true';
+			$reponse['message'] = 'Save Succefully';
+			echo json_encode($reponse);
+		} catch (\Throwable $th) {
+			$reponse['is_success'] = 'false';
+			$reponse['message'] = $th;
+			echo json_encode($reponse);
+		}
 	}
 	
     function get_fiscal_year() {
@@ -667,7 +695,7 @@
 		return $returns;
 	}
 	
-	function save_special_acceptance(){
+	function save_special_acceptance(){ //xmodify
 		try {
 			require_once('../class/oop_tqts.php');
 			$return 		= $_POST;
@@ -692,6 +720,9 @@
 				
 			}else{ //EDIT
 				/* add blanks to undefined or empty values */
+
+				$get_special_acceptance_by_id = this_get_special_acceptance_by_id($special_acceptance_id);
+				$array_fields[]	= 'status'; $array_values[] = $get_special_acceptance_by_id['status'];
 				foreach($array_fields as $key => $value){
 					if(!isset($return[$value]) || $return[$value] == ""){
 						$return[$value] = "";
@@ -3036,4 +3067,24 @@
 
 		echo json_encode($return);
 	}
+
+	function this_get_special_acceptance_by_id ($pkid){
+		require_once('../class/oop_tqts.php');
+		$return = array();
+		$array_fields = array('*');
+		$table 	   	= 'tbl_qfr_special_acceptance';
+		$joins 	   	= '';
+		$sql_where 	= 'WHERE pkid="'.$pkid.'" AND logdel=0';
+		$sql_order 	= '';
+		$sql_limit 	= '';
+		$script= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+		$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+		if($row = mysqli_fetch_array($result)){
+			$return['status'] = $row['status'] == 0 ? 1 : $row['status']; // Get status before edit
+		}else{
+			$return['no_record'] 			= $script;
+		}
+		return $return;
+	}
+
 ?>

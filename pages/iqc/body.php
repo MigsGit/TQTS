@@ -168,9 +168,13 @@
 					endDate: moment()
 				},
 			function(start, end) {
+				console.log(id);
 				$('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
 				if(id == "date_created_search_group") {
 					load_all_control_number_per_date_created('control_number_search_list_group','control_number_search',$('#date_created_search_group').val());
+				}
+				if(id == "txt_sar_summary_date"){
+					$('#export_sa_summary').prop('disabled',false);
 				}
 			}
 		);
@@ -207,11 +211,9 @@
 	*Additional function for NG REPORT- don't delete this, the connection of JS from NG Report will failed
  -->
  <script src="js/qfr/ypics.js" type="text/javascript"></script>
-<script src="js/qfr/ng_report.js?12156" type="text/javascript"></script>
+<script src="js/qfr/ng_report.js?t=<?=time()?>" type="text/javascript"></script>
 <!-- <script src="js/qfr/special_acceptance.js?force={{ rand(0, 100000) }}" type="text/javascript"></script> -->
 <script src="js/qfr/special_acceptance.js?t=<?=time()?>" type="text/javascript"></script>
-<!-- <script src="<?php echo asset("js/qfr/ng_report.js?".date("YmdHis")) ?>"></script> -->
-<!-- <script src="<?php echo asset("js/qfr/special_acceptance.js?".date("YmdHis")) ?>"></script> -->
 <script src="js/qfr/aye_report.js" type="text/javascript"></script>
 <script src="js/qfr/attention_tag.js" type="text/javascript"></script>
 <script src="js/qfr/ptis.js" type="text/javascript"></script>
@@ -220,6 +222,8 @@
 <!-- <script src="js/qfr/capa.js" type="text/javascript"></script> -->
 <script src="js/qfr/qcfr.js" type="text/javascript"></script>
 <script src="js/qfr/loss_cost.js" type="text/javascript"></script>
+<script src='js/jquerymask/jquery.mask.min.js?t=<?=time()?>'></script>
+
 
 
 

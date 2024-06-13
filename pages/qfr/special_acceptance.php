@@ -162,7 +162,7 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 								<div class="col-sm-2  pull-left">
 									<?php
 										if($sa_user_access){
-											echo '<button class="btn btn-primary fa fa-plus pull-right" id="export_sa_summary"> Export SAR Summary </button>';
+											echo '<button class="btn btn-primary fa fa-plus pull-right" id="export_sa_summary" disabled> Export SAR Summary </button>';
 										}
 									?>
 								</div>
@@ -261,6 +261,31 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 </div><!-- /.modal -->
 </div>
 
+<div class="modal fade" tabindex="-1" role="dialog" id="modal_save_sa_control_num">
+  <div class="modal-dialog modal-md" role="document">
+ 		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title"><i class="fa fa-plus"></i> New Special Acceptance</h4>
+			</div>
+			<!-- form#form_save_sa_control_num -->
+			<form action="" id="form_save_sa_control_num">
+				<div class="modal-body">
+					<div class="col-sm-2">
+						<label class="fa fa-md">Control No: </label>
+					</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="txt_control_number" name="control_number"required readonly>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary fa fa-save"> Save</button>
+					<button type="button" class="btn btn-default fa" data-dismiss="modal"> Close</button>
+				</div>
+			</form>
+		</div>
+  </div><!-- /.modal-dialog -->
+</div>
 
 <!-- NOTE : modal add special acceptance -->
 <div class="modal fade" tabindex="-1" role="dialog" id="modal_sa">
@@ -354,7 +379,6 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 					</div>
 				</div>
             </div>
-
 			<!-- DELETED FIELDS -->
 			<div class="col-sm-2 deletedField">
 				<label class="fa fa-md">Choose File: </label>

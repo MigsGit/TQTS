@@ -209,7 +209,7 @@
 	}
 	
 	/** $sWhere .= " `status` = 1 OR `status` = 5 OR `status` = 6 OR `status` = 7 AND `logdel` = 0 "; */
-	$sWhere .= " (`status` = 1 OR `status` = '5') AND `logdel` = 0";
+	$sWhere .= " (`status` = 0 OR `status` = 1 OR `status` = '5') AND `logdel` = 0";
 	// $sWhere .= ' created_by = "'.$username.'"';
 	
 	/*

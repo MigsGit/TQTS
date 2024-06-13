@@ -78,6 +78,9 @@ function get_special_acceptance($sar_summary_date){
 	}
 	return $return;
 }
+// echo get_special_acceptance($sar_summary_date);
+// return;
+
 function get_emp_name_by_username_systemone($username) {
 	if(file_exists('../class/oop_tqts.php')) {
 		require_once('../class/oop_tqts.php');

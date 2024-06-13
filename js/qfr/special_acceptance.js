@@ -178,9 +178,6 @@ $(document).ready(function(){
 		$('#modal_sa_cancel').modal('show');
 	});
 
-
-
-	
 	$('#frm_sa select[name="category"]').change(function(){
 		var category = $(this).val();
 		fn_sa_hide_text_fields('frm_sa',category);
@@ -189,16 +186,10 @@ $(document).ready(function(){
 		$(this).val($(this).val().toUpperCase());
 	});
 	$('#btn_sa').click(function(){
-		row_count = 1;
-		fn_empty_sa_fields('frm_sa');
 		fn_generate_sa_control_number_view();
-		re_initialize_select2_server_side('#modal_sa #supplier','#modal_sa #frm_sa',[],"server_side_scripts/dropdown/qfr/dd_ng_supplier_list.php");
-		$('#modal_sa').data('id',0);
-		$('#frm_sa #drawing_number').prop('readonly',true);
-		$('#modal_sa').modal({backdrop: 'static',
+		$('#modal_save_sa_control_num').modal({backdrop: 'static',
 		keyboard: false},'show');
 	});
-
 	
 	$('#frm_sa input[name="part_code"]').keyup(function(e){
 		var key = e.which;
@@ -214,9 +205,32 @@ $(document).ready(function(){
 
 		fn_get_partname(code,'frm_sa');
 	});
+
+	$('#frm_sa input[name="po_number"]').keyup(function(e){
+		var key = e.which;
+		if(key == 38 || key == 40){
+			return false;
+		}
+		var pattern = $(this).val();
+		fn_get_po_list(pattern,'list_sa_po');
+	});
+	$('#frm_sa input[name="po_number"]').change(function(e){
+		var po_number = $(this).val();
+		console.log(po_number);
+
+		var array_fields = [
+			'input[name="device_name"]',
+			'input[name="po_qty"]',
+			'input[name="drawing_number"]',
+			'input[name="customer_name"]'
+		]
+		fn_get_po_details(po_number,'frm_sa',array_fields);
+	});
+
 	$('#btn_report_ordinates').click(function(){
 		$('#modal_report_ordinates').modal('show');
 	});
+
 	$('#frm_sa').submit(function(e){
 		e.preventDefault();
 		$('.btn').prop("disabled",true);
@@ -446,6 +460,7 @@ $(document).ready(function(){
 		}
 		call_ajax(data,handler_qfr,function(result){
 			$('#frm_sa  input[name="control_number"]').val(result);
+			$('#form_save_sa_control_num  input[name="control_number"]').val(result);
 			
 		});
 	}
@@ -729,16 +744,22 @@ $(document).ready(function(){
 	$('#export_sa_summary').click(function (e) { //zmodify
 		e.preventDefault();
 		let sar_summary_date = $('#txt_sar_summary_date').val()
-		// console.log($('#txt_sar_summary_date').val());
 		console.log('sar_summary_date',sar_summary_date);
 		console.log('sar_summary_date',sar_summary_date.length);
 		if(sar_summary_date === "" || sar_summary_date.length != 23){
 			notif_err("Invalid date, Please try again!")
 
 		}else{
-			// console.log('aaaa');
 			window.location.href = "./reports/iqc/excel_iqc_sa_summary_report.php?sar_summary_date="+sar_summary_date;
 			notif_info("Downloading, Please Wait ...")
+		}
+	});
+
+	$('#txt_sar_summary_date').mask('00/00/0000 - 00/00/0000', {reverse: false});
+	$('#txt_sar_summary_date').change(function (e) { //zmodify
+		let sar_summary_date = $(this).val();
+		if(sar_summary_date == ""){
+			$('#export_sa_summary').prop('disabled',true);
 		}
 	});
 	
@@ -1028,10 +1049,32 @@ $(document).ready(function(){
 			$('#modal_sa_edit_disposition').modal('show');
 			$('#frm_sa_edit_disposition #container_sa_disposition').show();
 		});
+
+	/*  */
+	var $form_save_sa_control_num = $('#form_save_sa_control_num');
+	const save_sa_control_num = function (serialized_data){
+		var data = {
+			"action"	: "save_sa_control_num",
+			"username"	: username
+		}
+		call_ajax_serialize(data, serialized_data, handler_qfr, function(result){	
+			if(result['is_success'] === 'true'){
+				dt_special_acceptance.draw();
+				dt_special_acceptance_disposition.draw();
+				dt_special_acceptance_with_treatment.draw();
+				$('#modal_save_sa_control_num').modal('hide');
+				notif_success(result.message);
+			}
+			get_partcode_list		});
+	}
+	$form_save_sa_control_num.submit(function (e) { 
+		e.preventDefault();
+		save_sa_control_num( $(this).serialize() );
+	});
+
 });
-// alert('dsadsd')
-// window.location.href = "./reports/iqc/excel_iqc_sa_summary_report.php?pkid="+63;
-// window.location.href = "./reports/oqc/excel_oqc_lon.php?id="+19;
+
+
 
 
 /* ***************************
