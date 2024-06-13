@@ -208,7 +208,7 @@
 	}
 	
 	/** $sWhere .= " `status` = 1 OR `status` = 5 OR `status` = 6 OR `status` = 7 AND `logdel` = 0 "; */
-	$sWhere .= " (`status`= '6' OR `status` = '7') AND `logdel` = 0";
+	$sWhere .= " (`status`= '6' OR `status` = '7' OR `status` = 'CL') AND `logdel` = 0";
 	
 	/*
 	 * SQL queries
@@ -293,40 +293,9 @@
 	{
 		$row = array();
 		unset($row);
-		/*  STATUS LOG
-			A - FOR QC CHECKING
-			0 - FOR CHECKING
-			1 - FOR DISPOSITION
-			2 - DISAPPROVED
-			4 - FOR APPROVAL
-			5 - CLOSED
-			6 - APPROVED BY YEC
-			7 - DISAPPROVED BY YEC
-			8 - CANCELLED
-		 */
-		if($aRow['status'] == '1') {
-			$badge = '<span class="badge highlight-color-blue">FOR DISPOSITION</span>';
-		}else if($aRow['status'] == '5') {
-			$badge = '<span class="badge highlight-color-lime">WAITING FOR DISPOSITION</span>';
-		}else if($aRow['status'] == '6') {
-			$badge = '<span class="badge highlight-color-green">CLOSED</span>';
-		}else if($aRow['status'] == '7') {
-			$badge = '<span class="badge highlight-color-red">DISAPPROVED BY YEC</span>';
-		}
-	/*
-		else if($aRow['status'] == '5') {
-			$badge = '<span class="badge highlight-color-lime" >WAITING FOR DISPOSITION</span>';
-		}
-		else if($aRow['status'] == '6') {
-			$badge = '<span class="badge highlight-color-green" >APPROVED</span>';
-		}else if($aRow['status'] == '7') {
-			$badge = '<span class="badge highlight-color-red" >DISAPPROVED</span>';
-		} 
-	 */	
-		$row[] = '<center>'.$badge.'</center>';
+
 		$count_revision = return_count_approvers_qc($aRow['pkid']);
 		$count_revision = ($count_revision > 0) ? '<b><i><u> Revision No.'.$count_revision.'</u></i></b> <br><br>' : '';
-		$row[] = $count_revision.$aRow['control_number'];
 		if($aRow['category'] == "Parts"){
 			$details ='Part Affected :'.$aRow['parts_affected_parts'].'<br>'.
 				 'Part Code :'.$aRow['part_code'].'<br>'.
@@ -345,39 +314,35 @@
 				 'Supplier Name :'.$aRow['customer_name'];
 				 'Shipment Date :'.$aRow['shipment_date'];
 		}
-		$row[] = $details;
 		$originators = return_sa_originators($aRow['pkid']);
+		// $row[] = ;
+		
+		$button = array();
+		/* if request has already been closed */ 
+		$button[] = '<center>';
+		if($aRow['status'] == '1' && $username == $aRow['created_by']){
+			$button[] = '<button class="btn btn-info fa fa-send-o" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Send Disposition</button>';
+		}
+		else if($aRow['status'] == '5' && $username == $aRow['created_by']){
+			$button[] = '<button class="btn btn-success fa fa-plus" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Add Disposition</button>';
+		}
+		else if($aRow['status'] == '6' || $aRow['status'] == '7'){
+			if($username == $aRow['created_by']){
+				$button[] = '<button class="btn btn-warning fa fa-edit" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Edit Disposition</button>';
+			}
+			$button[] = '<button class="btn btn-success fa fa-thumbs-up btnCloseSar" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Click to Closed</button>';
+			$button[] = '<button class="btn btn-default fa fa-eye" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> View Disposition</button>';
+		}
+		$button[] = '</center>';
+		$button = implode("<br/>",$button);
+
+		$row[] = '<center>'.getSarStatusByCode($aRow['status']).'</center>';
+		$row[] = $count_revision.$aRow['control_number'];
+		$row[] = $details;
 		$row[] = $originators;
 		$row[] = $aRow['supplier'];
-		// $row[] = ;
 		$row[] = is_treatment_exist($aRow['pkid'])==1?'<center><a class= "btn-link fa fa-paperclip" href="#" id="a_download_excel" data-id="'.$aRow['pkid'].'"> Download Excel</a></center>':'';
-		/*  STATUS LOG
-			1 - FOR DISPOSITION
-			2 - DISAPPROVED
-			5 - WAITING FOR DISPOSITION
-			6 - CLOSED
-			7 - DISAPPROVED BY YEC
-			8 - CANCELLED
-		 */
-			$button = array();
-			/* if request has already been closed */ 
-			$button[] = '<center>';
-			if($aRow['status'] == '1' && $username == $aRow['created_by']){
-				$button[] = '<button class="btn btn-info fa fa-send-o" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Send Disposition</button>';
-			}
-			else if($aRow['status'] == '5' && $username == $aRow['created_by']){
-				$button[] = '<button class="btn btn-success fa fa-plus" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Add Disposition</button>';
-			}
-			else if($aRow['status'] == '6' || $aRow['status'] == '7'){
-				if($username == $aRow['created_by']){
-					$button[] = '<button class="btn btn-warning fa fa-edit" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Edit Disposition</button>';
-				}
-				$button[] = '<button class="btn btn-default fa fa-eye" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> View Disposition</button>';
-			}
-			$button[] = '</center>';
-			$button = implode("<br/>",$button);
 		$row[] = $button;
-		
 		array_push($output['aaData'],$row);
 	}
 	
@@ -389,7 +354,6 @@
  * !return_sa_approvers_qc
  * !return_count_approvers_qc
  * !return_sa_is_decision_qc
- * 
  */
 
 function return_sa_originators($fkid) {

@@ -281,27 +281,7 @@
 	{
 		$row = array();
 		unset($row);
-		/** STATUS LOG
-		 	*A - FOR QC CHECKING
-			*0 - FOR CHECKING
-			*1 - FOR DISPOSITION
-			*2 - DISAPPROVED
-			*3 - ""
-			*4 - FOR APPROVAL
-			*5 - FOR DISPOSITION
-		6-APPROVED
-		7-WITH TREATMENT
-			*8 - CANCELLED
-			0 - FOR CHECKING ; 1 - FOR DISPOSITION ; 2 - DISAPPROVED ; 4 - FOR APPROVAL ; 5 - FOR DISPOSITION ; 8 - CANCELLED
-		 */
-	
-		// if($aRow['status'] == '1') {
-		// 	$badge = '<span class="badge highlight-color-yellow">OPEN</span>';
-		// }else if($aRow['status'] == '2'){
-		// 	$badge = '<span class="badge highlight-color-red">DISAPPROVED</span>';
-		// }else if($aRow['status'] == '8'){
-		// 	$badge = '<span class="badge highlight-color-red">CANCELLED</span>';
-		// }
+		
 		if($aRow['status'] != '6'|| $aRow['status'] != '7') {
 			$badge = '<span class="badge highlight-color-yellow">OPEN</span>';
 		}

@@ -1065,11 +1065,35 @@ $(document).ready(function(){
 				$('#modal_save_sa_control_num').modal('hide');
 				notif_success(result.message);
 			}
-			get_partcode_list		});
+		});
+	}
+	const change_sar_status = function (status,pkid){
+		var data = {
+			"action"	: "change_sar_status",
+			"pkid"		: pkid,
+			"status"	: status,
+		}
+		call_ajax(data, handler_qfr, function(result){
+			if(result['is_success'] === 'true'){
+				dt_special_acceptance.draw();
+				dt_special_acceptance_disposition.draw();
+				dt_special_acceptance_with_treatment.draw();
+				notif_success(result.message);
+			}
+		});
 	}
 	$form_save_sa_control_num.submit(function (e) { 
 		e.preventDefault();
 		save_sa_control_num( $(this).serialize() );
+	});
+
+	$('#'+tbl_special_acceptance_with_treatment+' tbody').on('click','.btnCloseSar', function () {
+		let pkid = this.id;
+		let answer = confirm('Are you sure you want to close this document?');
+
+		if (answer){
+			change_sar_status('CL',pkid)
+		}
 	});
 
 });

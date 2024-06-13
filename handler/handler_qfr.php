@@ -41,6 +41,7 @@
 				case "replace_sa_file"							: replace_sa_file(); break;
 				case "cancel_special_acceptance"				: cancel_special_acceptance(); break;
 				case "check_sa_judgement"						: check_sa_judgement(); break;
+				case "change_sar_status"						: change_sar_status(); break;
 				//Approvers
 				case "load_approver_table"						: load_approver_table(); break; //NOTE : fview get the approver table from "tbl_qfr_sa_approvers"
 				case "validate_is_approver"						: validate_is_approver(); break; //NOTE : fview validate if the approver is Login the current account"
@@ -734,7 +735,7 @@
 			}
 			$reponse = array();
 			$reponse['is_success'] = 'true';
-			$reponse['message'] = 'Save Succefully';
+			$reponse['message'] = 'Saved Succefully';
 			echo json_encode($reponse);
 		} catch (\Throwable $th) {
 			$reponse['is_success'] = 'false';
@@ -2440,20 +2441,29 @@
 	
 	/** change the status of tbl_sa */
 	function change_status($new_status,$fkid){
-		/*  STATUS LOG
-			0 - FOR APPROVAL 
-			1 - APPROVED
-			2 - DISAPPROVED
-			3 - FOR DISPOSITION
-			4 - CHECKED
-			5 - WAITING DISPOSITION
-		 */
 		require_once('../class/oop_tqts.php');
 		$result 		= '';
 		$array_fields 	= array('status');
 		$array_values	= array($new_status);
 		$table 			= 'tbl_qfr_special_acceptance';
 		$result = TQTS::getInstance()->update_query($table,$array_fields,$array_values,$fkid);
+	}
+
+	function change_sar_status(){
+		try {
+			$return = $_POST;
+			$response = array();
+			change_status($return['status'],$return['pkid']);
+			$response ['is_success'] = 'true';
+			$response['message'] = 'Status Changed';
+ 			echo json_encode($response);
+
+		} catch (\Throwable $th) {
+			$response ['is_success'] = 'false';
+			$response['message'] = $th;
+			echo json_encode($response);
+		}
+	
 	}
 
 	function get_sent_details(){

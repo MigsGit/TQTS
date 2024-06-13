@@ -38,6 +38,8 @@
 			send_with_mailer_with_attachment
 			send_with_auto_mailer
 			close_auto_mailer
+		SAR
+			getSarStatusByCode
 	*******************************************/
 
 	function get_assigned_section($username) {
@@ -68,15 +70,25 @@
 
 	function getSarStatusByCode($status_code){
 		switch ($status_code) {
+			case "CL":
+				$badge = '<span class="badge highlight-color-green">CLOSED</span>';
+				break;
+			case 0:
+				$badge = '<span class="badge highlight-color-yellow">FOR EDIT</span>';
+				break;
 			case 1:
 				$badge = '<span class="badge highlight-color-blue">FOR DISPOSITION</span>';
 				break;
 			case 5:
 				$badge = '<span class="badge highlight-color-lime">WAITING FOR DISPOSITION</span>';
 				break;
-			case 8:
-				$badge = '<span class="badge highlight-color-red">WAITING FOR DISPOSITION</span>';
+			case 6:
+				$badge = '<span class="badge highlight-color-blue">APPROVED BY YEC</span>';
 				break;
+			case 7:
+				$badge = '<span class="badge highlight-color-red">DISAPPORVED BY YEC</span>';
+				break;
+			
 			default:
 				$badge = '<span class="badge">Unknown Status</span>';
 				break;
