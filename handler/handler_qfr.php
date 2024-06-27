@@ -741,9 +741,7 @@
 			$reponse['is_success'] = 'false';
 			$reponse['message'] = $th;
 			echo json_encode($reponse);
-			// throw $th;
 		}
-		
 	}
 	
 	function generate_sa_control_number($date,$username){

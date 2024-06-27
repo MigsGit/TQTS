@@ -451,6 +451,16 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 				<div class="col-sm-4">
 					<input type="file" id="file_lon" name="file_lon">
 				</div>
+				<div class="col-sm-2">
+					<label class="fa fa-md" for="text_factory_location">Location </label>
+				</div>
+				<div class="col-sm-4">
+					<select class="form-control" id="text_factory_location" name="factory_location" required>
+						<option value="" selected disabled>-Select-</option>
+						<option value="Cabuyao">Cabuyao</option>
+						<option value="Malvar">Malvar</option>
+					</select>
+				</div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-2">
@@ -2216,7 +2226,7 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 				<div class="col-sm-10">
 					<textarea class="form-control" id="treatment" name="treatment" required></textarea>
 				</div>
-			</div>				
+			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-2">
 					<label class="fa fa-md">Verification result for corrective and preventive action: </label>
@@ -2224,7 +2234,30 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 				<div class="col-sm-10">
 					<textarea class="form-control" id="verification_result" name="verification_result" required></textarea>
 				</div>
-			</div>			
+			</div>	
+			<div class="row" style="margin-top:5px;">	
+				<div class="col-sm-12">
+					<button type="button" class="btn btn-success fa fa-plus pull-right" id="add_capa_monitoring"> Add </button>
+				</div>
+			</div>
+			<div class="row" style="margin-top:5px;">	
+				<div class="col-sm-12">
+					<table class="table table-condensed table-bordered" id="tbl_oqc_lon_capa_monitoring">
+						<thead>
+							<tr>
+								<th><span class="fa fa-cogs"></span></th>
+								<th>Status</th>
+								<th>Corrective / Preventive Action</th>
+								<th>In-charge</th>
+								<th>Due Date</th>
+								<th>Required Sumission Date</th>
+								<th>Actual Sumission Date</th>
+								<th>Remarks</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+			</div>
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="btn btn-success fa fa-thumbs-o-up" id=""> Verify & Conform</button>
@@ -2232,6 +2265,103 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 			<button type="button" class="btn btn-default fa fa-close" data-dismiss="modal"> Close</button>
 		  </div>
 		</form><!-- /#frm_upload_measdata -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal_oqc_capa_monitoring">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-question-circle-o"></i>Capa Monitoring</h4>
+      </div>
+	  <form id="frm_oqc_capa_monitoring">
+		  <!-- CORRECTIVE / PREVENTIVE ACTION -->
+		  <div class="modal-body">
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-2">
+					<label class="fa fa-md">Oqc Lon Id: </label>
+				</div>
+				<div class="col-sm-10">
+					<input type="number" class="form-control" id="oqc_lon_id" name="oqc_lon_id">
+				</div>
+			</div>	
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-2">
+					<label class="fa fa-md">Oqc Lon CapaMonitoring Id: </label>
+				</div>
+				<div class="col-sm-10">
+					<input type="number" class="form-control" id="oqc_lon_capa_monitoring_id" name="oqc_lon_capa_monitoring_id">
+				</div>
+			</div>	
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-2">
+					<label class="fa fa-md">Corrective Preventive Action: </label>
+				</div>
+				<div class="col-sm-10">
+					<textarea class="form-control" id="oqc_capa_action" name="oqc_capa_action" required></textarea>
+				</div>
+			</div>	
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-2">
+					<label class="fa fa-md">In charge: </label>
+				</div>
+				<div class="col-sm-10">
+					<select class="form-control" id="oqc_capa_action_incharge" name="oqc_capa_action_incharge[]" style="width:100%;" multiple="multiple" required>
+					</select>
+				</div>
+			</div>	
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-2">
+					<label class="fa fa-md">Due Date: </label>
+				</div>
+				<div class="col-sm-10">
+					<input type="date" class="form-control" id="oqc_capa_due_date" name="oqc_capa_due_date" required>
+				</div>
+			</div>	
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-2">
+					<label class="fa fa-md">Status: </label>
+				</div>
+				<div class="col-sm-10">
+					<select class="form-control" id="oqc_capa_Status" name="oqc_capa_status" required>
+						<option value="N/A" disabled selected>-Select-</option>
+						<option value="Open">Open</option>
+						<option value="Closed">Closed</option>
+					</select>
+				</div>
+			</div>	
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-2">
+					<label class="fa fa-md">Required Submission Date: </label>
+				</div>
+				<div class="col-sm-10">
+					<input type="date" class="form-control" id="oqc_capa_req_sub_date" name="oqc_capa_req_sub_date" required>
+				</div>
+			</div>	
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-2">
+					<label class="fa fa-md">Actual Submission Date: </label>
+				</div>
+				<div class="col-sm-10">
+					<input type="date" class="form-control" id="oqc_capa_actual_sub_date" name="oqc_capa_actual_sub_date" required>
+				</div>
+			</div>	
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-2">
+					<label class="fa fa-md">Remarks: </label>
+				</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="oqc_capa_remarks" name="oqc_capa_remarks" required>
+				</div>
+			</div>	
+		  </div>
+		  <div class="modal-footer">
+			<button type="submit" class="btn btn-primary fa fa-save"> Save</button>
+			<button type="button" class="btn btn-default fa fa-close" data-dismiss="modal" id="btn_close"> Close</button>
+		  </div>
+	  </form>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
@@ -2370,3 +2500,7 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<script>
+	
+</script>

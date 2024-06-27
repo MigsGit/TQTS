@@ -188,9 +188,9 @@
 		}    
 	});
 </script>
-<script src="js/qfr/ypics.js?2" type="text/javascript"></script>
-<script src="js/oqc/visual_inspection_result.js?2" type="text/javascript"></script>
-<script src="js/oqc/dimension_inspection_result.js?2" type="text/javascript"></script>
-<script src="js/oqc/lot_out_notice.js?3" type="text/javascript"></script>
-<script src="js/common_functions.js?3" type="text/javascript"></script>
+<script src="js/qfr/ypics.js?t=<?=time()?>" type="text/javascript"></script>
+<script src="js/oqc/visual_inspection_result.js?t=<?=time()?>" type="text/javascript"></script>
+<script src="js/oqc/dimension_inspection_result.js?t=<?=time()?>" type="text/javascript"></script>
+<script src="js/oqc/lot_out_notice.js?t=<?=time()?>" type="text/javascript"></script>
+<script src="js/common_functions.js?t=<?=time()?>" type="text/javascript"></script>
 

@@ -4,6 +4,7 @@
 
 var dt_oqc_lon_lqc_inspector	= '';
 var tbl_oqc_lon_lqc_inspector	= 'tbl_oqc_lon_lqc_inspector';
+var tbl_oqc_lon_capa_monitoring	= 'tbl_oqc_lon_capa_monitoring';
 var frm_lqc_inspector_new		= 'frm_lqc_inspector_new';
 var mdl_lqc_inspector_new		= 'modal_lon_lqc_inspector_new';
 var frm_lqc_inspector_edit		= 'frm_lqc_inspector_edit';
@@ -12,6 +13,8 @@ var mdl_lon_cancel_message		= 'modal_lon_cancel_message';
 var frm_lon_cancel				= 'frm_lon_cancel';
 var mdl_report					= 'modal_lon_report';
 var frm_report					= 'frm_lon_report';
+var $frm_oqc_capa_monitoring	= $('#frm_oqc_capa_monitoring');
+var oqc_lon_id = $frm_oqc_capa_monitoring.find('#oqc_lon_id').val();
 
 dt_oqc_lon_lqc_inspector = $('#'+tbl_oqc_lon_lqc_inspector).DataTable({
 	"aaSorting"	 : [],
@@ -19,9 +22,95 @@ dt_oqc_lon_lqc_inspector = $('#'+tbl_oqc_lon_lqc_inspector).DataTable({
 	"bServerSide": true,
 	"sAjaxSource": "server_side_scripts/oqc/dt_lon_lqc_inspector.php?username="+username,
 	"drawCallback": function( settings ) {
+		// assign_value_select2('#frm_sa #supplier', supplier);
 		$('#'+tbl_oqc_lon_lqc_inspector).attr('style','width:100%;');
+
+
 	}
 });
+
+dt_oqc_lon_capa_monitoring = $('#'+tbl_oqc_lon_capa_monitoring).DataTable({
+	"aaSorting"	 : [],
+	"bProcessing": true,
+	"bServerSide": true,
+	"columnDefs":[
+		{"orderable":false,"targets":[0,1]}
+	],
+	"sAjaxSource": "server_side_scripts/oqc/dt_lon_lqc_inspector_capa_monitoring.php?username="+username +"&"+ "oqc_lon_id="+oqc_lon_id, //nmodify
+	"drawCallback": function( settings ) {
+		$('#'+tbl_oqc_lon_capa_monitoring).attr('style','width:100%;');
+	}
+});
+
+/* CAPA MONITORING */
+const save_oqc_capa_monitoring = function (serialized_data){
+	let data = {
+		'action' : 'save_oqc_capa_monitoring',
+		'username': username
+	}
+	call_ajax_serialize(data, serialized_data, handler_lon, function(result) {
+		if(result.is_success === 'true'){
+			$('#modal_oqc_capa_monitoring').modal('hide');
+			notif_success(result.message);
+			dt_oqc_lon_capa_monitoring.ajax.url("server_side_scripts/oqc/dt_lon_lqc_inspector_capa_monitoring.php?username="+username +"&"+ "oqc_lon_id="+$frm_oqc_capa_monitoring.find('#oqc_lon_id').val()).draw();
+		
+		}
+	})
+}
+const read_oqc_lon_capa_monitoring_by_id =function (oqc_lon_capa_monitoring_id){
+	let data = {
+		'action' : 'read_oqc_capa_monitoring_by_id',
+		'oqc_lon_capa_monitoring_id' : oqc_lon_capa_monitoring_id,
+	}
+	call_ajax(data, handler_lon, function(result) {
+		$('#modal_oqc_capa_monitoring').modal();
+		if(result.is_success === 'true'){
+			$frm_oqc_capa_monitoring.find('[name="oqc_capa_action"]').val(result.oqc_capa_action);
+			$frm_oqc_capa_monitoring.find('[name="oqc_lon_capa_monitoring_id"]').val(result.id);
+			$frm_oqc_capa_monitoring.find('[name="oqc_capa_actual_sub_date"]').val(result.oqc_capa_actual_sub_date);
+			$frm_oqc_capa_monitoring.find('[name="oqc_capa_due_date"]').val(result.oqc_capa_due_date);
+			$frm_oqc_capa_monitoring.find('[name="oqc_capa_due_date"]').val(result.oqc_capa_due_date);
+			$frm_oqc_capa_monitoring.find('[name="oqc_capa_remarks"]').val(result.oqc_capa_remarks);
+			$frm_oqc_capa_monitoring.find('[name="oqc_capa_req_sub_date"]').val(result.oqc_capa_req_sub_date);
+			$frm_oqc_capa_monitoring.find('[name="oqc_capa_status"]').val(result.oqc_capa_status);
+			assign_value_select2('#frm_oqc_capa_monitoring'+' #oqc_capa_action_incharge',result['oqc_capa_action_incharge']);				
+			re_initialize_select2_server_side('#modal_oqc_capa_monitoring #oqc_capa_action_incharge','#modal_oqc_capa_monitoring #frm_oqc_capa_monitoring',[],"server_side_scripts/dropdown/common/dd_hris_above_ss_list.php");
+		}
+	})
+}
+
+$('#add_capa_monitoring').click(function(){
+	$('#modal_oqc_capa_monitoring').modal();
+	re_initialize_select2_server_side('#modal_oqc_capa_monitoring #oqc_capa_action_incharge','#modal_oqc_capa_monitoring #frm_oqc_capa_monitoring',[],"server_side_scripts/dropdown/common/dd_hris_above_ss_list.php");
+	
+});
+
+$frm_oqc_capa_monitoring.submit(function (e) { 
+	e.preventDefault();
+	save_oqc_capa_monitoring ($(this).serialize());
+});
+
+$('#' + tbl_oqc_lon_capa_monitoring + ' tbody').on('click','tr .fa-edit',function(){
+	let oqc_lon_capa_monitoring_id = $(this).attr('tbl-oqc-lon-capa-monitoring-id');
+	read_oqc_lon_capa_monitoring_by_id(oqc_lon_capa_monitoring_id);
+})
+
+$('#modal_oqc_capa_monitoring').on('hidden.bs.modal', function (e) {
+	/* Allows the overlayed modal to be scrollable */
+	if($('#modal_oqc_capa_monitoring').hasClass('in')) {
+		$(this).find('body').addClass('modal-open');
+	}    
+	$frm_oqc_capa_monitoring.find('[name="oqc_capa_action"]').val('');
+	$frm_oqc_capa_monitoring.find('[name="oqc_lon_capa_monitoring_id"]').val('');
+	$frm_oqc_capa_monitoring.find('[name="oqc_capa_actual_sub_date"]').val('');
+	$frm_oqc_capa_monitoring.find('[name="oqc_capa_due_date"]').val('');
+	$frm_oqc_capa_monitoring.find('[name="oqc_capa_due_date"]').val('');
+	$frm_oqc_capa_monitoring.find('[name="oqc_capa_remarks"]').val('');
+	$frm_oqc_capa_monitoring.find('[name="oqc_capa_req_sub_date"]').val('');
+	$frm_oqc_capa_monitoring.find('[name="oqc_capa_status"]').val('');
+	$frm_oqc_capa_monitoring.find('[name="oqc_capa_action_incharge[]"]').empty();
+});
+
 
 /* Report - start */
 $('#btn_lon_report_ins,#btn_lon_report_sup,#btn_lon_report_man,#btn_lon_report_prod').click(function(){
@@ -907,6 +996,9 @@ $('#' + tbl_oqc_lon_lqc_inspector + ' tbody').on('click','tr .fa-tasks',function
 	$('#'+mdl_inspector_production).data('id',pkid);
 	$('#'+mdl_inspector_production).modal('show');
 	$('#'+mdl_inspector_production + ' #lon_container_message').hide();
+	//nmodify
+	$frm_oqc_capa_monitoring.find('#oqc_lon_id').val(pkid);
+	dt_oqc_lon_capa_monitoring.ajax.url("server_side_scripts/oqc/dt_lon_lqc_inspector_capa_monitoring.php?username="+username +"&"+ "oqc_lon_id="+$frm_oqc_capa_monitoring.find('#oqc_lon_id').val()).draw();
 });
 
 $('#'+frm_inspector_production+' button[name="add_mode_defect"]').click(function() {	
@@ -982,6 +1074,10 @@ function fn_save_lqc_inspector_conformance_decision(decision, modal_id, form_id)
 /* *************************************************
 	Lot-out Notice - LQC Inspector - Conformance Functions (from Production) - End
 ************************************************** */
+
+
+
+
 
 /* *************************************************
 	Lot-out Notice - Common Functions - Start
@@ -1169,7 +1265,6 @@ function fn_reload_lon_datatables() {
 	dt_oqc_lon_lqc_manager.ajax.reload();
 	dt_oqc_lon_production.ajax.reload();
 }
-
 
 /* *************************************************
 	Lot-out Notice - Common Functions - End

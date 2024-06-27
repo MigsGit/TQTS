@@ -25,10 +25,16 @@
 				case "save_lqc_inspector_conformance_decision"	: save_lqc_inspector_conformance_decision(); break;
 				case "save_lqc_cancel"							: save_lqc_cancel(); break;
 				case "check_inspector_attachment"				: check_inspector_attachment(); break;
+
+				/* OQC CAPA MONITORING */
+				case "save_oqc_capa_monitoring"					: save_oqc_capa_monitoring(); break;
+				case "read_oqc_capa_monitoring_by_id"			: read_oqc_capa_monitoring_by_id(); break;
+
 				
-				
+
 				/* OQC Common */
 				case "get_email_recipients_list"				: get_email_recipients_list(); break;
+				
 				
 				/* Advanced Search */
 				// case "oqc_dir_return_dir_fields"				: oqc_dir_return_dir_fields(); break;
@@ -41,6 +47,91 @@
 		return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 	}
 	
+	function save_oqc_capa_monitoring (){
+		try {
+			require_once('../class/oop_tqts.php');
+			$return 		= $_POST;
+			$reponse = array();
+			$date_time_today = date('Y-m-d H:i:s');
+			$oqc_lon_capa_monitoring_id =  $return['oqc_lon_capa_monitoring_id'];
+			$arr_oqc_capa_action_incharge =  implode(',',$return['oqc_capa_action_incharge']);
+			$field_data 	= get_fields_values($_POST,array('action','oqc_lon_capa_monitoring_id','username'));
+			/* get field data from post */
+			$array_fields   = $field_data['array_fields'];
+			$array_values   = $field_data['array_values'];
+			$table			= 'tbl_oqc_lon_capa_monitoring';
+		
+			if($oqc_lon_capa_monitoring_id == ""){ //ADD
+				/* add additional fields */
+				$array_fields[]	= 'created_by'; 	$array_values[] = $_POST['username'];
+				$array_fields[]	= 'created_at'; 	$array_values[] = date('Y-m-d H:i:s');
+				$script 		= TQTS::getInstance()->insert_query_script($table,$array_fields,$array_values);
+				$query 		= TQTS::getInstance()->insert_query($table,$array_fields,$array_values);
+			}else{ //EDIT
+				/* add blanks to undefined or empty values */
+				foreach($array_fields as $key => $value){
+					if(!isset($return[$value]) || $return[$value] == ""){
+						$return[$value] = "";
+					}
+				}
+				/* add additional fields */
+				$array_fields[]	= 'updated_by'; 	$array_values[] = $_POST['username'];
+				$array_fields[]	= 'updated_at'; 	$array_values[] = date('Y-m-d H:i:s');
+				$where 			= "WHERE id = '$oqc_lon_capa_monitoring_id'";
+				$script 		= TQTS::getInstance()->update_query_detailed_script($table,$array_fields,$array_values,$where);
+				$query 			= TQTS::getInstance()->update_query_detailed($table,$array_fields,$array_values,$where);
+			}
+			$reponse['is_success'] = 'true';
+			$reponse['message'] = 'Saved Succefully';
+			echo json_encode($reponse);
+		} catch (\Throwable $th) {
+			$reponse['is_success'] = 'false';
+			$reponse['message'] = $th;
+			echo json_encode($reponse);
+		}
+	}
+	function read_oqc_capa_monitoring_by_id (){
+		try {
+			require_once('../class/oop_tqts.php');
+			$return 		= $_POST;
+			$reponse = array();
+			$read_oqc_capa_monitoring_by_id 		= $return['oqc_lon_capa_monitoring_id'];
+			$table  			= "tbl_oqc_lon_capa_monitoring";
+			$array_fields		= array("*");
+			$joins  	 		= "";
+			$sql_where  		= "WHERE 1=1 AND id='".$read_oqc_capa_monitoring_by_id."' AND logdel=0";
+			$sql_order  		= "";
+			$sql_limit  		= "LIMIT 0,1";
+			$result        		= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);	
+			if($row = mysqli_fetch_array($result)) {
+				$reponse['id'] 					= $row['id'];
+				$reponse['oqc_capa_action'] 	= $row['oqc_capa_action'];
+				$arr_oqc_capa_action_incharge = explode(',',$row['oqc_capa_action_incharge']);
+				$reponse['oqc_capa_due_date'] 	= $row['oqc_capa_due_date'];
+				$reponse['oqc_capa_status'] 	= $row['oqc_capa_status'];
+				$reponse['oqc_capa_req_sub_date'] 		= $row['oqc_capa_req_sub_date'];
+				$reponse['oqc_capa_actual_sub_date'] 	= $row['oqc_capa_actual_sub_date'];
+				$reponse['oqc_capa_remarks'] 			= $row['oqc_capa_remarks'];
+
+				foreach ($arr_oqc_capa_action_incharge as $key => $value) {
+					$array_data_app 				= array();
+					$array_data_app['id'] 			= $value;
+					$array_data_app['text'] 		= get_emp_name_by_username_systemone($value);
+					$reponse['oqc_capa_action_incharge'][]	= $array_data_app;
+				}
+			}
+			// echo json_encode($arr_oqc_capa_action_incharge);
+			// return; cnpoblete,cbretusto
+			
+			$reponse['is_success'] = 'true';
+			$reponse['message'] = 'Saved Succefully';
+			echo json_encode($reponse);
+		} catch (\Throwable $th) {
+			$reponse['is_success'] = 'false';
+			$reponse['message'] = $th;
+			echo json_encode($reponse);
+		}
+	}
 	/* LON - START */
 	
 	function generate_lon_no(){

@@ -238,3 +238,42 @@ function fn_get_partname_by_partcode(input_field_id,partcode){
 	});
 }
 
+/**
+ * !Toaster Notification
+ */
+function notif_success(data) {
+    notif({
+        type: "success",
+        msg: "<b>Success:</b> " + data,
+        type: "success",
+        position: "right",
+        timeout: 3000
+    });
+}
+
+function notif_warning(data) {
+    notif({
+        type: "warning",
+        msg: "<b>Warning:</b> " + data,
+        position: "right",
+        timeout: 3000
+    });
+}
+
+function notif_info(data) {
+    notif({
+        type: "info",
+        msg: "<b>Info:</b> " + data,
+        position: "right",
+        timeout: 3000
+    });
+}
+
+function notif_err(data) {
+    notif({
+        type: "error",
+        msg: "<b>Error:</b> " + data,
+        position: "right",
+        timeout: 3000
+    });
+}
