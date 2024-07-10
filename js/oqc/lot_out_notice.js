@@ -65,6 +65,11 @@ const read_oqc_lon_capa_monitoring_by_id =function (oqc_lon_capa_monitoring_id){
 	call_ajax(data, handler_lon, function(result) {
 		$('#modal_oqc_capa_monitoring').modal();
 		if(result.is_success === 'true'){
+			if(result.oqc_capa_status === 'Open'){
+				$('.submissionDate').hide();
+			}else{
+				$('.submissionDate').show();
+			}
 			$frm_oqc_capa_monitoring.find('[name="oqc_capa_action"]').val(result.oqc_capa_action);
 			$frm_oqc_capa_monitoring.find('[name="oqc_lon_capa_monitoring_id"]').val(result.id);
 			$frm_oqc_capa_monitoring.find('[name="oqc_capa_actual_sub_date"]').val(result.oqc_capa_actual_sub_date);
@@ -81,6 +86,7 @@ const read_oqc_lon_capa_monitoring_by_id =function (oqc_lon_capa_monitoring_id){
 
 $('#add_capa_monitoring').click(function(){
 	$('#modal_oqc_capa_monitoring').modal();
+	$('.submissionDate').hide();
 	re_initialize_select2_server_side('#modal_oqc_capa_monitoring #oqc_capa_action_incharge','#modal_oqc_capa_monitoring #frm_oqc_capa_monitoring',[],"server_side_scripts/dropdown/common/dd_hris_above_ss_list.php");
 	
 });
@@ -100,6 +106,7 @@ $('#modal_oqc_capa_monitoring').on('hidden.bs.modal', function (e) {
 	if($('#modal_oqc_capa_monitoring').hasClass('in')) {
 		$(this).find('body').addClass('modal-open');
 	}    
+	
 	$frm_oqc_capa_monitoring.find('[name="oqc_capa_action"]').val('');
 	$frm_oqc_capa_monitoring.find('[name="oqc_lon_capa_monitoring_id"]').val('');
 	$frm_oqc_capa_monitoring.find('[name="oqc_capa_actual_sub_date"]').val('');
@@ -109,6 +116,15 @@ $('#modal_oqc_capa_monitoring').on('hidden.bs.modal', function (e) {
 	$frm_oqc_capa_monitoring.find('[name="oqc_capa_req_sub_date"]').val('');
 	$frm_oqc_capa_monitoring.find('[name="oqc_capa_status"]').val('');
 	$frm_oqc_capa_monitoring.find('[name="oqc_capa_action_incharge[]"]').empty();
+});
+
+$('#oqc_capa_status').change(function (e) { 
+	e.preventDefault();
+	if($(this).val() === 'Open'){
+		$('.submissionDate').hide();
+	}else{
+		$('.submissionDate').show();
+	}
 });
 
 

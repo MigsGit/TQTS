@@ -239,7 +239,17 @@
 		$row = array();
 		unset($row);
 		$button = '<center><button btn-type="view" tbl-oqc-lon-capa-monitoring-id ="'.$aRow['id'].'"  id="btnViewDocReviewDisposition" class="btn btn-sm btn-info fa fa-edit" type="button"> Edit</button></center>';
-		$status = '<span class="badge highlight-color-blue">Open</span>';
+		switch ($aRow['oqc_capa_status']) {
+			case 'Open':
+				$status = '<span class="badge highlight-color-lime">Open</span>';
+				break;
+			case 'Closed':
+				$status = '<span class="badge highlight-color-green">Closed</span>';
+				break;
+			default:
+				$status = '<span class="badge highlight-color-red">Unknown Status</span>';
+				break;
+		}
 		
 		$row[] = $button;
 		$row[] = $status;
@@ -282,6 +292,4 @@
 		
 	}
 	
-		//get_emp_name_by_username_systemone($username)
-
 ?>

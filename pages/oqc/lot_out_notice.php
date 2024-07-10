@@ -2274,7 +2274,7 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"><i class="fa fa-question-circle-o"></i>Capa Monitoring</h4>
+        <h4 class="modal-title"><i class="fa fa-question-circle-o"></i> Capa Monitoring</h4>
       </div>
 	  <form id="frm_oqc_capa_monitoring">
 		  <!-- CORRECTIVE / PREVENTIVE ACTION -->
@@ -2325,27 +2325,27 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 					<label class="fa fa-md">Status: </label>
 				</div>
 				<div class="col-sm-10">
-					<select class="form-control" id="oqc_capa_Status" name="oqc_capa_status" required>
+					<select class="form-control" id="oqc_capa_status" name="oqc_capa_status" required>
 						<option value="N/A" disabled selected>-Select-</option>
 						<option value="Open">Open</option>
 						<option value="Closed">Closed</option>
 					</select>
 				</div>
 			</div>	
-			<div class="row" style="margin-top:5px;">
+			<div class="row submissionDate" style="margin-top:5px;">
 				<div class="col-sm-2">
 					<label class="fa fa-md">Required Submission Date: </label>
 				</div>
 				<div class="col-sm-10">
-					<input type="date" class="form-control" id="oqc_capa_req_sub_date" name="oqc_capa_req_sub_date" required>
+					<input type="date" class="form-control" id="oqc_capa_req_sub_date" name="oqc_capa_req_sub_date">
 				</div>
 			</div>	
-			<div class="row" style="margin-top:5px;">
+			<div class="row submissionDate" style="margin-top:5px;">
 				<div class="col-sm-2">
 					<label class="fa fa-md">Actual Submission Date: </label>
 				</div>
 				<div class="col-sm-10">
-					<input type="date" class="form-control" id="oqc_capa_actual_sub_date" name="oqc_capa_actual_sub_date" required>
+					<input type="date" class="form-control" id="oqc_capa_actual_sub_date" name="oqc_capa_actual_sub_date">
 				</div>
 			</div>	
 			<div class="row" style="margin-top:5px;">
@@ -2353,7 +2353,7 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 					<label class="fa fa-md">Remarks: </label>
 				</div>
 				<div class="col-sm-10">
-					<input type="text" class="form-control" id="oqc_capa_remarks" name="oqc_capa_remarks" required>
+					<input type="text" class="form-control" id="oqc_capa_remarks" name="oqc_capa_remarks">
 				</div>
 			</div>	
 		  </div>

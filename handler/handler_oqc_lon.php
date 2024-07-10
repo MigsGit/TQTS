@@ -55,12 +55,21 @@
 			$date_time_today = date('Y-m-d H:i:s');
 			$oqc_lon_capa_monitoring_id =  $return['oqc_lon_capa_monitoring_id'];
 			$arr_oqc_capa_action_incharge =  implode(',',$return['oqc_capa_action_incharge']);
-			$field_data 	= get_fields_values($_POST,array('action','oqc_lon_capa_monitoring_id','username'));
+			if($return['oqc_capa_status'] == "Open"){ 
+				$field_data 	= get_fields_values($_POST,array('action','oqc_lon_capa_monitoring_id','username','oqc_capa_req_sub_date','oqc_capa_actual_sub_date'));
+			}else{
+				$field_data 	= get_fields_values($_POST,array('action','oqc_lon_capa_monitoring_id','username'));
+			}
 			/* get field data from post */
 			$array_fields   = $field_data['array_fields'];
 			$array_values   = $field_data['array_values'];
+			/* add blanks to undefined or empty values */
+			foreach($array_fields as $key => $value){
+				if(!isset($return[$value]) || $return[$value] == ""){
+					$return[$value] = "";
+				}
+			}
 			$table			= 'tbl_oqc_lon_capa_monitoring';
-		
 			if($oqc_lon_capa_monitoring_id == ""){ //ADD
 				/* add additional fields */
 				$array_fields[]	= 'created_by'; 	$array_values[] = $_POST['username'];
@@ -68,12 +77,7 @@
 				$script 		= TQTS::getInstance()->insert_query_script($table,$array_fields,$array_values);
 				$query 		= TQTS::getInstance()->insert_query($table,$array_fields,$array_values);
 			}else{ //EDIT
-				/* add blanks to undefined or empty values */
-				foreach($array_fields as $key => $value){
-					if(!isset($return[$value]) || $return[$value] == ""){
-						$return[$value] = "";
-					}
-				}
+				
 				/* add additional fields */
 				$array_fields[]	= 'updated_by'; 	$array_values[] = $_POST['username'];
 				$array_fields[]	= 'updated_at'; 	$array_values[] = date('Y-m-d H:i:s');
@@ -774,7 +778,8 @@
 				$msg 			= TQTS::getInstance()->update_query_detailed($table_details,$array_fields,$array_values,$sql_where);
 				$script 		= TQTS::getInstance()->update_query_detailed_script($table_details,$array_fields,$array_values,$sql_where);
 				
-				/* Update details table attachment */
+				/* Update details table attachment file_name date_time_created nmodify*/
+				/*CAPA report received date date_time_created nmodify*/
 				$table 			 = 'tbl_oqc_lon_production';
 				$array_fields 	 = array('date_time_created', 'created_by', 'fklon', 'sorted_qty', 'ok_qty', 'ng_qty', 'mode_defect', 'guaranteed_lot', 'file_name', 'fkfile_path', 'production_remarks', 'conform_by', 'conform_by_status', 'lastupdate', 'username');
 				$array_values 	 = array($date_time_today,$username,$fklon,$sorted_qty,$ok_qty,$ng_qty,$mode_defect,$guaranteed_lot,$file_name,$fkfile_path,$production_remarks,$conform_by,'FOR CONFORMANCE',$date_time_today,$username);
