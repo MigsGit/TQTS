@@ -2205,9 +2205,11 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-2">
 					<label class="fa fa-md">Attachment: </label>
+					<!-- nmodify -->
 				</div>
 				<div class="col-sm-10">
 					<button type="button" class="btn btn-link fa fa-paperclip" id="pkid" name="pkid"> Attachments</button>
+					<button type="button" class="btn btn-warning fa fa-file re-upload" id="pkid" name="pkid"> Re-upload</button>
 				</div>
 			</div>	
 			<div class="profile-info-title h4" >
@@ -2501,6 +2503,37 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<script>
-	
-</script>
+<div class="modal fade" tabindex="-1" role="dialog" id="modal_lon_file_re_upload">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-question-circle-o"></i> System Confirmation</h4>
+      </div>
+	  <form id="form_lon_file_re_upload">
+		  <div class="modal-body">
+		  	<div class="row" style="display:none;">			
+		  		<div class="col-sm-6">
+					<label class="fa fa-md">TblOqcLonProduction: </label>
+				</div>
+				<div class="col-sm-6">
+					<input class="form-control" type="number" id="tbl_oqc_lon_production_id" name="tbl_oqc_lon_production_id">
+				</div>
+			</div>
+			<div class="row">			
+				<div class="col-sm-6">
+					<label class="fa fa-md">Attachment: </label>
+				</div>
+				<div class="col-sm-6">
+					<input class="form-control" type="file" id="file_lon_re_upload" name="file_lon_re_upload">
+				</div>
+			</div>
+		  </div>
+		  <div class="modal-footer">
+			<button type="submit" class="btn btn-primary fa fa-save"> Save</button>
+			<button type="button" class="btn btn-default fa fa-close" data-dismiss="modal" id="btn_close"> Close</button>
+		  </div>
+	  </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

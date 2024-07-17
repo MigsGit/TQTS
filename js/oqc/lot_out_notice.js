@@ -703,6 +703,8 @@ $('#'+mdl_production+' .fa-paperclip').click(function() {
 	window.location.href = "./pages/oqc/dl_oqc_lon.php?id="+$(this).val()+'&type=inspector';
 });	
 
+
+
 $('#'+frm_production_new+' input[name="ok_qty"]').keyup(function(e) {
 	var ok_qty 		= parseFloat($('#'+frm_production_new+' input[name="ok_qty"]').val());
 	var sorted_qty 	= parseFloat($('#'+frm_production_new+' input[name="sorted_qty"]').val());
@@ -1034,6 +1036,28 @@ $('#'+frm_inspector_production+' button[name="add_mode_defect"]').click(function
 $('#'+mdl_inspector_production+' .fa-paperclip').click(function() {	
 	window.location.href = "./pages/oqc/dl_oqc_lon.php?id="+$(this).val()+'&type=inspector';
 });	
+
+// === Re upload === 
+$('#'+mdl_inspector_production+' .re-upload').click(function() {	
+	$('#form_lon_file_re_upload').find('#tbl_oqc_lon_production_id').val($(this).val());
+	$('#modal_lon_file_re_upload').modal();
+});	
+
+$('#form_lon_file_re_upload').submit(function (e) { 
+	e.preventDefault();
+	let serialized_data = new FormData(this);
+		serialized_data.append( "action","lon_file_re_upload" );
+		serialized_data.append( "tbl_oqc_lon_production_id", $( '#form_lon_file_re_upload').find('#tbl_oqc_lon_production_id').val() );
+		serialized_data.append( "username",username );
+	call_ajax_attachment(serialized_data, handler_lon, function(result) {
+		if(result.is_success === 'true'){
+			$('#modal_lon_file_re_upload').modal('hide');
+			notif_success(result.message);
+		}else{
+			notif_success(result.message);
+		}
+	});
+});
 
 $('#'+mdl_inspector_production+' .fa-thumbs-o-up').click(function() {
 	if($('#'+mdl_inspector_production+' #treatment').val() == '' || $('#'+mdl_inspector_production+' #verification_result').val() == '') {

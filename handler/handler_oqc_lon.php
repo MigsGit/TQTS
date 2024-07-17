@@ -25,6 +25,7 @@
 				case "save_lqc_inspector_conformance_decision"	: save_lqc_inspector_conformance_decision(); break;
 				case "save_lqc_cancel"							: save_lqc_cancel(); break;
 				case "check_inspector_attachment"				: check_inspector_attachment(); break;
+				case "lon_file_re_upload"						: lon_file_re_upload(); break; //nmodify
 
 				/* OQC CAPA MONITORING */
 				case "save_oqc_capa_monitoring"					: save_oqc_capa_monitoring(); break;
@@ -45,6 +46,45 @@
 
 	function is_ajax() {
 		return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+	}
+
+	function lon_file_re_upload(){
+		try {
+			require_once('../class/oop_tqts.php');
+			$return = $_POST;
+			$reponse = array();
+			$date_time_today = date('Y-m-d H:i:s');
+			$tbl_oqc_lon_production_id     	= $return['tbl_oqc_lon_production_id'];
+			$file  		     				= return_file_path_by_div_mod('oqc_lot_out_notice_production');
+			$fkfile_path     				= $file['pkid'];
+			$target_dir      				= $file['path'];
+			$temp_file 	     				= $_FILES["file_lon_re_upload"]["tmp_name"];
+			$file_name 	     				= $_FILES["file_lon_re_upload"]["name"];
+			$ext = pathinfo($file_name,PATHINFO_EXTENSION);
+			$target_file = $target_dir . $tbl_oqc_lon_production_id . '.' . $ext;
+			$reponse['is_success'] = 'true';
+			$reponse['message'] = 'Saved Succefully';
+			echo json_encode($reponse);
+			return;
+			if ( move_uploaded_file($temp_file,$target_file) ){
+				$reponse['is_success'] = 'true';
+				$reponse['message'] = 'Saved Succefully';
+				$table = 'tbl_oqc_lon_production';
+				$array_fields = array('file_name','updated_by','lastupdate');
+				$array_values = array($file_name,$return['username'],$date_time_today);
+				$where =' WHERE fklon =  '.$tbl_oqc_lon_production_id.'';
+				// $msg 						= TQTS::getInstance()->update_query_detailed($table,$array_fields,$array_values,$where);
+				$script 					= TQTS::getInstance()->update_query_detailed_script($table,$array_fields,$array_values,$where);
+			}else{
+				$reponse['message'] = 'Invalid file, Please Try Again !';
+			}
+			echo json_encode($reponse);
+		} catch (\Throwable $th) {
+			$reponse['is_success'] = 'false';
+			$reponse['message'] = $th;
+			echo json_encode($reponse);
+		}
+		
 	}
 	
 	function save_oqc_capa_monitoring (){

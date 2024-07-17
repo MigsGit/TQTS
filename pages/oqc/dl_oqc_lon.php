@@ -43,7 +43,7 @@ function get_file_path_by_pkid($fkdetails, $type) {
 	$sql_limit 	= 'LIMIT 0,1';
 	$file 		= array();
 	$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-	echo $script = TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+	$script = TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 	if($row = mysqli_fetch_array($result)){
 		$file['file_path'] = '../'.$row['file_path'];
 		$file['extension'] = end(explode('.',$row['file_name']));
