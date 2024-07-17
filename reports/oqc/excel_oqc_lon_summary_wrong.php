@@ -50,54 +50,10 @@ $capa_joins 	   		= '';
 $capa_sql_order 		= '';
 $capa_sql_limit 		= '';
 
-// $sql_where 		= 'WHERE (date_inspected BETWEEN "'.$date_from.'-01" AND "'.$date_to.'-31") ANDlogdel=0 ANDpkid = 69';
-// $result_details	= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-// $script	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-
-
-// $array_fields 	= array('*');
-// $table 	   		= 'tbl_oqc_lon';
-// $joins 	   		= '';
-// $sql_where 		= 'WHERE (date_inspected BETWEEN "'.$date_from.'-01" AND "'.$date_to.'-31") AND logdel=0';
-// $sql_order 		= 'ORDER BY date_inspected';
-// $sql_limit 		= '';
-// $return = array();
-
-// $result_details	= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-// $script	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-// exit;
-// while($row_details = mysqli_fetch_assoc($result_details)){
-// 	$return['pkid'] = $row_details['pkid'];
-// 	$return['tbl_oqc_lon_capa_monitoring_by_id'] = get_tbl_oqc_lon_capa_monitoring_by_id($return['pkid']);
-// }
-function get_tbl_oqc_lon_capa_monitoring_by_id ($oqc_lon_id){
-	$array_fields 	= array('*');
-	$table 	   		= 'tbl_oqc_lon_capa_monitoring';
-	$joins 	   		= '';
-	$sql_where 		= 'WHERE oqc_lon_id = '.$oqc_lon_id.'';
-	$sql_order 		= '';
-	$sql_limit 		= '';
-	$result_details_tbl_oqc_lon_capa_monitoring	= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-	// $script	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-	$return = array();
-	while($row_details = mysqli_fetch_assoc($result_details_tbl_oqc_lon_capa_monitoring)){
-		$return['oqc_capa_action'][] = $row_details['oqc_capa_action'];
-	}
-	return $return;
-}
 // echo json_encode($return);
-
 // exit;
 
-/*
-SELECT SQL_CALC_FOUND_ROWS * FROM tbl_oqc_lon oqc_lon 
-LEFT JOIN tbl_oqc_lon_capa_monitoring capa_monitoring ON capa_monitoring.oqc_lon_id =pkid 
-WHERE (date_inspected BETWEEN "2024-01-01" AND "2024-07-31") ANDlogdel=0 
-ANDpkid = "69"
-ORDER BYdate_inspected ;
 
-SELECT SQL_CALC_FOUND_ROWS * FROM tbl_oqc_lon WHERE (date_inspected BETWEEN "2024-05-01" AND "2024-07-31") AND logdel=0 ORDER BY date_inspected ;
-*/
 function check_capa_creation($pkid, $oop) {
 	require_once($oop);
 	$array_fields 	= array('*');
@@ -202,7 +158,7 @@ $cell = 'A8:T9'; $excel->set_borders($cell,1,1,1,1, "thin"); //Column Header
 
 /* Place value 
 
-SELECT SQL_CALC_FOUND_ROWS * FROM tbl_oqc_lon oqc_lon LEFT JOIN tbl_oqc_lon_capa_monitoring capa_monitoring ON capa_monitoring.oqc_lon_id =pkid WHERE (date_inspected LIKE "%2024-07%") ANDlogdel=0 ORDER BYdate_inspected ;
+SELECT SQL_CALC_FOUND_ROWS * FROM tbl_oqc_lon oqc_lon LEFT JOIN tbl_oqc_lon_capa_monitoring capa_monitoring ON capa_monitoring.oqc_lon_id =pkid WHERE (date_inspected LIKE "%2024-07%") AND logdel=0 ORDER BY date_inspected ;
 
 
 */
@@ -252,21 +208,21 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 	$excel->place_value($col.$row,$month_year,'string'); 		 		
 	$cell_range = 'A'.$row.':K'.$row; $excel->set_format($cell_range,$array_format_sub_content);
 	$excel->merge_cells('A'.$row.':K'.$row);
+	$excel->set_height($row,40);
 	$row++;
 	
-	$sql_where 		= 'WHERE (date_inspected LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%") AND logdel=0';
-	// $sql_where 		= 'WHERE (date_inspected LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%") AND logdel=0';
+	$capa_sql_where 		= 'WHERE (date_inspected LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%") AND logdel=0';
 	$result_details	= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 	$script	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 
 	while($row_details = mysqli_fetch_assoc($result_details)){
 		$attention 	= array();
-		$custom_row_count = $row_details['pkid'];
-		// echo json_encode($custom_row_count);
+		$custom_row_count[] = $row_details['pkid'];
 		$att 		= explode(',',$row_details['attention']);
 		foreach($att as $key => $value) {
 			$attention[] = get_emp_name_by_username_systemone($value);
 		}
+		// echo "".$col.':'.$row."";
 		$lon_no = $section.'-'.date('my', strtotime($row_details['date_time_created'])).'-'.$row_details['lon_ctr'];
 		$excel->place_value($col.$row,$lon_no,'string'); 							$col++; 
 		$excel->place_value($col.$row,date('M d, Y', strtotime($row_details['date_inspected'])),'string'); 	$col++; 	
@@ -281,50 +237,42 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 		$excel->place_value($col.$row,'capa received date','string'); 		$col++;
 		$excel->place_value($col.$row,'actual tat','string'); 		$col++;
 		$excel->set_height($row,40);
-		$col = 'A';
+		// $excel->merge_cells($col.$row.':'.$col.$row);
+		$row++;		
 		
-		//Column H-T :for OQC CAPA Monitoring
-		$capa_sql_where 		= 'WHERE oqc_lon_id = '.$row_details['pkid'].'';
-		$script_details_tbl_oqc_lon_capa_monitoring	= TQTS::getInstance()->select_query_script($capa_array_fields,$capa_table,$capa_joins,$capa_sql_where,$capa_sql_order,$capa_sql_limit);
-		$result_details_tbl_oqc_lon_capa_monitoring	= TQTS::getInstance()->select_query($capa_array_fields,$capa_table,$capa_joins,$capa_sql_where,$capa_sql_order,$capa_sql_limit);
-		$return_tbl_oqc_lon_capa_monitoring = array();
-		$lowest_row = null;
-		$highest_row = null;
-		while($row_tbl_oqc_lon_capa_monitoring = mysqli_fetch_assoc($result_details_tbl_oqc_lon_capa_monitoring)){
-			/* Excel Format */
-			$excel->set_height($row,40);
-			// SET lowest_row INSIDE the condition & Set highest_row OUTSIDE the condition
-			if ($lowest_row === null || $highest_row === null) {
-				$lowest_row = $row;
-			}
-			$highest_row = $row;
-			/* Place Value */
-			$excel->place_value('M'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_action'],'string');
-			$excel->place_value('N'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_action_incharge'],'string');
-			$excel->place_value('O'.$row,date('M d, Y', strtotime($row_tbl_oqc_lon_capa_monitoring['oqc_capa_due_date'])),'string');	 	
-			$excel->place_value('P'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_status'],'string');
-			$excel->place_value('Q'.$row,date('M d, Y', strtotime($row_tbl_oqc_lon_capa_monitoring['oqc_capa_req_sub_date'])),'string'); 	
-			$excel->place_value('R'.$row,date('M d, Y', strtotime($row_tbl_oqc_lon_capa_monitoring['oqc_capa_actual_sub_date'])),'string');	 	
-			$excel->place_value('S'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_remarks'],'string');
-			$row++;	
-		}
-		/* Excel Format */
-		// Column A-L :GET lowest_row INSIDE the condition & Set highest_row OUTSIDE the condition
-		$excel->merge_cells('A'.$lowest_row.':'.'A'.$highest_row);
-		$excel->merge_cells('B'.$lowest_row.':'.'B'.$highest_row);
-		$excel->merge_cells('C'.$lowest_row.':'.'C'.$highest_row);
-		$excel->merge_cells('D'.$lowest_row.':'.'D'.$highest_row);
-		$excel->merge_cells('E'.$lowest_row.':'.'E'.$highest_row);
-		$excel->merge_cells('F'.$lowest_row.':'.'F'.$highest_row);
-		$excel->merge_cells('G'.$lowest_row.':'.'G'.$highest_row);
-		$excel->merge_cells('H'.$lowest_row.':'.'H'.$highest_row);
-		$excel->merge_cells('I'.$lowest_row.':'.'I'.$highest_row);
-		$excel->merge_cells('J'.$lowest_row.':'.'J'.$highest_row);
-		$excel->merge_cells('K'.$lowest_row.':'.'K'.$highest_row);
-		$excel->merge_cells('L'.$lowest_row.':'.'L'.$highest_row);
+		// $capa_sql_where 		= 'WHERE oqc_lon_id = '.$row_details['pkid'].'';
+		// $result_details_tbl_oqc_lon_capa_monitoring	= TQTS::getInstance()->select_query($capa_array_fields,$capa_table,$capa_joins,$capa_sql_where,$capa_sql_order,$capa_sql_limit);
+		// $script_details_tbl_oqc_lon_capa_monitoring	= TQTS::getInstance()->select_query_script($capa_array_fields,$capa_table,$capa_joins,$capa_sql_where,$capa_sql_order,$capa_sql_limit);
+		// $return_tbl_oqc_lon_capa_monitoring = array();
+		// while($row_tbl_oqc_lon_capa_monitoring = mysqli_fetch_assoc($result_details_tbl_oqc_lon_capa_monitoring)){
+		// 		$excel->place_value('L'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_action'],'string');
+		// 	$row++;		
+		// }
+		// echo (count($tbl_oqc_lon_capa_monitoring_by_id['oqc_capa_action']));
+ 
+		// while ($row__oqc_lon_capa_monitoring_by_id = count($tbl_oqc_lon_capa_monitoring_by_id['oqc_capa_action'])) {
+		// 	echo $row__oqc_lon_capa_monitoring_by_id['oqc_capa_action'];
+		// }
+		
+		// $excel->place_value($col.$row,implode(' / ',$attention),'string'); 			$col++;
+		// $excel->place_value($col.$row,get_emp_name_by_username_systemone($row_details['created_by']),'string'); $col++; 	
+		// $excel->place_value($col.$row,date('M d, Y', strtotime($row_details['capa_due_date'])),'string'); 		$col++; 	
+		// $excel->place_value($col.$row,date('M d, Y', strtotime($row_details['date_inspected'])),'string'); 		$col++; 	
+		// $excel->place_value($col.$row,check_capa_creation($row_details['pkid'], $oop),'string'); 		$col++; 	
+		// $excel->place_value($col.$row,$row_details['status'],'string'); 		$col++; 	
+	
+		// while($tbl_oqc_lon_capa_monitoring_by_id){
+		// 	$col = 'A'; $row++;		
+		// }
+		
 	}
+	// echo $col.$first_row.':'.$col.$last_row;
 }
 
+// var_dump(count($tbl_oqc_lon_capa_monitoring_by_id['oqc_capa_action']));
+//$tbl_oqc_lon_capa_monitoring_by_id = get_tbl_oqc_lon_capa_monitoring_by_id($row_details['pkid']);
+
+// exit;
 /* 
 	Set borders ( $excel->set_borders($cell,$left,$right,$top,$bottom,$border_style); )
 */
