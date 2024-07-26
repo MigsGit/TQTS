@@ -37,67 +37,24 @@ $script 	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,
 
 
 /* Details data */
-$array_fields 	= array('*');
-$table 	   		= 'tbl_oqc_lon';
-$joins 	   		= '';
-$sql_order 		= 'ORDER BY date_inspected';
+$array_fields 	= array('lon.*','lon_production.date_time_created AS capa_report_received_date');
+$table 	   		= 'tbl_oqc_lon lon';
+$joins 	   		= 'LEFT JOIN tbl_oqc_lon_production lon_production ON lon_production.fklon = lon.pkid';
+$sql_order 		= 'ORDER BY lon.date_inspected';
 $sql_limit 		= '';
 $return = array();
 
-$capa_array_fields 	= array('*');
+$capa_array_fields 		= array('*');
 $capa_table 	   		= 'tbl_oqc_lon_capa_monitoring';
 $capa_joins 	   		= '';
 $capa_sql_order 		= '';
 $capa_sql_limit 		= '';
-
-// $sql_where 		= 'WHERE (date_inspected BETWEEN "'.$date_from.'-01" AND "'.$date_to.'-31") ANDlogdel=0 ANDpkid = 69';
-// $result_details	= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-// $script	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-
-
-// $array_fields 	= array('*');
-// $table 	   		= 'tbl_oqc_lon';
-// $joins 	   		= '';
-// $sql_where 		= 'WHERE (date_inspected BETWEEN "'.$date_from.'-01" AND "'.$date_to.'-31") AND logdel=0';
-// $sql_order 		= 'ORDER BY date_inspected';
-// $sql_limit 		= '';
-// $return = array();
-
-// $result_details	= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-// $script	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-// exit;
-// while($row_details = mysqli_fetch_assoc($result_details)){
-// 	$return['pkid'] = $row_details['pkid'];
-// 	$return['tbl_oqc_lon_capa_monitoring_by_id'] = get_tbl_oqc_lon_capa_monitoring_by_id($return['pkid']);
-// }
-function get_tbl_oqc_lon_capa_monitoring_by_id ($oqc_lon_id){
-	$array_fields 	= array('*');
-	$table 	   		= 'tbl_oqc_lon_capa_monitoring';
-	$joins 	   		= '';
-	$sql_where 		= 'WHERE oqc_lon_id = '.$oqc_lon_id.'';
-	$sql_order 		= '';
-	$sql_limit 		= '';
-	$result_details_tbl_oqc_lon_capa_monitoring	= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-	// $script	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-	$return = array();
-	while($row_details = mysqli_fetch_assoc($result_details_tbl_oqc_lon_capa_monitoring)){
-		$return['oqc_capa_action'][] = $row_details['oqc_capa_action'];
-	}
-	return $return;
-}
-// echo json_encode($return);
-
+// $sql_where 		= 'WHERE (lon.date_inspected LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%") AND lon.logdel=0';
+// $sql_where 		.= ' AND lon_production.logdel = 0';
+// $result_details	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+// echo json_encode($result_details);
 // exit;
 
-/*
-SELECT SQL_CALC_FOUND_ROWS * FROM tbl_oqc_lon oqc_lon 
-LEFT JOIN tbl_oqc_lon_capa_monitoring capa_monitoring ON capa_monitoring.oqc_lon_id =pkid 
-WHERE (date_inspected BETWEEN "2024-01-01" AND "2024-07-31") ANDlogdel=0 
-ANDpkid = "69"
-ORDER BYdate_inspected ;
-
-SELECT SQL_CALC_FOUND_ROWS * FROM tbl_oqc_lon WHERE (date_inspected BETWEEN "2024-05-01" AND "2024-07-31") AND logdel=0 ORDER BY date_inspected ;
-*/
 function check_capa_creation($pkid, $oop) {
 	require_once($oop);
 	$array_fields 	= array('*');
@@ -150,6 +107,11 @@ $array_format_sub_content = array(
 	"h_alignment"	=> "left",
 	'fill_color'  => "FF99cc"
 );
+
+$array_format_value = array(
+	"size"	=> 11,
+	"h_alignment"	=> "center"
+);
 $cell_range = 'A8:T8'; $excel->set_format($cell_range,$array_format_subheader);
 $cell_range = 'A1:K1'; $excel->set_format($cell_range,$array_format_header);
 $cell_range = 'M9:R9'; $excel->set_format($cell_range,$array_format_subheader);
@@ -195,6 +157,7 @@ for($i=0; $i<count($arr_custom_merge_cells); $i++) {
 /* Wrap Text */
 $excel->wrap_text('C8:T8');
 $excel->wrap_text('M9:T9');
+
 
 /* Border */
 $cell = 'A8:T9'; $excel->set_borders($cell,1,1,1,1, "thin"); //Column Header
@@ -248,18 +211,22 @@ $row = 10;
 
 while($row_group = mysqli_fetch_assoc($result_group)){	
 
+			
+	$cell_range = 'A'.$row.':T'.$row; $excel->set_format($cell_range,$array_format_sub_content);
+	$excel->merge_cells('A'.$row.':T'.$row);
+	$excel->set_height($row,40);
+	//PLACE VALUE
 	$month_year = date('M, Y', strtotime($row_group['year_inspected'].'-'.$row_group['month_inspected'].'-01'));
-	$excel->place_value($col.$row,$month_year,'string'); 		 		
-	$cell_range = 'A'.$row.':K'.$row; $excel->set_format($cell_range,$array_format_sub_content);
-	$excel->merge_cells('A'.$row.':K'.$row);
+	$excel->place_value($col.$row,$month_year,'string'); 		
 	$row++;
 	
-	$sql_where 		= 'WHERE (date_inspected LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%") AND logdel=0';
-	// $sql_where 		= 'WHERE (date_inspected LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%") AND logdel=0';
+	// $sql_where 		= 'WHERE (lon.date_inspected LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%") AND lon.logdel=0';
+	$sql_where 		= 'WHERE (lon.date_inspected LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%") AND lon.logdel=0';
+	$sql_where 		.= ' AND lon_production.logdel = 0';
 	$result_details	= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 	$script	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-
 	while($row_details = mysqli_fetch_assoc($result_details)){
+
 		$attention 	= array();
 		$custom_row_count = $row_details['pkid'];
 		// echo json_encode($custom_row_count);
@@ -267,18 +234,20 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 		foreach($att as $key => $value) {
 			$attention[] = get_emp_name_by_username_systemone($value);
 		}
+		
 		$lon_no = $section.'-'.date('my', strtotime($row_details['date_time_created'])).'-'.$row_details['lon_ctr'];
+		//PLACE VALUE
 		$excel->place_value($col.$row,$lon_no,'string'); 							$col++; 
-		$excel->place_value($col.$row,date('M d, Y', strtotime($row_details['date_inspected'])),'string'); 	$col++; 	
+		$excel->place_value($col.$row,date( 'M d, Y', strtotime($row_details['date_inspected'] ) ),'string'); 	$col++; 	
 		$excel->place_value($col.$row,$row_details['line'],'string'); 				$col++; 	
 		$excel->place_value($col.$row,$row_details['device_name'],'string'); 		$col++; 	
 		$excel->place_value($col.$row,$row_details['factory_location'],'string'); 	$col++;
 		$excel->place_value($col.$row,$row_details['lot_number'],'string'); 		$col++;
 		$excel->place_value($col.$row,$row_details['defect_mode'],'string'); 		$col++;
 		$excel->place_value($col.$row,$row_details['operator'],'string'); 		$col++;
-		$excel->place_value($col.$row,$row_details['attention'],'string'); 		$col++;
+		$excel->place_value($col.$row,implode(' / ',$attention),'string'); 		$col++;
 		$excel->place_value($col.$row,$row_details['capa_due_date'],'string'); 		$col++;
-		$excel->place_value($col.$row,'capa received date','string'); 		$col++;
+		$excel->place_value($col.$row,date( 'M d, Y', ( $row_details['capa_report_received_date'] ) ),'string'); 		$col++;
 		$excel->place_value($col.$row,'actual tat','string'); 		$col++;
 		$excel->set_height($row,40);
 		$col = 'A';
@@ -298,7 +267,7 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 				$lowest_row = $row;
 			}
 			$highest_row = $row;
-			/* Place Value */
+			//PLACE VALUE
 			$excel->place_value('M'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_action'],'string');
 			$excel->place_value('N'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_action_incharge'],'string');
 			$excel->place_value('O'.$row,date('M d, Y', strtotime($row_tbl_oqc_lon_capa_monitoring['oqc_capa_due_date'])),'string');	 	
@@ -310,6 +279,22 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 		}
 		/* Excel Format */
 		// Column A-L :GET lowest_row INSIDE the condition & Set highest_row OUTSIDE the condition
+
+	
+		// $excel->wrap_text('A8:L8');
+		$cell_range = 'A'.$lowest_row.':'.'A'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$cell_range = 'B'.$lowest_row.':'.'B'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$cell_range = 'C'.$lowest_row.':'.'C'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$cell_range = 'D'.$lowest_row.':'.'D'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$cell_range = 'E'.$lowest_row.':'.'E'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$cell_range = 'F'.$lowest_row.':'.'F'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$cell_range = 'G'.$lowest_row.':'.'G'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$cell_range = 'H'.$lowest_row.':'.'H'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$cell_range = 'I'.$lowest_row.':'.'I'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$cell_range = 'J'.$lowest_row.':'.'J'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$cell_range = 'K'.$lowest_row.':'.'K'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$cell_range = 'L'.$lowest_row.':'.'L'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+
 		$excel->merge_cells('A'.$lowest_row.':'.'A'.$highest_row);
 		$excel->merge_cells('B'.$lowest_row.':'.'B'.$highest_row);
 		$excel->merge_cells('C'.$lowest_row.':'.'C'.$highest_row);
@@ -322,6 +307,7 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 		$excel->merge_cells('J'.$lowest_row.':'.'J'.$highest_row);
 		$excel->merge_cells('K'.$lowest_row.':'.'K'.$highest_row);
 		$excel->merge_cells('L'.$lowest_row.':'.'L'.$highest_row);
+		$excel->wrap_text('A'.$lowest_row.':'.'L'.$highest_row);
 	}
 }
 
