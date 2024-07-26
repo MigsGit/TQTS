@@ -283,6 +283,16 @@ class EXCEL extends PHPExcel{
 												'code' => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE_00
 											);
 			$this->objPHPExcel->getStyle($cell)->getNumberFormat()->applyFromArray( $style_array_percentage );
+		}else if($data_type == 'date_format'){
+			if($value != ''){ //return date if value exist
+				$timestamp = PHPExcel_Shared_Date::PHPToExcel(strtotime($value));
+				// Set the cell value as the timestamp
+				$this->objPHPExcel->setCellValue($cell, $timestamp);
+				$this->objPHPExcel->getStyle($cell)->getNumberFormat()->setFormatCode('dd-mmm-yy');
+			}else{//return string if value not exist
+				$this->objPHPExcel->setCellValueExplicit($cell, $value, PHPExcel_Cell_DataType::TYPE_STRING);
+			}
+			
 		}
 		else{
 			$this->objPHPExcel->getCell($cell)->setValue($value);
