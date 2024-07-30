@@ -156,13 +156,16 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 							<fieldset>
 
 							<div class="row">
-								<div class="col-sm-2  pull-left">
+								<!-- <div class="col-sm-2  pull-left">
 									<input type="text" class="form-control" id="txt_sar_summary_date" name="sar_summary_date" placeholder="Insert Date ...">
-								</div>
-								<div class="col-sm-2  pull-left">
+								</div> -->
+								<div class="col-sm-12  pull-left">
 									<?php
+										// if($sa_user_access){
+										// 	echo '<button class="btn btn-primary fa fa-plus pull-right" id="export_sa_summary" disabled> Export SAR Summary </button>';
+										// }
 										if($sa_user_access){
-											echo '<button class="btn btn-primary fa fa-plus pull-right" id="export_sa_summary" disabled> Export SAR Summary </button>';
+											echo '<button class="btn btn-success fa fa-plus pull-right" id="btn_sa_summary_report"> SAR Report </button>';
 										}
 									?>
 								</div>
@@ -1119,6 +1122,43 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 	  <div class="modal-footer">
 		<button type="button" class="btn btn-default fa fa-close" data-dismiss="modal"> Close</button>
 	  </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal for report generation -->
+<div class="modal" tabindex="-1" role="dialog" id="modal_sar_report">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title fa fa-file-excel-o"> Generate Report</h4>
+      </div>
+      <form id="frm_sar_report">
+      <div class="modal-body">
+		<div class="row">
+			<div class="col-sm-4">
+				<label class="fa fa-md">Date from: </label>
+			</div>
+			<div class="col-sm-8">
+				<input type="month" class="form-control" pattern="[0-9]*" id="date_from" required>
+			</div>
+		</div>
+		<div class="row" style="padding-top:3px;">
+			<div class="col-sm-4">
+				<label class="fa fa-md">Date to: </label>
+			</div>
+			<div class="col-sm-8">
+				<input type="month" class="form-control" pattern="[0-9]*" id="date_to" required>
+			</div>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <div id="div_countdown"></div>
+		<button type="submit" class="btn btn-success fa fa-file-excel-o" id="sar_summary_date"> Export</button>
+        <button type="button" class="btn btn-default fa fa-close" data-dismiss="modal"> Close</button>
+      </div>
+      </form>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

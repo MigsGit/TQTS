@@ -207,7 +207,7 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 	$month_year = date('M, Y', strtotime($row_group['year_inspected'].'-'.$row_group['month_inspected'].'-01'));
 	$excel->place_value($col.$row,$month_year,'string'); 		 		
 	$cell_range = 'A'.$row.':K'.$row; $excel->set_format($cell_range,$array_format_sub_content);
-	$excel->merge_cells('A'.$row.':K'.$row);
+	$excel->merge_cells($cell_range);
 	$excel->set_height($row,40);
 	$row++;
 	
@@ -237,6 +237,8 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 		$excel->place_value($col.$row,'capa received date','string'); 		$col++;
 		$excel->place_value($col.$row,'actual tat','string'); 		$col++;
 		$excel->set_height($row,40);
+		$excel->set_borders($col.$row,1,1,1,1, "thin");
+
 		// $excel->merge_cells($col.$row.':'.$col.$row);
 		$row++;		
 		
@@ -264,9 +266,12 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 		// while($tbl_oqc_lon_capa_monitoring_by_id){
 		// 	$col = 'A'; $row++;		
 		// }
-		
+		if ($lowest_row === null || $highest_row === null) {
+			$lowest_row = $row;
+		}
+		$highest_row = $row;
 	}
-	// echo $col.$first_row.':'.$col.$last_row;
+	
 }
 
 // var_dump(count($tbl_oqc_lon_capa_monitoring_by_id['oqc_capa_action']));

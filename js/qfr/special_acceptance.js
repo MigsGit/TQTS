@@ -740,29 +740,6 @@ $(document).ready(function(){
 		});
 	});
 
-	date_time_picker('txt_sar_summary_date');
-	$('#export_sa_summary').click(function (e) { //zmodify
-		e.preventDefault();
-		let sar_summary_date = $('#txt_sar_summary_date').val()
-		console.log('sar_summary_date',sar_summary_date);
-		console.log('sar_summary_date',sar_summary_date.length);
-		if(sar_summary_date === "" || sar_summary_date.length != 23){
-			notif_err("Invalid date, Please try again!")
-
-		}else{
-			window.location.href = "./reports/iqc/excel_iqc_sa_summary_report.php?sar_summary_date="+sar_summary_date;
-			notif_info("Downloading, Please Wait ...")
-		}
-	});
-
-	$('#txt_sar_summary_date').mask('00/00/0000 - 00/00/0000', {reverse: false});
-	$('#txt_sar_summary_date').change(function (e) { //zmodify
-		let sar_summary_date = $(this).val();
-		if(sar_summary_date == ""){
-			$('#export_sa_summary').prop('disabled',true);
-		}
-	});
-	
 	/** 
 	 * 	FOR DISPOSITION FUNCTION
 	 * function fn_disposition_fields
@@ -1096,9 +1073,40 @@ $(document).ready(function(){
 		}
 	});
 
+	// modal_sar_report
+
+	// $('#'+frm_report).submit(function(e) {
+	// 	e.preventDefault();
+	// 	window.location.href = "./reports/oqc/excel_oqc_lon_summary.php?df="+$('#'+frm_report+' #date_from').val()+"&dt="+$('#'+frm_report+' #date_to').val();
+	// });
+	// date_time_picker('txt_sar_summary_date');
+
+	$('#frm_sar_report').submit(function (e) { //zmodify
+		e.preventDefault();
+		let sar_summary_date_from = $('#frm_sar_report').find('#date_from').val();
+		let sar_summary_date_to = $('#frm_sar_report').find('#date_to').val();
+		console.log('sar_summary_date_from',sar_summary_date_from);
+		console.log('sar_summary_date_to',sar_summary_date_to);
+		if(sar_summary_date_from === "" || sar_summary_date_from === ""){
+			notif_err("Invalid date, Please try again!")
+		}else{
+			window.location.href = "./reports/iqc/excel_iqc_sa_summary_report.php?sar_summary_date_from="+sar_summary_date_from + "&" + "sar_summary_date_to="+sar_summary_date_to ;
+			notif_info("Downloading, Please Wait ...")
+		}
+	});
+	$('#btn_sa_summary_report').click(function (e) { 
+		e.preventDefault();
+		$('#modal_sar_report').modal();
+	});
+
+	// $('#txt_sar_summary_date').mask('00/00/0000 - 00/00/0000', {reverse: false});
+	// $('#txt_sar_summary_date').change(function (e) { //zmodify
+	// 	let sar_summary_date = $(this).val();
+	// 	if(sar_summary_date === "" || sar_summary_date_from === ""){
+	// 		$('#export_sa_summary').prop('disabled',true);
+	// 	}
+	// });
 });
-
-
 
 
 /* ***************************
