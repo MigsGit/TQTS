@@ -29,26 +29,13 @@ if(date('m', strtotime($sar_summary_date_from)) >= 4 && date('m', strtotime($sar
 	$fiscal_year 	= 'FY'.date('Y', strtotime($sar_summary_date_from.'-1 year'));
 }
 
-/*
-SELECT SQL_CALC_FOUND_ROWS YEAR( date_created ) AS year_inspected, MONTH( date_created ) AS month_inspected
- FROM tbl_qfr_special_acceptance
- WHERE 1 =1
- AND DATE( `date_created` )
- BETWEEN '2024-04-01'
- AND '2024-07-31'
- GROUP BY YEAR( date_created ) , MONTH( date_created )
- LIMIT 0 , 30
-	
-*/
-
 /* Group by Year and month data */
 $array_fields 	= array('YEAR(date_created) AS year_inspected', 'MONTH(date_created) AS month_inspected');
 $table 	   		= 'tbl_qfr_special_acceptance';
 $joins 	   		= '';
 $sql_where 	= 'WHERE 1=1';
-// $sql_where  .= " AND DATE(`date_created`) BETWEEN ' " .date('Y-m-d', strtotime($sar_summary_date[0])). " ' AND ' " .date('Y-m-d', strtotime($sar_summary_date[1])). " ' ";
 $sql_where  .= " AND DATE(`date_created`) BETWEEN ' " .date('Y-m-d', strtotime($sar_summary_date_from)). " ' AND ' " .date('Y-m-d', strtotime($sar_summary_date_to)). " ' ";
-// $sql_where  .= " AND DATE(`date_created`) BETWEEN ' " .$sar_summary_date_from. " ' AND ' " .$sar_summary_date_to. " ' ";
+// $sql_where  .= " AND DATE(`date_created`) BETWEEN ' ".date('Y-m-d', strtotime($sar_summary_date_from))." ' AND ' ".date('Y-m', strtotime($sar_summary_date_to)). "-31 ' ";
 $sql_order 		= '';
 $sql_limit 		= 'GROUP BY YEAR(date_created), MONTH(date_created)';
 $script 	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
@@ -59,29 +46,6 @@ $sar_details_sql_table 	   	= 'tbl_qfr_special_acceptance';
 $sar_details_sql_joins 	   	= '';
 $sar_details_sql_order 	   	= '';
 $sar_details_sql_limit 	   	= '';
-
-
-// $return['pkid'][] 							= $row['pkid'];
-// $return['control_number'][] 					= $row['control_number'];
-// $return['parts_affected_parts'][] 			= $row['parts_affected_parts'];     
-// $return['supplier'][] 						= $row['supplier'];
-// $return['device_name'][]	 					= $row['device_name'];  
-// $return['created_by'][] 						= get_emp_name_by_username_systemone($row['created_by']);
-// $return['section'][] 						= get_assigned_section($row['created_by']);
-// $return['problem'][] 						= $row['problem'];
-// $return['factory_location'][] 				= $row['factory_location'];
-// $return['date_issued'][] 					= $row['date_issued'];
-// $return['immediate_action'][] 				= ($row['immediate_action'] != null) ? $row['immediate_action'] : "" ;
-// $return['immediate_action_due_date'][] 		= $row['immediate_action_due_date'] != ""? $row['immediate_action_due_date'] : "";
-// $return['permanent_action'][] 				= $row['permanent_action'] != ""? $row['permanent_action'] : "";
-// $return['permanent_action_due_date'][] 		= $row['permanent_action_due_date'] != ""? $row['permanent_action_due_date'] : "";
-// $return['date_created'][] 					= $row['created_at'];
-// echo get_special_acceptance($sar_summary_date_from,$sar_summary_date_to);
-// exit;
-// echo get_special_acceptance($sar_summary_date);
-// return;
-
-// $get_special_acceptance = get_special_acceptance($sar_summary_date_from,$sar_summary_date_to);
 
 $excel_class = '../../class/excel_new.php';
 if(file_exists($excel_class)){
@@ -128,12 +92,11 @@ $excel->set_width('M',$width_allowance);
 $excel->set_width('N',$width_allowance);
 $excel->set_width('O',$width_allowance);
 
-
+//MERGE CELLS
 $excel->merge_cells('A1:N1');
 $excel->merge_cells('A8:A9');
 $excel->merge_cells('B8:B9');
 $excel->merge_cells('C8:C9');
-// $excel->merge_cells('D8:D9');
 $excel->merge_cells('E8:E9');
 $excel->merge_cells('F8:F9');
 $excel->merge_cells('G8:G9');
@@ -148,12 +111,20 @@ $excel->merge_cells('O8:O9');
 
 $excel->set_borders('A8:O9',1,1,1,1);
 
+//FONT FORMAT
 $array_header = array(
 	"bold"		=> true,
 	// "italic"	=> true,
 	"size"		=> 11,
 	"h_alignment"	=> "center"
 );
+$array_format_subheader_right = array(
+	"bold"		=> true,
+	// "italic"	=> true,
+	"size"		=> 20,
+	"h_alignment"	=> "right"
+);
+
 $array_format_subheader = array(
 	"bold"		=> true,
 	// "italic"	=> true,
@@ -177,15 +148,17 @@ $array_format_value_sar = array(
 	"size"	=> 11,
 	"h_alignment"	=> "left"
 );
-
 $cell_range = 'A1:O1'; $excel->set_format($cell_range,$array_header);
 $cell_range = 'A8:O9'; $excel->set_format($cell_range,$array_format_subheader);
+$cell_range = 'M5:M6'; $excel->set_format($cell_range,$array_format_subheader_right);
+//WRAP TEXT
 $excel->wrap_text('C');
 $excel->wrap_text('C8');
 $excel->wrap_text('H8');
 $excel->wrap_text('J8');
 //PLACE VALUE HEADER             
-$excel->place_value('A1','FY **** SPECIAL ACCEPTANCE SUMMARY LIST_** Section','string');
+$section	= return_system_division();
+$col = 'A'; $row = '1';   $excel->place_value($col.$row,$fiscal_year.' SAR SUMMARY MONITORING_'.$section.'_Section','string');
 $excel->place_value('A8','Control Number','string');
 $excel->place_value('B8','Date Issued','string');
 $excel->place_value('C8','Part Name / Series Name / Machine Name','string');
@@ -200,8 +173,19 @@ $excel->place_value('J8','Specify the details of "OTHERS" disposition','string')
 $excel->place_value('K8','Immediate Action','string');
 $excel->place_value('L8','Due date / ICP','string');
 $excel->place_value('M8','Permanent Action ','string');
+$col = 'M'; $row = '4';   $excel->place_value($col.$row,'Legend:                               Please update month','string');
+$col = 'M'; $row = '5';   $excel->place_value($col.$row,'****','string');
+$col = 'M'; $row = '6';   $excel->place_value($col.$row,'**','string');
 $excel->place_value('N8','Due date / ICP','string');
+$col = 'N'; $row = '3';   $excel->place_value($col.$row,'PQS-I01-024','string');
+$col = 'N'; $row = '5';   $excel->place_value($col.$row,' Please update current Fiscal Year','string');
+$col = 'N'; $row = '6';   $excel->place_value($col.$row,'Please update section name','string');
 $excel->place_value('O8','Status','string');
+
+
+
+
+
 
 $custom_data_row = 10;
 $custom_col = 'A';
@@ -291,7 +275,7 @@ $pmi_logo	= '../../images/sar_format.png';
 $excel->add_image($col.$row,$pmi_logo,'85px');
 
 /* output excel - filename, excel version (2003,2007) */
-$filename = "Special Acceptance.xls";
+$filename = $fiscal_year.' SAR SUMMARY MONITORING_'.$section.'_Section.xls';
 $excel->output($filename,'2003');
 exit;
 ?>

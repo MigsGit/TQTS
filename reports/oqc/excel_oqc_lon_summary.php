@@ -33,8 +33,8 @@ $joins 	   		= '';
 $sql_where 		= 'WHERE (date_inspected BETWEEN "'.$date_from.'-01" AND "'.$date_to.'-31") AND logdel=0';
 $sql_order 		= '';
 $sql_limit 		= 'GROUP BY YEAR(date_inspected), MONTH(date_inspected)';
-$result_group 	= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 $script 	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+$result_group 	= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 //TODO: daysWithoutSundays
 function daysWithoutSundays($date_from, $date_to) {
     $start = new DateTime($date_from);
@@ -216,7 +216,7 @@ $pmi_logo	= '../../images/oqc_lon_ctr_no_format.png';
 $excel->add_image($col.$row,$pmi_logo,'100px');
 
 $section	= return_system_division();
-$col = 'A'; $row = '1';   $excel->place_value($col.$row,$section.' '.$fiscal_year.' _Lot-out summary monitoring Section','string');
+$col = 'A'; $row = '1';   $excel->place_value($col.$row,$fiscal_year.'_Lot-out summary monitoring'.$section.'_Section','string');
 $col = 'A'; $row = '3';   $excel->place_value($col.$row,'LON control numbering','string');
 $col = 'A'; $row = '8';   $excel->place_value($col.$row,'Control Number','string');
 $col = 'B'; $row = '8';   $excel->place_value($col.$row,'Date Issued','string');
@@ -239,16 +239,15 @@ $col = 'P'; $row = '9';   $excel->place_value($col.$row,'Status (Open/Closed)','
 
 $col = 'Q'; $row = '8';   $excel->place_value($col.$row,'CAPA Evidence Submission(after 15 working days from the start of implementation)','string'); //Q-R
 $col = 'R'; $row = '9';   $excel->place_value($col.$row,'Required Submission Date','string');
-$col = 'R'; $row = '5';   $excel->place_value($col.$row,'****');
-$col = 'R'; $row = '6';   $excel->place_value($col.$row,'**');
+$col = 'R'; $row = '5';   $excel->place_value($col.$row,'****','string');
+$col = 'R'; $row = '6';   $excel->place_value($col.$row,'**','string');
+$col = 'R'; $row = '4';   $excel->place_value($col.$row,'Legend:                               Please update month','string');
 $col = 'Q'; $row = '9';   $excel->place_value($col.$row,'Actual Submission Date','string');
 $col = 'S'; $row = '8';   $excel->place_value($col.$row,'Remarks','string');
-$col = 'S'; $row = '5';   $excel->place_value($col.$row,' Please update current Fiscal Year');
-$col = 'S'; $row = '6';   $excel->place_value($col.$row,'Please update section name');
+$col = 'S'; $row = '5';   $excel->place_value($col.$row,' Please update current Fiscal Year','string');
+$col = 'S'; $row = '6';   $excel->place_value($col.$row,'Please update section name','string');
 $col = 'T'; $row = '8';   $excel->place_value($col.$row,'Status','string');
 $col = 'T'; $row = '3';   $excel->place_value($col.$row,'PQS-I01-028','string');
-$col = 'R'; $row = '4';   $excel->place_value($col.$row,'Legend:                               Please update month','string');
-
 
 
 /* Set data value */
@@ -399,7 +398,7 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 
 /* set file name */
 // $filename = $section.' LON Summary List as of '.$date_from.' to '.$date_to;
-$filename = $section.' '.$fiscal_year.' _Lot-out summary monitoring Section';
+$filename = $fiscal_year.'_Lot-out summary monitoring'.$section.'_Section.xls';
 /* output excel - filename, excel version (2003,2007) */
 // $excel->output($filename,'2007');
 $excel->output($filename,'2003');

@@ -83,6 +83,7 @@ $(document).ready(function(){
 			$('#tbl_special_acceptance').attr('style','width:100%;');
 		}
 	});
+
 	$('#tbl_special_acceptance tbody').on('click', 'tr .fa-search', function(){//fmodifynow
 		var pkid = this.id;
 		fn_load_special_acceptance(pkid); //modifynow
@@ -1073,15 +1074,7 @@ $(document).ready(function(){
 		}
 	});
 
-	// modal_sar_report
-
-	// $('#'+frm_report).submit(function(e) {
-	// 	e.preventDefault();
-	// 	window.location.href = "./reports/oqc/excel_oqc_lon_summary.php?df="+$('#'+frm_report+' #date_from').val()+"&dt="+$('#'+frm_report+' #date_to').val();
-	// });
-	// date_time_picker('txt_sar_summary_date');
-
-	$('#frm_sar_report').submit(function (e) { //zmodify
+	$('#frm_sar_report').submit(function (e) {
 		e.preventDefault();
 		let sar_summary_date_from = $('#frm_sar_report').find('#date_from').val();
 		let sar_summary_date_to = $('#frm_sar_report').find('#date_to').val();
@@ -1093,19 +1086,16 @@ $(document).ready(function(){
 			window.location.href = "./reports/iqc/excel_iqc_sa_summary_report.php?sar_summary_date_from="+sar_summary_date_from + "&" + "sar_summary_date_to="+sar_summary_date_to ;
 			notif_info("Downloading, Please Wait ...")
 		}
+		$('#frm_sar_report').find('#date_from').val('');
+		$('#frm_sar_report').find('#date_to').val('');
 	});
+
 	$('#btn_sa_summary_report').click(function (e) { 
 		e.preventDefault();
 		$('#modal_sar_report').modal();
 	});
 
-	// $('#txt_sar_summary_date').mask('00/00/0000 - 00/00/0000', {reverse: false});
-	// $('#txt_sar_summary_date').change(function (e) { //zmodify
-	// 	let sar_summary_date = $(this).val();
-	// 	if(sar_summary_date === "" || sar_summary_date_from === ""){
-	// 		$('#export_sa_summary').prop('disabled',true);
-	// 	}
-	// });
+	
 });
 
 
