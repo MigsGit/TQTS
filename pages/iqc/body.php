@@ -214,13 +214,11 @@
  <script src="js/qfr/special_acceptance.js?t=<?=time()?>" type="text/javascript"></script>
  <script src='js/jquerymask/jquery.mask.min.js?t=<?=time()?>'></script>
  <script src="js/qfr/ypics.js?t=<?=time()?>" type="text/javascript"></script>
-<!-- <script src="js/qfr/special_acceptance.js?force={{ rand(0, 100000) }}" type="text/javascript"></script> -->
 <script src="js/qfr/aye_report.js?t=<?=time()?>" type="text/javascript"></script>
 <script src="js/qfr/attention_tag.js?t=<?=time()?>" type="text/javascript"></script>
 <script src="js/qfr/ptis.js?t=<?=time()?>" type="text/javascript"></script>
 <script src="js/qfr/itn.js?t=<?=time()?>" type="text/javascript"></script>
 <script src="js/qfr/8d.js?t=<?=time()?>" type="text/javascript"></script>
-<!-- <script src="js/qfr/capa.js?t=<?=time()?>" type="text/javascript"></script> -->
 <script src="js/qfr/qcfr.js?t=<?=time()?>" type="text/javascript"></script>
 <script src="js/qfr/loss_cost.js?t=<?=time()?>" type="text/javascript"></script>
 

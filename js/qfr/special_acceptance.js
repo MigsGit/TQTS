@@ -115,6 +115,7 @@ $(document).ready(function(){
 		$('#container_upload_sa_message').show();
 		fn_load_special_acceptance(this.id,'edit');
 	});
+
 	$('#tbl_special_acceptance tbody').on('click', 'tr .fa-plus', function(){
 		var pkid = this.id;
 		$('#modal_sa_edit').data('id',pkid);
@@ -382,7 +383,7 @@ $(document).ready(function(){
 		$("#tbl_approver").find("tr:gt(0)").remove();
 		$('#btn_add_approver').prop('disabled',false);
 	}
-	function fn_load_special_acceptance(pkid,mode,current_status){
+	function fn_load_special_acceptance(pkid,mode,current_status=null){ //xmodify
 		var data = {
 			"action"	: "load_special_acceptance",
 			"pkid"		: pkid,
@@ -644,15 +645,12 @@ $(document).ready(function(){
 		
 	});
 
-	$('#'+tbl_special_acceptance_disposition +' tbody').on('click', 'tr .fa-eye', function(){
-		var pkid = this.id;
-		var current_status 	= $(this).closest('tr').find('td:eq(0)').text();
-		$('#modal_sa_edit').modal('show');
-		$('#modal_sa_edit').data('id',pkid);
-		$('#tbl_approver_view tbody').empty();
-		$('#edit_btn_add_approver').prop('disabled',false);
-		$('#modal_sa_edit #container_upload_sa_message').hide();
-		fn_load_special_acceptance(pkid,'view',current_status);
+	$('#'+tbl_special_acceptance_disposition +' tbody').on('click', 'tr .fa-eye', function(){  //xmodify
+		let current_status 	= $(this).closest('tr').find('td:eq(0)').text();
+		$('#modal_sa').data('id',this.id);
+		$('#modal_sa').modal({backdrop: 'static',
+		keyboard: false},'show');
+		fn_load_special_acceptance(this.id,'view');
 	});
 	$('#'+tbl_special_acceptance_disposition +' tbody').on('click', 'tr .fa-edit', function(){
 		$('#modal_sa').data('id',this.id);
@@ -1060,6 +1058,7 @@ $(document).ready(function(){
 			}
 		});
 	}
+
 	$form_save_sa_control_num.submit(function (e) { 
 		e.preventDefault();
 		save_sa_control_num( $(this).serialize() );

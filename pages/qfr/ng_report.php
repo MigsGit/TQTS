@@ -4,11 +4,11 @@ $ng_report_approver	 			= false;
 $ng_report_requestor 			= false;
 $ng_report_disposition_admin 	= false;
 foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
-	if($subsystem_code == "QFR" && $user_role['module'][$key] == "NG Report" && $user_role['role'][$key] == "APPROVER"){ 
+	if($subsystem_code == "IQC" && $user_role['module'][$key] == "NG Report" && $user_role['role'][$key] == "APPROVER"){ 
 		$ng_report_approver = true;
-	} else if($subsystem_code == "QFR" && $user_role['module'][$key] == "NG Report" && $user_role['role'][$key] == "REQUESTOR"){
+	} else if($subsystem_code == "IQC" && $user_role['module'][$key] == "NG Report" && $user_role['role'][$key] == "REQUESTOR"){
 		$ng_report_requestor = true;
-	} if($subsystem_code == "QFR" && $user_role['module'][$key] == "NG Report - Disposition Admin" && $user_role['read'][$key] == 1){
+	} if($subsystem_code == "IQC" && $user_role['module'][$key] == "NG Report - Disposition Admin" && $user_role['read'][$key] == 1){
 		$ng_report_disposition_admin = true;
 	}
 }

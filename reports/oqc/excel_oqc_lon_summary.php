@@ -151,10 +151,15 @@ $array_format_value_capa_monitoring = array(
 	"size"	=> 11,
 	"h_alignment"	=> "left"
 );
+$array_format_white_all_cell = array(
+	'fill_color'  => "ffffff"
+);
+$cell_range = 'A1:Z100'; $excel->set_format($cell_range,$array_format_white_all_cell);
 $cell_range = 'A8:T8'; $excel->set_format($cell_range,$array_format_subheader);
-$cell_range = 'A1:K1'; $excel->set_format($cell_range,$array_format_header);
+$cell_range = 'A1:T1'; $excel->set_format($cell_range,$array_format_header);
 $cell_range = 'M9:R9'; $excel->set_format($cell_range,$array_format_subheader);
 $cell_range = 'R5:R6'; $excel->set_format($cell_range,$array_format_subheader_right);
+
 
 /* set width */
 $width_allowance = 10;
@@ -187,7 +192,7 @@ for($i=0; $i<count($arr_custom_height); $i++) {
 
 /* Merge Cells */
 $arr_custom_merge_cells = array( 
-							'A1:K1','A8:A9','B8:B9','C8:C9','D8:D9','E8:E9','F8:F9',
+							'A1:T1','A8:A9','B8:B9','C8:C9','D8:D9','E8:E9','F8:F9',
 							'G8:G9','H8:H9','I8:I9','J8:J9','K8:K9','L8:L9','M8:P8',
 							'Q8:R8','S8:S9','T8:T9'
 						  ); //,'M8:M9','N8:N9','O8:O9','P8:P9'
