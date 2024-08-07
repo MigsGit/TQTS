@@ -38,7 +38,6 @@
 				'status',
 				'created_by',
 				'pkid',
-				'date_issued',
 				// "(SELECT `vw_role`.`role` FROM `vw_user_roles` `vw_role` WHERE `vw_role`.`user` = '".$_GET['username']."' AND `vw_role`.`module` = 'Special Acceptance' AND `vw_role`.`subsystem_code` = 'QFR' AND `vw_role`.`logdel` = '0') as role",
 				);
 	
@@ -330,15 +329,14 @@
 		else if($aRow['status'] == '6' || $aRow['status'] == '7'){
 			if($username == $aRow['created_by']){
 				$button[] = '<button class="btn btn-warning fa fa-edit" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Edit Disposition</button>';
-				$button[] = '<button class="btn btn-success fa fa-thumbs-up btnCloseSar" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Click to Closed</button>';
 			}
+			$button[] = '<button class="btn btn-success fa fa-thumbs-up btnCloseSar" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Click to Closed</button>';
 			$button[] = '<button class="btn btn-default fa fa-eye" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> View Disposition</button>';
 		}
 		$button[] = '</center>';
 		$button = implode("<br/>",$button);
 
 		$row[] = '<center>'.getSarStatusByCode($aRow['status']).'</center>';
-		$row[] = $aRow['date_issued'];
 		$row[] = $count_revision.$aRow['control_number'];
 		$row[] = $details;
 		$row[] = $originators;

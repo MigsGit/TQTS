@@ -35,12 +35,12 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 	<!-- Nav tabs -->
 	<div class="">
 		<ul class="nav nav-tabs" role="tablist">
-		<!-- <li class="nav-item">
-			<a class="nav-link " data-toggle="tab" href="#home">Home</a>
-		</li> -->
 		<?php 
 			if($sa_report_disposition_admin){
 				echo '
+						<li class="nav-item">
+							<a class="nav-link " data-toggle="tab" href="#home">Home</a>
+						</li>
 						<li class="nav-item active">
 							<a class="nav-link " data-toggle="tab" href="#for_sar_disposition">For Disposition</a>
 						</li>
@@ -128,7 +128,6 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 								<thead>
 									<tr>
 										<th>Status</th>
-										<th>Date Issued</th>
 										<th>Control Number</th>
 										<th>Parts and Product Details</th>
 										<th>Prepared by</th>
@@ -182,7 +181,6 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 								<thead>
 									<tr>
 										<th>Status</th>
-										<th>Date Issued</th>
 										<th>Control Number</th>
 										<th>Parts and Product Details</th>
 										<th>Prepared by</th>
@@ -396,13 +394,13 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 						<label class="fa fa-md">Fail Mode: </label>
 					</div>
 					<div class="col-sm-4">
-						<input type="text" class="form-control" id="problem" name="problem" list="" required>
+						<input type="text" class="form-control" id="problem" name="problem" list="">
 					</div>
 					<div class="col-sm-2">
 						<label class="fa fa-md">Factory Location: </label>
 					</div>
 					<div class="col-sm-4">
-						<select type="text" class="form-control" id="factory_location" name="factory_location" required>
+						<select type="text" class="form-control" id="factory_location" name="factory_location">
 							<option value="" disabled>--Select--</option>
 							<option value="Cabuyao" >Cabuyao</option>
 							<option value="Malvar" >Malvar</option>
@@ -412,7 +410,7 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 						<label class="fa fa-md">Date Issued: </label>
 					</div> 
 					<div class="col-sm-4">
-						<input type="date" class="form-control" id="txt_date_issued" name="date_issued" required>
+						<input type="date" class="form-control" id="txt_date_issued" name="date_issued" >
 					</div>
 					<div class="col-sm-2">
 							<label class="fa fa-md">Customer Name: </label>

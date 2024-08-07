@@ -39,7 +39,6 @@
 				'status',
 				'created_by',
 				'pkid',
-				'date_issued',
 				// "(SELECT `vw_role`.`role` FROM `vw_user_roles` `vw_role` WHERE `vw_role`.`user` = '".$_GET['username']."' AND `vw_role`.`module` = 'Special Acceptance' AND `vw_role`.`subsystem_code` = 'QFR' AND `vw_role`.`logdel` = '0') as role",
 				);
 	
@@ -348,7 +347,6 @@
 		$button = implode("<br/>",$button);
 		
 		$row[] = '<center>'.getSarStatusByCode($aRow['status']).'</center>';
-		$row[] = $aRow['date_issued'] != '' ? $aRow['date_issued'] : "";
 		$row[] = $count_revision.$aRow['control_number'];
 		$row[] = $details;
 		$row[] = $originators;

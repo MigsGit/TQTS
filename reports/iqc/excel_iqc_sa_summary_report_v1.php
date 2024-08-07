@@ -21,16 +21,17 @@ if(file_exists($oop)){
 	exit;
 }
 
-$sar_summary_date = $_GET['sar_summary_date'];
-
-function get_special_acceptance($sar_summary_date){
-	$sar_summary_date = explode(' - ',$sar_summary_date);
+// $sar_summary_date = $_GET['sar_summary_date'];
+$sar_summary_date_from = $_GET['sar_summary_date_from'];
+$sar_summary_date_to =  $_GET['sar_summary_date_to'];
+function get_special_acceptance($sar_summary_date_from,$sar_summary_date_to){
 	$array_fields = array('MONTHNAME( `date_created` ) as created_at , tbl_qfr_special_acceptance.*');
 	$table 	   	= 'tbl_qfr_special_acceptance';
 	$joins 	   	= '';
 	// $sql_where 	= 'WHERE pkid="'.$pkid.'" AND logdel=0';
 	$sql_where 	= 'WHERE 1=1';
-	$sql_where  .= " AND DATE(`date_created`) BETWEEN ' " .date('Y-m-d', strtotime($sar_summary_date[0])). " ' AND ' " .date('Y-m-d', strtotime($sar_summary_date[1])). " ' ";
+	$sql_where  .= " AND DATE(`date_created`) BETWEEN ' " .date('Y-m-d', strtotime($sar_summary_date_from)). " ' AND ' " .date('Y-m-d', strtotime($sar_summary_date_to)). " ' ";
+	// $sql_where  .= " AND DATE(`date_created`) BETWEEN ' " .date('Y-m-d', strtotime($sar_summary_date[0])). " ' AND ' " .date('Y-m-d', strtotime($sar_summary_date[1])). " ' ";
 	// $sql_where .= " AND DATE(`date_created`) BETWEEN '2024-01-01' AND '2024-08-01' AND logdel=0";
 	// $sql_where .= " AND date_issued IS NOT NULL";
 	$sql_order 	= 'ORDER BY pkid ASC';
@@ -78,10 +79,9 @@ function get_special_acceptance($sar_summary_date){
 	}
 	return $return;
 }
-// echo get_special_acceptance($sar_summary_date);
+$get_special_acceptance = get_special_acceptance($sar_summary_date_from,$sar_summary_date_to);
+// echo json_encode($get_special_acceptance);
 // return;
-
-$get_special_acceptance = get_special_acceptance($sar_summary_date);
 
 $excel_class = '../../class/excel_new.php';
 if(file_exists($excel_class)){
@@ -196,9 +196,10 @@ $excel->place_value('O8','Status','string');
 $custom_data_row = 10;
 
 for ($i=0; $i < count($get_special_acceptance['pkid']); $i++) { 
-	$excel->set_height($custom_data_row,$height_allowance);
 	
+	$excel->set_height($custom_data_row,$height_allowance);
 	if($get_special_acceptance['date_created'][$i] != $get_special_acceptance['date_created'][$i-1]){
+		
 		$new_data_row = $custom_data_row + 1;
 
 		$excel->set_height($custom_data_row,$height_allowance_for_date);
@@ -207,25 +208,28 @@ for ($i=0; $i < count($get_special_acceptance['pkid']); $i++) {
 
 		$custom_data_row+=1;
 	}
-	$excel->place_value('A'.$new_data_row,$get_special_acceptance['control_number'][$i],'string');
-	$excel->place_value('B'.$new_data_row,$get_special_acceptance['date_issued'][$i],'string');
-	$excel->place_value('C'.$new_data_row,( $get_special_acceptance['device_name'][$i] != "" ? $get_special_acceptance['device_name'][$i] : $get_special_acceptance['parts_affected_parts'][$i]),'string');
-	$excel->place_value('D'.$new_data_row,$get_special_acceptance['factory_location'][$i],'string');
-	$excel->place_value('E'.$new_data_row,$get_special_acceptance['problem'][$i],'string');
-	$excel->place_value('F'.$new_data_row,$get_special_acceptance['created_by'][$i],'string');
-	$excel->place_value('G'.$new_data_row,$get_special_acceptance['section'][$i],'string');
-	$excel->place_value('H'.$new_data_row,'SUPPLIER','string');
-	$excel->place_value('I'.$new_data_row,'DISPOSITION','string');
-	$excel->place_value('J'.$new_data_row,( $get_special_acceptance['$other_details'][$i] != "" ) ? $get_special_acceptance['other_details'] : "N/A" ,'string' );
-	$excel->place_value('K'.$new_data_row,( $get_special_acceptance['immediate_action'][$i] != "" ) ? $get_special_acceptance['immediate_action'] : "N/A" ,'string');
-	$excel->place_value('L'.$new_data_row,( $get_special_acceptance['immediate_action_due_date'][$i]  != "" ) ? $get_special_acceptance['immediate_action_due_date'] : "N/A",'string');
-	$excel->place_value('M'.$new_data_row,( $get_special_acceptance['permanent_action'][$i] != "") ? $get_special_acceptance['permanent_action'] : "N/A" ,'string');
-	$excel->place_value('N'.$new_data_row,( $get_special_acceptance['permanent_action_due_date'][$i]  != "" ) ? $get_special_acceptance['permanent_action_due_date'] : "N/A",'string');
+	echo $get_special_acceptance['pkid'][$i];
+	return;
+	$excel->place_value($custom_col.$custom_data_row,$get_special_acceptance['control_number'],'string'); $custom_col++;
+	$excel->place_value($custom_col.$custom_data_row,getDateFormat($get_special_acceptance['date_issued']),'date_format');  $custom_col++;
+	$excel->place_value($custom_col.$custom_data_row,( $get_special_acceptance['device_name'] != "" ? $get_special_acceptance['device_name'] : $get_special_acceptance['parts_affected_parts']),'string');   $custom_col++;
+	$excel->place_value($custom_col.$custom_data_row,$get_special_acceptance['factory_location'],'string');   $custom_col++;
+	$excel->place_value($custom_col.$custom_data_row,$get_special_acceptance['problem'],'string');   $custom_col++;
+	$excel->place_value($custom_col.$custom_data_row,get_emp_name_by_username_systemone($get_special_acceptance['created_by']),'string');   $custom_col++;
+	$excel->place_value($custom_col.$custom_data_row, get_assigned_section($get_special_acceptance['created_by']),'string');   $custom_col++;
+	$excel->place_value($custom_col.$custom_data_row,$get_special_acceptance['supplier'],'string');   $custom_col++;
+	$excel->place_value($custom_col.$custom_data_row,'DISPOSITION','string');   $custom_col++;
+	$excel->place_value($custom_col.$custom_data_row,( $get_special_acceptance['other_details'] != "" ) ? $get_special_acceptance['other_details'] : "N/A" ,'string' );   $custom_col++;
+	$excel->place_value($custom_col.$custom_data_row,( $get_special_acceptance['immediate_action'] != "" ) ? $get_special_acceptance['immediate_action'] : "N/A" ,'string');   $custom_col++;
+	$excel->place_value($custom_col.$custom_data_row,( $get_special_acceptance['immediate_action_due_date']  != "" ) ? getDateFormat($get_special_acceptance['immediate_action_due_date']) : "N/A",'date_format');   $custom_col++;
+	$excel->place_value($custom_col.$custom_data_row,( $get_special_acceptance['permanent_action'] != "") ? $get_special_acceptance['permanent_action'] : "N/A" ,'string');   $custom_col++;
+	$excel->place_value($custom_col.$custom_data_row,( $get_special_acceptance['permanent_action_due_date']  != "" ) ? getDateFormat($get_special_acceptance['permanent_action_due_date']) : "N/A",'date_format');   $custom_col++;
 	
 	$custom_data_row++;
 	$new_data_row++;
 
 }
+return;
 
 $col = 'A'; $row = '1';
 $excel->set_height('2',15.00);

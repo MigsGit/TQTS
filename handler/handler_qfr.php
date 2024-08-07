@@ -2540,7 +2540,8 @@
 					$msg = "Sorry, there was an error uploading your file.";
 				}
 	// /* ffunction change the status to 6-APPROVED OR 7-DISAPPROVED */	
-		$new_status = $status == "APPROVED" ? 6:7;
+		// $new_status = $status == "APPROVED" ? 6	:  $status == "PMI" ? 9 : 7 ;
+		$new_status = $status == "APPROVED" ? 6	:  7 ;
 		change_status($new_status,$fkid);
 		echo json_encode($insert_query);
 	}

@@ -151,15 +151,10 @@ $array_format_value_capa_monitoring = array(
 	"size"	=> 11,
 	"h_alignment"	=> "left"
 );
-$array_format_white_all_cell = array(
-	'fill_color'  => "ffffff"
-);
-$cell_range = 'A1:Z100'; $excel->set_format($cell_range,$array_format_white_all_cell);
 $cell_range = 'A8:T8'; $excel->set_format($cell_range,$array_format_subheader);
-$cell_range = 'A1:T1'; $excel->set_format($cell_range,$array_format_header);
+$cell_range = 'A1:K1'; $excel->set_format($cell_range,$array_format_header);
 $cell_range = 'M9:R9'; $excel->set_format($cell_range,$array_format_subheader);
 $cell_range = 'R5:R6'; $excel->set_format($cell_range,$array_format_subheader_right);
-
 
 /* set width */
 $width_allowance = 10;
@@ -192,7 +187,7 @@ for($i=0; $i<count($arr_custom_height); $i++) {
 
 /* Merge Cells */
 $arr_custom_merge_cells = array( 
-							'A1:T1','A8:A9','B8:B9','C8:C9','D8:D9','E8:E9','F8:F9',
+							'A1:K1','A8:A9','B8:B9','C8:C9','D8:D9','E8:E9','F8:F9',
 							'G8:G9','H8:H9','I8:I9','J8:J9','K8:K9','L8:L9','M8:P8',
 							'Q8:R8','S8:S9','T8:T9'
 						  ); //,'M8:M9','N8:N9','O8:O9','P8:P9'
@@ -271,11 +266,15 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 	$excel->place_value($col.$row,$month_year,'string'); 		
 	$row++;
 	//Column A-L :for OQC LON
-	$sql_where 		= 'WHERE (lon.date_inspected LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%") AND lon.logdel=0';
+	$sql_where 		= 'WHERE (lon.date_inspected LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%") AND lon.logdel=0 AND lon.status="CONFORMED BY OQC INSPECTOR"';
 	$sql_where 		.= ' AND lon_production.logdel = 0';
 	$result_details	= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 	$script	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+	$result_details = array();
 	while($row_details = mysqli_fetch_assoc($result_details)){
+
+		echo $script;
+
 		$custom_row_count = $row_details['pkid'];
 		$arr_attention 	= array();
 		$attention 		= explode(',',$row_details['attention']);
@@ -300,12 +299,13 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 		$col = 'A';
 		//Column H-T :for OQC CAPA Monitoring
 		$capa_sql_where 		= 'WHERE oqc_lon_id = '.$row_details['pkid'].'';
-		$script_details_tbl_oqc_lon_capa_monitoring	= TQTS::getInstance()->select_query_script($capa_array_fields,$capa_table,$capa_joins,$capa_sql_where,$capa_sql_order,$capa_sql_limit);
+		$script_details_tbl_oqc_lon_capa_monitoring_script	= TQTS::getInstance()->select_query_script($capa_array_fields,$capa_table,$capa_joins,$capa_sql_where,$capa_sql_order,$capa_sql_limit);
 		$result_details_tbl_oqc_lon_capa_monitoring	= TQTS::getInstance()->select_query($capa_array_fields,$capa_table,$capa_joins,$capa_sql_where,$capa_sql_order,$capa_sql_limit);
 		$return_tbl_oqc_lon_capa_monitoring = array();
 		$lowest_row = null;
 		$highest_row = null;
 		while($row_tbl_oqc_lon_capa_monitoring = mysqli_fetch_assoc($result_details_tbl_oqc_lon_capa_monitoring)){
+			// echo $script_details_tbl_oqc_lon_capa_monitoring_script;
 			//Excel Format
 			$excel->set_height($row,50);
 			// SET lowest_row INSIDE the condition & Set highest_row OUTSIDE the condition
@@ -395,7 +395,9 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 		$excel->merge_cells('L'.$lowest_row.':'.'L'.$highest_row);
 		$excel->wrap_text('A'.$lowest_row.':'.'L'.$highest_row);
 	}
+
 }
+return;
 
 /* 
 	Set borders ( $excel->set_borders($cell,$left,$right,$top,$bottom,$border_style); )
