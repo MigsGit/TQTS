@@ -20,46 +20,36 @@ if(file_exists($oop)){
 	echo 'oop not found!';
 	exit;
 }
+
+
 $sar_summary_date_from = $_GET['sar_summary_date_from'];
 $sar_summary_date_to =  $_GET['sar_summary_date_to'];
-
 if(date('m', strtotime($sar_summary_date_from)) >= 4 && date('m', strtotime($sar_summary_date_from) <= 12)) {
-	$fiscal_year 	= 'FY'.date('Y', strtotime($sar_summary_date_from));
+	$fiscal_year 	= 'FY'.date('Y', strtotime($sar_summary_date_from.'-01'));
 } else {
-	$fiscal_year 	= 'FY'.date('Y', strtotime($sar_summary_date_from.'-1 year'));
+	$fiscal_year 	= 'FY'.date('Y', strtotime($sar_summary_date_from.'-01 -1 year'));
 }
 
 /* Group by Year and month data */
 $array_fields 	= array('YEAR(date_created) AS year_inspected', 'MONTH(date_created) AS month_inspected');
 $table 	   		= 'tbl_qfr_special_acceptance';
 $joins 	   		= '';
-// $sql_where 		= 'WHERE 1=1';
-// $sql_where  .= " AND DATE(`date_created`) BETWEEN ' " .date('Y-m-d', strtotime($sar_summary_date_from)). " ' AND ' " .date('Y-m-d', strtotime($sar_summary_date_to)). " ' ";
-$sql_where 		= ' WHERE (date_created BETWEEN "'.$sar_summary_date_from.'-01" AND "'.$sar_summary_date_to.'-31") AND logdel=0';
-// $sql_where  .= " AND DATE(`date_created`) BETWEEN ' ".date('Y-m-d', strtotime($sar_summary_date_from))." ' AND ' ".date('Y-m', strtotime($sar_summary_date_to)). "-31 ' ";
+$sql_where 		= 'WHERE 1=1';
+$sql_where  .= " AND DATE(`date_created`) BETWEEN ' ".date('Y-m-d', strtotime($sar_summary_date_from))." ' AND ' ".date('Y-m', strtotime($sar_summary_date_to)). "-31 ' ";
 $sql_order 		= '';
 $sql_limit 		= 'GROUP BY YEAR(date_created), MONTH(date_created)';
 $script 	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 $result_group 	= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-// $sar_details_sql_array_fields = array('MONTHNAME( `date_created` ) as created_at , sar.* ,sar_treatment.disposition');
 
 $sar_details_sql_array_fields = array('sar.*','sar_treatment.disposition');
 $sar_details_sql_table 	   	= 'tbl_qfr_special_acceptance sar';
 $sar_details_sql_joins 	   	= 'LEFT JOIN tbl_qrf_sa_treatment sar_treatment ON sar_treatment.fkid = sar.pkid';
-// $table 	   		= 'tbl_oqc_lon lon';
-// $joins 	   		= 'LEFT JOIN tbl_oqc_lon_production lon_production ON lon_production.fklon = lon.pkid';
 $sar_details_sql_order 	   	= 'ORDER BY date_created';
 $sar_details_sql_limit 	   	= '';
-// $sar_details_sql_where 	= 'WHERE 1=1';
-// $sar_details_sql_where 	.= ' AND sar.status="CL"';
-// $sar_details_sql_where 	.= ' AND sar_treatment.logdel=0 AND sar_treatment.disposition IS NOT NULL';
-// $sar_details_script= TQTS::getInstance()->select_query_script($sar_details_sql_array_fields,$sar_details_sql_table,$sar_details_sql_joins,$sar_details_sql_where,$sar_details_sql_order,$sar_details_sql_limit);
-// $sar_details_result= TQTS::getInstance()->select_query($sar_details_sql_array_fields,$sar_details_sql_table,$sar_details_sql_joins,$sar_details_sql_where,$sar_details_sql_order,$sar_details_sql_limit);
 // while($sar_details_row = mysqli_fetch_array($sar_details_result)){
 // 	echo $sar_details_row['pkid'];
 // }
 // return;
-// $sar_details_result= TQTS::getInstance()->select_query($sar_details_sql_array_fields,$sar_details_sql_table,$sar_details_sql_joins,$sar_details_sql_where,$sar_details_sql_order,$sar_details_sql_limit);
 
 function getTblSarTreatmentByFkid($fkid){
 	$array_fields 	= array('disposition');
@@ -74,6 +64,16 @@ function getTblSarTreatmentByFkid($fkid){
 	if($row = mysqli_fetch_array($result)){
 		return $row['disposition'];
 	}
+}
+function getDateFormat($date) {
+	// return $date;
+	$is_date_exist = $date != "" ? 'true' : 'false';
+	if($is_date_exist == 'true'){
+		$date = date( 'd-M-y', strtotime( $date ) ) ;
+	}else{
+		$date = "";
+	}
+    return $date;
 }
 // return;
 $excel_class = '../../class/excel_new.php';
@@ -137,8 +137,7 @@ $excel->merge_cells('L8:L9');
 $excel->merge_cells('M8:M9');
 $excel->merge_cells('N8:N9');
 $excel->merge_cells('O8:O9');
-
-// $excel->set_borders('A8:O9',1,1,1,1);
+$excel->set_borders('A8:O9',1,1,1,1);
 
 //FONT FORMAT
 $array_header = array(
@@ -211,13 +210,10 @@ $col = 'N'; $row = '5';   $excel->place_value($col.$row,' Please update current 
 $col = 'N'; $row = '6';   $excel->place_value($col.$row,'Please update section name','string');
 $excel->place_value('O8','Status','string');
 
-
-
-
-
-
 $custom_data_row = 10;
 $custom_col = 'A';
+$lowest_row = null;
+$highest_row = null;
 while($row_group = mysqli_fetch_assoc($result_group)){	
 	//FORMAT
 	$cell_range = 'A'.$custom_data_row.':O'.$custom_data_row; $excel->set_format($cell_range,$array_format_sub_content);
@@ -226,101 +222,61 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 	$excel->set_height($custom_data_row,40);
 	//PLACE VALUE DATE
 	$month_year = date('M, Y', strtotime($row_group['year_inspected'].'-'.$row_group['month_inspected'].'-01'));
-	$excel->place_value($custom_col.$custom_data_row,$month_year,'string'); 		
+	$excel->place_value($custom_col.$custom_data_row,$month_year,'string');
 	$custom_data_row++;
-
-	// $sar_details_sql_where 	= 'WHERE 1=1';
-	$sar_details_sql_where 		= ' WHERE (sar.date_created LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%")';
-	// $sar_details_sql_where 		.= ' sar.status="CL" AND sar.logdel=0';
-	// $sar_details_sql_where 		.= ' AND sar_treatment.logdel = 0';
+	//PLACE VALUE SAR DETAILS
+	$sar_details_sql_where 		= 'WHERE 1=1';
+	$sar_details_sql_where 		.= ' AND (sar.date_issued LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%")';
+	$sar_details_sql_where 		.= ' AND sar.logdel=0';
+	$sar_details_sql_where 		.= ' AND sar_treatment.logdel = 0';
 	$sar_details_script= TQTS::getInstance()->select_query_script($sar_details_sql_array_fields,$sar_details_sql_table,$sar_details_sql_joins,$sar_details_sql_where,$sar_details_sql_order,$sar_details_sql_limit);
 	$sar_details_result= TQTS::getInstance()->select_query($sar_details_sql_array_fields,$sar_details_sql_table,$sar_details_sql_joins,$sar_details_sql_where,$sar_details_sql_order,$sar_details_sql_limit);
-	$lowest_row =null;
-	$highest_row =null;
-<<<<<<< HEAD
-	// var_dump($sar_details_script);
 	while($sar_details_row = mysqli_fetch_assoc($sar_details_result)){
-		echo $sar_details_script;
-		// echo $sar_details_row['control_number'];
-		$excel->set_height($custom_data_row,40);
-
-		//PLACE VALUE SAR DETAILS
-		$excel->place_value($custom_col.$custom_data_row,$sar_details_row['control_number'],'string'); $custom_col++;
-		// $excel->place_value($custom_col.$custom_data_row,getDateFormat($sar_details_row['date_issued']),'date_format');  $custom_col++;
-		// $excel->place_value($custom_col.$custom_data_row,( $sar_details_row['device_name'] != "" ? $sar_details_row['device_name'] : $sar_details_row['parts_affected_parts']),'string');   $custom_col++;
-		// $excel->place_value($custom_col.$custom_data_row,$sar_details_row['factory_location'],'string');   $custom_col++;
-		// $excel->place_value($custom_col.$custom_data_row,$sar_details_row['problem'],'string');   $custom_col++;
-		// $excel->place_value($custom_col.$custom_data_row,get_emp_name_by_username_systemone($sar_details_row['created_by']),'string');   $custom_col++;
-		// $excel->place_value($custom_col.$custom_data_row, get_assigned_section($sar_details_row['created_by']),'string');   $custom_col++;
-		// $excel->place_value($custom_col.$custom_data_row,$sar_details_row['supplier'],'string');   $custom_col++;
-		// $excel->place_value($custom_col.$custom_data_row,'DISPOSITION','string');   $custom_col++;
-		// $excel->place_value($custom_col.$custom_data_row,( $sar_details_row['other_details'] != "" ) ? $sar_details_row['other_details'] : "N/A" ,'string' );   $custom_col++;
-		// $excel->place_value($custom_col.$custom_data_row,( $sar_details_row['immediate_action'] != "" ) ? $sar_details_row['immediate_action'] : "N/A" ,'string');   $custom_col++;
-		// $excel->place_value($custom_col.$custom_data_row,( $sar_details_row['immediate_action_due_date']  != "" ) ? getDateFormat($sar_details_row['immediate_action_due_date']) : "N/A",'date_format');   $custom_col++;
-		// $excel->place_value($custom_col.$custom_data_row,( $sar_details_row['permanent_action'] != "") ? $sar_details_row['permanent_action'] : "N/A" ,'string');   $custom_col++;
-		// $excel->place_value($custom_col.$custom_data_row,( $sar_details_row['permanent_action_due_date']  != "" ) ? getDateFormat($sar_details_row['permanent_action_due_date']) : "N/A",'date_format');   $custom_col++;
-=======
-	$arr_custom_col =array();
-	$arr_custom_data_row =array();
-	while($sar_details_row = mysqli_fetch_array($sar_details_result)){
-		//PLACE VALUE SAR DETAILS
-		$excel->place_value($custom_col.$custom_data_row,$sar_details_row['control_number'],'string'); $custom_col++;
-		$excel->place_value($custom_col.$custom_data_row,$sar_details_row['date_issued'],'string');  $custom_col++;
-		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['device_name'] != "" ? $sar_details_row['device_name'] : $sar_details_row['parts_affected_parts']),'string');   $custom_col++;
-		$excel->place_value($custom_col.$custom_data_row,$sar_details_row['factory_location'],'string');   $custom_col++;
-		$excel->place_value($custom_col.$custom_data_row,$sar_details_row['problem'],'string');   $custom_col++;
-		$excel->place_value($custom_col.$custom_data_row,get_emp_name_by_username_systemone($sar_details_row['created_by']),'string');   $custom_col++;
-		$excel->place_value($custom_col.$custom_data_row, get_assigned_section($sar_details_row['created_by']),'string');   $custom_col++;
-		$excel->place_value($custom_col.$custom_data_row,'SUPPLIER','string');   $custom_col++;
-		$excel->place_value($custom_col.$custom_data_row,'DISPOSITION','string');   $custom_col++;
-		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['other_details'] != "" ) ? $sar_details_row['other_details'] : "N/A" ,'string' );   $custom_col++;
-		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['immediate_action'] != "" ) ? $sar_details_row['immediate_action'] : "N/A" ,'string');   $custom_col++;
-		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['immediate_action_due_date']  != "" ) ? $sar_details_row['immediate_action_due_date'] : "N/A",'string');   $custom_col++;
-		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['permanent_action'] != "") ? $sar_details_row['permanent_action'] : "N/A" ,'string');   $custom_col++;
-		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['permanent_action_due_date']  != "" ) ? $sar_details_row['permanent_action_due_date'] : "N/A",'string');   $custom_col++;
->>>>>>> parent of 2717f35 (Add Date Issued in SAR NGR)
 		if ($lowest_row === null || $highest_row === null) {
 			$lowest_row = $custom_data_row;
 		}
 		$highest_row = $custom_data_row;
+		$excel->set_height($custom_data_row,40);
+		//PLACE VALUE SAR DETAILS
+		$excel->place_value($custom_col.$custom_data_row,$sar_details_row['control_number'],'string'); $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row,getDateFormat($sar_details_row['date_issued']),'date_format');  $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row,($sar_details_row['device_name'] != "" ? $sar_details_row['device_name'] : $sar_details_row['parts_affected_parts']),'string');   $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row,$sar_details_row['factory_location'],'string');   $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row,$sar_details_row['problem'],'string');   $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row,get_emp_name_by_username_systemone($sar_details_row['created_by']),'string');   $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row, get_assigned_section($sar_details_row['created_by']),'string');   $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row,$sar_details_row['supplier'],'string');   $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row, $sar_details_row['disposition'],'string');   $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['other_details'] != "N/A" || $sar_details_row['other_details'] != NULL) ? $sar_details_row['other_details'] : "N/A" ,'string' );   $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['immediate_action'] != "N/A" || $sar_details_row['immediate_action'] != NULL) ? $sar_details_row['immediate_action'] : "N/A" ,'string');   $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['immediate_action_due_date']  != NULL ) ? getDateFormat($sar_details_row['immediate_action_due_date']) : "N/A",'date_format');   $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row,($sar_details_row['permanent_action'] != "N/A" || $sar_details_row['permanent_action'] != NULL) ? $sar_details_row['permanent_action'] : "N/A" ,'string');   $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['permanent_action_due_date']  != NULL ) ? getDateFormat($sar_details_row['permanent_action_due_date']) : "N/A",'date_format');   $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['status']  == "CL" ) ? "CLOSED" : "OPEN",'string');   $custom_col++;
 		$custom_col = 'A';
 		$custom_data_row++;
 	}
-
-	//FORMAT
-	$custom_cell_range = $custom_col.$lowest_row.':'.$custom_col.$highest_row;
-	$cell_range = 'A'.$lowest_row.':'.'A'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
-	$excel->set_borders($cell_range,1,1,1,1, "thin");
-	$cell_range = 'B'.$lowest_row.':'.'B'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
-	$excel->set_borders($cell_range,1,1,1,1, "thin");
-	$cell_range = 'C'.$lowest_row.':'.'C'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
-	$excel->set_borders($cell_range,1,1,1,1, "thin");
-	$cell_range = 'D'.$lowest_row.':'.'D'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
-	$excel->set_borders($cell_range,1,1,1,1, "thin");
-	$cell_range = 'E'.$lowest_row.':'.'E'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
-	$excel->set_borders($cell_range,1,1,1,1, "thin");
-	$cell_range = 'F'.$lowest_row.':'.'F'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
-	$excel->set_borders($cell_range,1,1,1,1, "thin");
-	$cell_range = 'G'.$lowest_row.':'.'G'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
-	$excel->set_borders($cell_range,1,1,1,1, "thin");
-	$cell_range = 'H'.$lowest_row.':'.'H'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
-	$excel->set_borders($cell_range,1,1,1,1, "thin");
-	$cell_range = 'I'.$lowest_row.':'.'I'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
-	$excel->set_borders($cell_range,1,1,1,1, "thin");
-	$cell_range = 'J'.$lowest_row.':'.'J'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
-	$excel->set_borders($cell_range,1,1,1,1, "thin");
-	$cell_range = 'K'.$lowest_row.':'.'K'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
-	$excel->set_borders($cell_range,1,1,1,1, "thin");
-	$cell_range = 'L'.$lowest_row.':'.'L'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
-	$excel->set_borders($cell_range,1,1,1,1, "thin");
-	$cell_range = 'M'.$lowest_row.':'.'M'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
-	$excel->set_borders($cell_range,1,1,1,1, "thin");
-	$cell_range = 'N'.$lowest_row.':'.'N'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
-	$excel->set_borders($cell_range,1,1,1,1, "thin");
-	$cell_range = 'O'.$lowest_row.':'.'O'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
-	$excel->set_borders($cell_range,1,1,1,1, "thin");
 }
-return;
+//FORMAT
+if ($lowest_row != null && $highest_row != null) {
+	$cell_range = 'A'.$lowest_row.':'.'A'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
+	$cell_range = 'B'.$lowest_row.':'.'B'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
+	$cell_range = 'C'.$lowest_row.':'.'C'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
+	$cell_range = 'D'.$lowest_row.':'.'D'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
+	$cell_range = 'E'.$lowest_row.':'.'E'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
+	$cell_range = 'F'.$lowest_row.':'.'F'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
+	$cell_range = 'G'.$lowest_row.':'.'G'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
+	$cell_range = 'H'.$lowest_row.':'.'H'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
+	$cell_range = 'I'.$lowest_row.':'.'I'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
+	$cell_range = 'J'.$lowest_row.':'.'J'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
+	$cell_range = 'K'.$lowest_row.':'.'K'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
+	$cell_range = 'L'.$lowest_row.':'.'L'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
+	$cell_range = 'M'.$lowest_row.':'.'M'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
+	$cell_range = 'N'.$lowest_row.':'.'N'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
+	$cell_range = 'O'.$lowest_row.':'.'O'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
+	$excel->set_borders('A'.$lowest_row.':'.'O'.$highest_row,1,1,1,1, "thin");
+	$excel->wrap_text('A'.$lowest_row.':'.'O'.$highest_row);
+}
 $col = 'A'; $row = '1';
 $excel->set_height('2',15.00);
 $pmi_logo	= '../../images/pmi-logo2.png';

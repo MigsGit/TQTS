@@ -284,14 +284,22 @@ class EXCEL extends PHPExcel{
 											);
 			$this->objPHPExcel->getStyle($cell)->getNumberFormat()->applyFromArray( $style_array_percentage );
 		}else if($data_type == 'date_format'){
-			if($value != ''){ //return date if value exist
+			if($value == 'N/A' || $value == ''){ //return date if value exist
+				$this->objPHPExcel->setCellValueExplicit($cell, $value, PHPExcel_Cell_DataType::TYPE_STRING);
+			}else{//return string if value not exist
 				$timestamp = PHPExcel_Shared_Date::PHPToExcel(strtotime($value));
 				// Set the cell value as the timestamp
 				$this->objPHPExcel->setCellValue($cell, $timestamp);
 				$this->objPHPExcel->getStyle($cell)->getNumberFormat()->setFormatCode('dd-mmm-yy');
-			}else{//return string if value not exist
-				$this->objPHPExcel->setCellValueExplicit($cell, $value, PHPExcel_Cell_DataType::TYPE_STRING);
 			}
+			// if($value != ''){ //return date if value exist
+			// 	$timestamp = PHPExcel_Shared_Date::PHPToExcel(strtotime($value));
+			// 	// Set the cell value as the timestamp
+			// 	$this->objPHPExcel->setCellValue($cell, $timestamp);
+			// 	$this->objPHPExcel->getStyle($cell)->getNumberFormat()->setFormatCode('dd-mmm-yy');
+			// }else{//return string if value not exist
+			// 	$this->objPHPExcel->setCellValueExplicit($cell, $value, PHPExcel_Cell_DataType::TYPE_STRING);
+			// }
 			
 		}
 		else{

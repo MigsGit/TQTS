@@ -20,12 +20,11 @@ $date_to	= $_GET['dt'];
 // $date_to	= '2018-12';	
 
 if(date('m', strtotime($date_from)) >= 4 && date('m', strtotime($date_from) <= 12)) {
-	echo $fiscal_year 	= 'FY'.date('Y', strtotime($date_from.'-01'));
+	$fiscal_year 	= 'FY'.date('Y', strtotime($date_from.'-01'));
 	//FY 2024 Lot Out Notice (LON) SUMMARY MONITORING_TS Section           
 } else {
-	echo $fiscal_year 	= 'FY'.date('Y', strtotime($date_from.'-01 -1 year'));
+	$fiscal_year 	= 'FY'.date('Y', strtotime($date_from.'-01 -1 year'));
 }
-return;
 
 /* Group by Year and month data */
 $array_fields 	= array('YEAR(date_inspected) AS year_inspected', 'MONTH(date_inspected) AS month_inspected');
@@ -152,15 +151,10 @@ $array_format_value_capa_monitoring = array(
 	"size"	=> 11,
 	"h_alignment"	=> "left"
 );
-$array_format_white_all_cell = array(
-	'fill_color'  => "ffffff"
-);
-$cell_range = 'A1:Z100'; $excel->set_format($cell_range,$array_format_white_all_cell);
 $cell_range = 'A8:T8'; $excel->set_format($cell_range,$array_format_subheader);
-$cell_range = 'A1:T1'; $excel->set_format($cell_range,$array_format_header);
+$cell_range = 'A1:K1'; $excel->set_format($cell_range,$array_format_header);
 $cell_range = 'M9:R9'; $excel->set_format($cell_range,$array_format_subheader);
 $cell_range = 'R5:R6'; $excel->set_format($cell_range,$array_format_subheader_right);
-
 
 /* set width */
 $width_allowance = 10;
@@ -193,7 +187,7 @@ for($i=0; $i<count($arr_custom_height); $i++) {
 
 /* Merge Cells */
 $arr_custom_merge_cells = array( 
-							'A1:T1','A8:A9','B8:B9','C8:C9','D8:D9','E8:E9','F8:F9',
+							'A1:K1','A8:A9','B8:B9','C8:C9','D8:D9','E8:E9','F8:F9',
 							'G8:G9','H8:H9','I8:I9','J8:J9','K8:K9','L8:L9','M8:P8',
 							'Q8:R8','S8:S9','T8:T9'
 						  ); //,'M8:M9','N8:N9','O8:O9','P8:P9'
@@ -272,14 +266,12 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 	$excel->place_value($col.$row,$month_year,'string'); 		
 	$row++;
 	//Column A-L :for OQC LON
-	// $sql_where 		= 'WHERE (lon.date_inspected LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%") AND lon.logdel=0 AND lon.status="CONFORMED BY OQC INSPECTOR"';
-	$sql_where 		= 'WHERE (lon.date_inspected LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%")';
+	$sql_where 		= 'WHERE (lon.date_inspected LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%") AND lon.logdel=0 AND lon.status="CONFORMED BY OQC INSPECTOR"';
 	$sql_where 		.= ' AND lon_production.logdel = 0';
 	$result_details	= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 	$script	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-	
 	while($row_details = mysqli_fetch_assoc($result_details)){
-		// echo $script;
+		// var_dump($script) ;
 		$custom_row_count = $row_details['pkid'];
 		$arr_attention 	= array();
 		$attention 		= explode(',',$row_details['attention']);
@@ -304,20 +296,21 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 		$col = 'A';
 		//Column H-T :for OQC CAPA Monitoring
 		$capa_sql_where 		= 'WHERE oqc_lon_id = '.$row_details['pkid'].'';
-		$script_details_tbl_oqc_lon_capa_monitoring	= TQTS::getInstance()->select_query_script($capa_array_fields,$capa_table,$capa_joins,$capa_sql_where,$capa_sql_order,$capa_sql_limit);
+		$script_details_tbl_oqc_lon_capa_monitoring_script	= TQTS::getInstance()->select_query_script($capa_array_fields,$capa_table,$capa_joins,$capa_sql_where,$capa_sql_order,$capa_sql_limit);
 		$result_details_tbl_oqc_lon_capa_monitoring	= TQTS::getInstance()->select_query($capa_array_fields,$capa_table,$capa_joins,$capa_sql_where,$capa_sql_order,$capa_sql_limit);
 		// $return_tbl_oqc_lon_capa_monitoring = array();
-		$lowest_row= null;
-		$highest_row= null;
+		$lowest_row = null;
+		$highest_row = null;
 		while($row_tbl_oqc_lon_capa_monitoring = mysqli_fetch_assoc($result_details_tbl_oqc_lon_capa_monitoring)){
-			// 'A'.$lowest_row.':'.'A'.$highest_row;
-			if ($lowest_row == null && $highest_row == null) {
-				$lowest_row = $row;
-			}
-			$highest_row = $row;
+			// echo $script_details_tbl_oqc_lon_capa_monitoring_script;
 			//Excel Format
 			$excel->set_height($row,50);
 			// SET lowest_row INSIDE the condition & Set highest_row OUTSIDE the condition
+			if ($lowest_row === null || $highest_row === null) {
+				$lowest_row = $row;
+			}
+			$highest_row = $row;
+			
 			$cell_range = 'M'.$row; $excel->set_format($cell_range,$array_format_value_capa_monitoring);
 			$excel->set_borders($cell_range,1,1,1,1, "thin");
 			$cell_range = 'N'.$row; $excel->set_format($cell_range,$array_format_value_capa_monitoring);
@@ -357,43 +350,54 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 			$excel->place_value('T'.$row,$capa_evidence_status,'string');
 			$excel->wrap_text('M'.$row.':'.'T'.$row);
 			$row++;	
-
 		}
-		if ($lowest_row != null && $highest_row != null) {
 		// Excel Format
 		// Column A-L :GET lowest_row INSIDE the condition & Set highest_row OUTSIDE the condition
-			$cell_range = 'A'.$lowest_row.':'.'A'.$highest_row; $excel->set_format($cell_range,$array_format_value);
-			$excel->merge_cells($cell_range);
-			$cell_range = 'B'.$lowest_row.':'.'B'.$highest_row; $excel->set_format($cell_range,$array_format_value);
-			$excel->merge_cells($cell_range);
-			$cell_range = 'C'.$lowest_row.':'.'C'.$highest_row; $excel->set_format($cell_range,$array_format_value);
-			$excel->merge_cells($cell_range);
-			$cell_range = 'D'.$lowest_row.':'.'D'.$highest_row; $excel->set_format($cell_range,$array_format_value);
-			$excel->merge_cells($cell_range);
-			$cell_range = 'E'.$lowest_row.':'.'E'.$highest_row; $excel->set_format($cell_range,$array_format_value);
-			$excel->merge_cells($cell_range);
-			$cell_range = 'F'.$lowest_row.':'.'F'.$highest_row; $excel->set_format($cell_range,$array_format_value);
-			$excel->merge_cells($cell_range);
-			$cell_range = 'G'.$lowest_row.':'.'G'.$highest_row; $excel->set_format($cell_range,$array_format_value);
-			$excel->merge_cells($cell_range);
-			$cell_range = 'H'.$lowest_row.':'.'H'.$highest_row; $excel->set_format($cell_range,$array_format_value);
-			$excel->merge_cells($cell_range);
-			$cell_range = 'I'.$lowest_row.':'.'I'.$highest_row; $excel->set_format($cell_range,$array_format_value);
-			$excel->merge_cells($cell_range);
-			$cell_range = 'J'.$lowest_row.':'.'J'.$highest_row; $excel->set_format($cell_range,$array_format_value);
-			$excel->merge_cells($cell_range);
-			$cell_range = 'K'.$lowest_row.':'.'K'.$highest_row; $excel->set_format($cell_range,$array_format_value);
-			$excel->merge_cells($cell_range);
-			$cell_range = 'L'.$lowest_row.':'.'L'.$highest_row; $excel->set_format($cell_range,$array_format_value);
-			
-			$excel->set_borders('A'.$lowest_row.':'.'L'.$highest_row,1,1,1,1, "thin");
-			$excel->wrap_text('A'.$lowest_row.':'.'L'.$highest_row);
-		}else{
-			echo "Error: Please Contact ISS !";
-		}
+		$cell_range = 'A'.$lowest_row.':'.'A'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$excel->set_borders($cell_range,1,1,1,1, "thin");
+		$cell_range = 'B'.$lowest_row.':'.'B'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$excel->set_borders($cell_range,1,1,1,1, "thin");
+		$cell_range = 'C'.$lowest_row.':'.'C'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$excel->set_borders($cell_range,1,1,1,1, "thin");
+		$cell_range = 'D'.$lowest_row.':'.'D'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$excel->set_borders($cell_range,1,1,1,1, "thin");
+		$cell_range = 'E'.$lowest_row.':'.'E'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$excel->set_borders($cell_range,1,1,1,1, "thin");
+		$cell_range = 'F'.$lowest_row.':'.'F'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$excel->set_borders($cell_range,1,1,1,1, "thin");
+		$cell_range = 'G'.$lowest_row.':'.'G'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$excel->set_borders($cell_range,1,1,1,1, "thin");
+		$cell_range = 'H'.$lowest_row.':'.'H'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$excel->set_borders($cell_range,1,1,1,1, "thin");
+		$cell_range = 'I'.$lowest_row.':'.'I'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$excel->set_borders($cell_range,1,1,1,1, "thin");
+		$cell_range = 'J'.$lowest_row.':'.'J'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$excel->set_borders($cell_range,1,1,1,1, "thin");
+		$cell_range = 'K'.$lowest_row.':'.'K'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$excel->set_borders($cell_range,1,1,1,1, "thin");
+		$cell_range = 'L'.$lowest_row.':'.'L'.$highest_row; $excel->set_format($cell_range,$array_format_value);
+		$excel->set_borders($cell_range,1,1,1,1, "thin");
+
+		$excel->merge_cells('A'.$lowest_row.':'.'A'.$highest_row);
+		$excel->merge_cells('B'.$lowest_row.':'.'B'.$highest_row);
+		$excel->merge_cells('C'.$lowest_row.':'.'C'.$highest_row);
+		$excel->merge_cells('D'.$lowest_row.':'.'D'.$highest_row);
+		$excel->merge_cells('E'.$lowest_row.':'.'E'.$highest_row);
+		$excel->merge_cells('F'.$lowest_row.':'.'F'.$highest_row);
+		$excel->merge_cells('G'.$lowest_row.':'.'G'.$highest_row);
+		$excel->merge_cells('H'.$lowest_row.':'.'H'.$highest_row);
+		$excel->merge_cells('I'.$lowest_row.':'.'I'.$highest_row);
+		$excel->merge_cells('J'.$lowest_row.':'.'J'.$highest_row);
+		$excel->merge_cells('K'.$lowest_row.':'.'K'.$highest_row);
+		$excel->merge_cells('L'.$lowest_row.':'.'L'.$highest_row);
+		$excel->wrap_text('A'.$lowest_row.':'.'L'.$highest_row);
 	}
-	
+
 }
+// return;
+//$excel->set_borders('A'.$lowest_row.':'.'L'.$highest_row,1,1,1,1, "thin");
+//$excel->wrap_text('A'.$lowest_row.':'.'L'.$highest_row);
+
 /* 
 	Set borders ( $excel->set_borders($cell,$left,$right,$top,$bottom,$border_style); )
 */
