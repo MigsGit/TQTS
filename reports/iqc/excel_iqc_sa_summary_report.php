@@ -137,7 +137,7 @@ $excel->merge_cells('L8:L9');
 $excel->merge_cells('M8:M9');
 $excel->merge_cells('N8:N9');
 $excel->merge_cells('O8:O9');
-$excel->set_borders('A8:O9',1,1,1,1);
+$excel->set_borders('A8:O9',1,1,1,1,'thin');
 
 //FONT FORMAT
 $array_header = array(
@@ -256,7 +256,12 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 		$custom_col = 'A';
 		$custom_data_row++;
 	}
+
 }
+// if($sar_details_result->num_rows >= 1){
+// 	echo 'Error export. Please Try Again !';
+// 	exit;
+// }
 //FORMAT
 if ($lowest_row != null && $highest_row != null) {
 	$cell_range = 'A'.$lowest_row.':'.'A'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
@@ -276,6 +281,9 @@ if ($lowest_row != null && $highest_row != null) {
 	$cell_range = 'O'.$lowest_row.':'.'O'.$highest_row; $excel->set_format($cell_range,$array_format_value_sar);
 	$excel->set_borders('A'.$lowest_row.':'.'O'.$highest_row,1,1,1,1, "thin");
 	$excel->wrap_text('A'.$lowest_row.':'.'O'.$highest_row);
+}else{
+	echo 'Error: Date '.date('Y-M', strtotime($sar_summary_date_from)).' to '.date('Y-M', strtotime($sar_summary_date_to)).' SAR Report not exist. Please Try Again !';
+	exit;
 }
 $col = 'A'; $row = '1';
 $excel->set_height('2',15.00);
