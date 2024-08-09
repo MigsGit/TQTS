@@ -36,7 +36,7 @@ dt_oqc_lon_capa_monitoring = $('#'+tbl_oqc_lon_capa_monitoring).DataTable({
 	"columnDefs":[
 		{"orderable":false,"targets":[0,1]}
 	],
-	"sAjaxSource": "server_side_scripts/oqc/dt_lon_lqc_inspector_capa_monitoring.php?username="+username +"&"+ "oqc_lon_id="+oqc_lon_id, //nmodify
+	"sAjaxSource": "server_side_scripts/oqc/dt_lon_lqc_inspector_capa_monitoring.php?username="+username +"&"+ "oqc_lon_id="+oqc_lon_id, 
 	"drawCallback": function( settings ) {
 		$('#'+tbl_oqc_lon_capa_monitoring).attr('style','width:100%;');
 	}
@@ -299,7 +299,6 @@ $('#' + tbl_oqc_lon_lqc_inspector + ' tbody').on('click','tr .fa-eye',function()
 	var pkid 	= $(this).attr("id");	
 	var row 	= $(this).closest('tr');
 	var status  = row.find('td:eq(0)').text();
-	
 	if(status == " CONFORMED") {
 		$('#'+mdl_inspector_production+' .fa-thumbs-o-up').hide();
 		$('#'+mdl_inspector_production+' .fa-thumbs-o-down').hide();
@@ -1014,9 +1013,8 @@ $('#' + tbl_oqc_lon_lqc_inspector + ' tbody').on('click','tr .fa-tasks',function
 	$('#'+mdl_inspector_production).data('id',pkid);
 	$('#'+mdl_inspector_production).modal('show');
 	$('#'+mdl_inspector_production + ' #lon_container_message').hide();
-	//nmodify
+	
 	$frm_oqc_capa_monitoring.find('#oqc_lon_id').val(pkid);
-	dt_oqc_lon_capa_monitoring.ajax.url("server_side_scripts/oqc/dt_lon_lqc_inspector_capa_monitoring.php?username="+username +"&"+ "oqc_lon_id="+$frm_oqc_capa_monitoring.find('#oqc_lon_id').val()).draw();
 });
 
 $('#'+frm_inspector_production+' button[name="add_mode_defect"]').click(function() {	
@@ -1133,12 +1131,15 @@ function fn_get_oqc_lon_details(pkid,modal_id,frm_id){
 		"pkid"		: pkid
 	}
 	call_ajax(data, handler_lon, function(result){
-		console.log(result);
+		if(result['status'] == 'CONFORMED BY OQC INSPECTOR' && result['created_by_qc'] === username){ //show Add CAPA Monitoring 
+			$('#add_capa_monitoring').show();
+		}else{
+			$('#add_capa_monitoring').hide();
+		}
 		$.each(result['data'][0],function(key, value){
 			$('#'+frm_id+' input[name="'+key+'"]').val(value);
 			$('#'+frm_id+' button[name="'+key+'"]').val(value);
 			$('#'+frm_id+' textarea[name="'+key+'"]').val(value);
-			
 			// if(key == 'po_number' && value != "") {
 				// var array_fields = [
 					// 'input[name="device_name"]'
@@ -1192,6 +1193,7 @@ function fn_get_oqc_lon_details(pkid,modal_id,frm_id){
 		}
 		$('#'+frm_id+' input[name="lon_no"]').val(result['lon_no_w_rev']);
 		fn_check_inspector_attachment(modal_id, pkid)
+		dt_oqc_lon_capa_monitoring.ajax.url("server_side_scripts/oqc/dt_lon_lqc_inspector_capa_monitoring.php?username="+username +"&"+ "oqc_lon_id="+pkid).draw();
 	});
 }
 
@@ -1202,7 +1204,7 @@ function fn_get_oqc_lon_details_edit(pkid,modal_id,frm_id){
 		"pkid"		: pkid
 	}
 	call_ajax(data, handler_lon, function(result){
-		console.log(result);
+		
 		$.each(result['data'][0],function(key, value){
 			$('#'+frm_id+' input[name="'+key+'"]').val(value);
 			$('#'+frm_id+' button[name="'+key+'"]').val(value);

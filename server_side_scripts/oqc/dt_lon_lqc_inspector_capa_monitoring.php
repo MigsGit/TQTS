@@ -24,7 +24,9 @@
 		'oqc_capa_status', 
 		'oqc_capa_req_sub_date', 
 		'oqc_capa_actual_sub_date', 
-		'oqc_capa_remarks', 
+		'oqc_capa_remarks',
+		'created_by',
+		
 	);
 	/* used this field for searching data typed in the search box */
 
@@ -238,7 +240,9 @@
     {
 		$row = array();
 		unset($row);
-		$button = '<center><button btn-type="view" tbl-oqc-lon-capa-monitoring-id ="'.$aRow['id'].'"  id="btnViewDocReviewDisposition" class="btn btn-sm btn-info fa fa-edit" type="button"> Edit</button></center>';
+		if($aRow['created_by'] == $username){
+			$button = '<center><button btn-type="view" tbl-oqc-lon-capa-monitoring-id ="'.$aRow['id'].'"  id="btnViewDocReviewDisposition" class="btn btn-sm btn-info fa fa-edit" type="button"> Edit</button></center>';
+		}
 		switch ($aRow['oqc_capa_status']) {
 			case 'Open':
 				$status = '<span class="badge highlight-color-lime">Open</span>';

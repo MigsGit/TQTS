@@ -2881,7 +2881,6 @@
 		if($status== "APPROVED"){
 			$new_status = '0';
 			$status_for_email = 'APPROVED';
-			
 			//bamail
 			send_email_for_checking($fkid); //gmodifynow
 		}else{

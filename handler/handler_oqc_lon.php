@@ -384,9 +384,9 @@
 		/* Select recipients */
 		$to			= return_user_email_add($checked_by) == 'NONE' ? '' : return_user_email_add($checked_by);
 		$from 		= return_user_email_add($created_by) == 'NONE' ? '' : return_user_email_add($created_by);
-		
-		$php_mailer = new email();
-		$php_mailer->send_email($to, $from, $from, $subject, $body,'','');
+		 //nmodify
+		// $php_mailer = new email();
+		// $php_mailer->send_email($to, $from, $from, $subject, $body,'','');
 	}
 	
 	function get_lon_details_by_pkid() {
@@ -406,6 +406,8 @@
 		if($row = mysqli_fetch_assoc($result)){
 			$return['lon_no']			= $row['section'].'-'.date('my', strtotime($row['date_time_created'])).'-'.$row['lon_ctr'];
 			$return['lon_no_w_rev']		= $return['lon_no'].' Rev. '.$row['rev_no'];
+			$return['status']			= $row['status'];
+			$return['created_by_qc']			= $row['created_by'];
 			
 			if($action2 == 'edit') {
 				$array_attention = explode(",",$row['attention']);
@@ -594,7 +596,7 @@
 		$script 		= TQTS::getInstance()->update_query_detailed_script($table,$array_fields,$array_values,$sql_where);
 
 		/* Send email to LQC Inspector */
-		send_email_lqc_inspector_from_lqc_supervisor($pkid, $decision);
+		send_email_lqc_inspector_from_lqc_supervisor($pkid, $decision); //nmodify
 		
 		$return['msg'] 		= $msg;
 		$return['script'] 	= $script;
@@ -655,8 +657,8 @@
 		$to			= return_user_email_add($created_by) == 'NONE' ? '' : return_user_email_add($created_by);
 		$from 		= return_user_email_add($username) == 'NONE' ? '' : return_user_email_add($username);
 		
-		$php_mailer = new email();
-		$php_mailer->send_email($to, $from, $from, $subject, $body,'','');
+		// $php_mailer = new email();
+		// $php_mailer->send_email($to, $from, $from, $subject, $body,'','');
 	}
 	
 	function save_lqc_manager_decision() {
@@ -752,8 +754,8 @@
 		$to = implode(',',$to);
 		$from 		= return_user_email_add($approved_by) == 'NONE' ? '' : return_user_email_add($approved_by);
 		
-		$php_mailer = new email();
-		$php_mailer->send_email($to, $from, $from, $subject, $body,'','');
+		// $php_mailer = new email();
+		// $php_mailer->send_email($to, $from, $from, $subject, $body,'','');
 		
 		if($decision == 'APPROVED') {
 			//create daily notification for CAPA reminder
@@ -912,10 +914,11 @@
 		$target_file 	 	= $target_dir . $file_name;
 		$msg			 	= '';
 		
-		if (file_exists($target_file)) {
-			$msg 					= "Sorry, your file already exists.";
-			$return['error']		= $msg;
-		} else {
+		// if (file_exists($target_file)) {
+		// 	$msg 					= "Sorry, your file already exists.";
+		// 	$return['error']		= $msg;
+		// 	$script		= '';
+		// } else {
 			if (move_uploaded_file($temp_file, $target_file)) {				
 				/* Update main table status */
 				$conform_by			= '';
@@ -947,7 +950,8 @@
 				
 				$array_fields 	= array('status', 'attention_logs', 'lastupdate', 'username');
 				$array_values 	= array('UPLOADED DISPOSITION', $attention_logs, $date_time_today,$username);
-				$sql_where		= 'WHERE pkid='.$fklon.' AND (`attention` LIKE "%'.$username.'%") AND logdel=0';
+				// $sql_where		= 'WHERE pkid='.$fklon.' AND (`attention` LIKE "%'.$username.'%") AND logdel=0';
+				$sql_where		= 'WHERE pkid='.$fklon.' AND logdel=0';
 				$msg 			= TQTS::getInstance()->update_query_detailed($table_main,$array_fields,$array_values,$sql_where);
 				$script 		= TQTS::getInstance()->update_query_detailed_script($table_main,$array_fields,$array_values,$sql_where);
 				
@@ -967,8 +971,7 @@
 					$msg .= '<br>There was an error on renaming the file.';
 				}	
 			}
-			
-		}
+		// }
 		/* Send email to LQC Inspector */
 		send_email_from_production($fklon);
 		
@@ -1052,8 +1055,8 @@
 		$cc 		 = implode(',', $cc_array);
 		$from 		 = return_user_email_add($username) == 'NONE' ? '' : return_user_email_add($username);
 		
-		$php_mailer = new email();
-		$php_mailer->send_email($to, $from, $cc, $subject, $body,'','');
+		// $php_mailer = new email();
+		// $php_mailer->send_email($to, $from, $cc, $subject, $body,'','');
 	}
 	
 	function save_lqc_inspector_conformance_decision() {
@@ -1177,8 +1180,8 @@
 		$cc 		 = implode(',', $cc_array);
 		$from 		 = return_user_email_add($username) == 'NONE' ? '' : return_user_email_add($username);
 		
-		$php_mailer = new email();
-		$php_mailer->send_email($to, $from, $cc, $subject, $body,'','');
+		// $php_mailer = new email();
+		// $php_mailer->send_email($to, $from, $cc, $subject, $body,'','');
 	}
 		
 	function save_lqc_cancel() {
@@ -1268,8 +1271,8 @@
 		$cc 		 = implode(',', $cc_array);
 		$from 		 = return_user_email_add($username) == 'NONE' ? '' : return_user_email_add($username);
 		
-		$php_mailer = new email();
-		$php_mailer->send_email($to, $from, $cc, $subject, $body,'','');
+		// $php_mailer = new email();
+		// $php_mailer->send_email($to, $from, $cc, $subject, $body,'','');
 	}
 	
 	function check_inspector_attachment() {
@@ -1391,8 +1394,8 @@
 		$cc 		= implode(',',$cc);
 		$from 		= return_user_email_add($created_by) == 'NONE' ? '' : return_user_email_add($created_by);
 		
-		$php_mailer = new email();
-		$php_mailer->send_scheduled_email('tbl_oqc_lon', $pkid, $to, $from, $cc, $subject, $body , $capa_due_date, '2');
+		// $php_mailer = new email();
+		// $php_mailer->send_scheduled_email('tbl_oqc_lon', $pkid, $to, $from, $cc, $subject, $body , $capa_due_date, '2');
 		//nmodify
 	}
 	

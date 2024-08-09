@@ -2209,7 +2209,7 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 				</div>
 				<div class="col-sm-10">
 					<button type="button" class="btn btn-link fa fa-paperclip" id="pkid" name="pkid"> Attachments</button>
-					<button type="button" class="btn btn-warning fa fa-file re-upload" id="pkid" name="pkid"> Re-upload</button>
+					<!-- <button type="button" class="btn btn-warning fa fa-file re-upload" id="pkid" name="pkid"> Re-upload</button> --> <!-- REUPLOAD PRODN ATTACHMENT ---> 
 				</div>
 			</div>	
 			<div class="profile-info-title h4" >
@@ -2239,7 +2239,7 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 			</div>	
 			<div class="row" style="margin-top:5px;">	
 				<div class="col-sm-12">
-					<button type="button" class="btn btn-success fa fa-plus pull-right" id="add_capa_monitoring"> Add </button>
+					<button type="button" class="btn btn-success fa fa-plus pull-right" id="add_capa_monitoring" style="display: none;"> Add </button>
 				</div>
 			</div>
 			<div class="row" style="margin-top:5px;">	
