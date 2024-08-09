@@ -376,7 +376,7 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 	}
 	
 }
-return;
+// return;
 /* 
 	Set borders ( $excel->set_borders($cell,$left,$right,$top,$bottom,$border_style); )
 */

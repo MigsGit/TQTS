@@ -16,32 +16,33 @@
 //	 ini_set('display_errors', 1);
 
 	$aColumns = array( 
-				'pkid', 
-				'status', 
-				'lon_ctr', 
-				'section', 
-				'attention', 
-				'attention_logs', 
-				'attention_remarks', 
-				'date_inspected', 
-				'defect_mode', 
-				'po_number', 
-				'lot_submission', 
-				'lot_number', 
-				'lot_qty', 
-				'aql', 
-				'sample_size', 
-				'capa_due_date',
-				'created_by', 
-				'date_time_created', 
-				'checked_by', 
-				'checked_by_status', 
-				'checked_by_logs', 
-				'checked_by_remarks', 
-				'approved_by', 
-				'approved_by_status', 
-				'approved_by_logs', 
-				'approved_by_remarks'
+				'oqc_lon.pkid', 
+				'oqc_lon.status', 
+				'oqc_lon.lon_ctr', 
+				'oqc_lon.section', 
+				'oqc_lon.attention', 
+				'oqc_lon.attention_logs', 
+				'oqc_lon.attention_remarks', 
+				'oqc_lon.date_inspected', 
+				'oqc_lon.defect_mode', 
+				'oqc_lon.po_number', 
+				'oqc_lon.lot_submission', 
+				'oqc_lon.lot_number', 
+				'oqc_lon.lot_qty', 
+				'oqc_lon.aql', 
+				'oqc_lon.sample_size', 
+				'oqc_lon.capa_due_date',
+				'oqc_lon.created_by', 
+				'oqc_lon.date_time_created', 
+				'oqc_lon.checked_by', 
+				'oqc_lon.checked_by_status', 
+				'oqc_lon.checked_by_logs', 
+				'oqc_lon.checked_by_remarks', 
+				'oqc_lon.approved_by', 
+				'oqc_lon.approved_by_status', 
+				'oqc_lon.approved_by_logs', 
+				'oqc_lon.approved_by_remarks',
+				'oqc_lon_production.created_by AS prodn_created_by',
 				);
 	
 	/* used this field for searching data typed in the search box */
@@ -53,7 +54,8 @@
 	$sIndexColumn = "pkid";
 	
 	/* DB table to use */
-	$sTable = "tbl_oqc_lon";
+	$sTable = "tbl_oqc_lon oqc_lon";
+	$sJoin = "LEFT JOIN tbl_oqc_lon_production oqc_lon_production ON oqc_lon_production.fklon = oqc_lon.pkid";
 	
 	$database_config = '../../db_config/config_tqts.php';
 	
@@ -170,7 +172,10 @@
 	// }
 	// $sWhere .= " logdel=0";
 	
-	$sWhere = "WHERE attention LIKE '%".$username."%' AND approved_by_status='APPROVED' AND logdel=0";
+	// $sWhere = "WHERE oqc_lon_production.created_by LIKE '%".$username."%' AND oqc_lon.approved_by_status='APPROVED' OR oqc_lon.status = 'REJECTED BY OQC INSPECTOR' AND oqc_lon.logdel=0"; //REJECTED BY OQC INSPECTOR
+	$sWhere = 'WHERE 1=1';
+	$sWhere .= " AND oqc_lon.approved_by_status='APPROVED' OR oqc_lon.status = 'REJECTED BY OQC INSPECTOR' AND oqc_lon.logdel=0";
+	$sWhere .= " AND oqc_lon_production.created_by LIKE '%".$username."%' AND oqc_lon_production.logdel=0 ";
 	
 	$sql_where 	= $_GET['wh'];	
 	
@@ -186,9 +191,18 @@
 	 * SQL queries
 	 * Get data to display
 	 */
+	$script = "
+		SELECT SQL_CALC_FOUND_ROWS ".str_replace(" , ", " ", implode(", ", $aColumns))."
+		FROM   $sTable
+		$sJoin
+		$sWhere
+		$sOrder
+		$sLimit
+	";
 	$sQuery = "
 		SELECT SQL_CALC_FOUND_ROWS ".str_replace(" , ", " ", implode(", ", $aColumns))."
 		FROM   $sTable
+		$sJoin
 		$sWhere
 		$sOrder
 		$sLimit
@@ -223,7 +237,8 @@
 		"sEcho" => intval($_GET['sEcho']),
 		"iTotalRecords" => $iTotal,
 		"iTotalDisplayRecords" => $iFilteredTotal,
-		"aaData" => array()
+		"aaData" => array(),
+		"script" => $script,
 	);
 	
 	require_once('../../handler/common_handler.php');
@@ -249,7 +264,7 @@
 			$buttons  .= '<button type="button" class="btn btn-danger fa fa-close" id="'.$aRow['pkid'].'" style="margin-top:5px;"> Cancel</button><br>';
 			$buttons  .= '<button type="button" class="btn btn-success fa fa-file-excel-o" id="'.$aRow['pkid'].'" style="margin-top:5px;"> Export</button><br>';
 		} else if($aRow['status'] == 'REJECTED BY OQC INSPECTOR') {
-			$badge 	  = '<span class="badge highlight-color-red" > REJECTED</span>';
+			$badge 	  = '<span class="badge highlight-color-red" > REJECTED BY OQC INSPECTOR</span>';
 			$buttons  = '<button type="button" class="btn btn-primary fa fa-edit" id="'.$aRow['pkid'].'" style="margin-top:5px;"> Edit</button><br>';
 			$buttons  .= '<button type="button" class="btn btn-danger fa fa-close" id="'.$aRow['pkid'].'" style="margin-top:5px;"> Cancel</button><br>';
 		} else if($aRow['status'] == 'CONFORMED BY OQC INSPECTOR') {
@@ -265,7 +280,7 @@
 			$buttons  = '<button type="button" class="btn btn-default fa fa-eye" id="'.$aRow['pkid'].'" style="margin-top:5px;"> View</button><br>';
 			$buttons  .= '<button type="button" class="btn btn-danger fa fa-close" id="'.$aRow['pkid'].'" style="margin-top:5px;"> Cancel</button>';
 		}
-		
+		//164 REJECTED BY OQC INSPECTOR 
 		$attention_name		= '';
 		$attention_username = explode(",", $aRow['attention']);
 		for($i=0; $i<count($attention_username); $i++) {
