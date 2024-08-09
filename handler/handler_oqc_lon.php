@@ -573,7 +573,8 @@
 		$checked_by_remarks = $_POST["checked_by_remarks"];
 		$username    	    = $_POST['username'];
 		$msg			    = '';		
-		
+		echo 'true';
+		return;
 		if($decision != '') {
 			$status = $decision.'ED BY LQC SUPERVISOR';			
 		} else {
@@ -1059,7 +1060,7 @@
 		// $php_mailer->send_email($to, $from, $cc, $subject, $body,'','');
 	}
 	
-	function save_lqc_inspector_conformance_decision() {
+	function save_lqc_inspector_conformance_decision() { //nmodify
 		require_once('../class/oop_tqts.php');
 		$date_time_today    = date('Y-m-d H:i:s');
 		$pkid 			    = $_POST["pkid"];
@@ -1069,7 +1070,8 @@
 		$conform_by_remarks = $_POST["conform_by_remarks"];
 		$username    	    = $_POST['username'];
 		$msg			    = '';		
-		
+		// echo send_email_from_inspector_conformance($pkid); //save_lqc_inspector_conformance_decision
+		// return;
 		if($decision != '') {
 			$status = $decision.'ED BY OQC INSPECTOR';		
 			if($decision == 'CONFORMED') {
@@ -1097,14 +1099,13 @@
 		$script 		= TQTS::getInstance()->update_query_detailed_script($table_main,$array_fields,$array_values,$sql_where);
 
 		/* Send email to LQC Inspector */
-		send_email_from_inspector_conformance($pkid);
-		
+		send_email_from_inspector_conformance($pkid,$decision);
 		$return['msg'] 	= $msg;
 		$return['script'] 	= $script;
 		echo json_encode($return);
 	}
 	
-	function send_email_from_inspector_conformance($pkid) {
+	function send_email_from_inspector_conformance($pkid,$decision) {
 		require_once('../class/oop_tqts.php');
 		require_once('../class/send_email.php');
 		/* Select the report information */
@@ -1155,11 +1156,11 @@
 			$ok_qty 			= $row['ok_qty'];
 			$ng_qty 			= $row['ng_qty'];
 			$guaranteed_lot 	= $row['guaranteed_lot'];
-			$conform_by 		= $row['conform_by'];
+			$created_by_prodn 		= $row['created_by'];
 		}
 		
-		$subject 	 = 'FOR CONFORMANCE: '.$po_number.' '.$device_name;
-		$body 	 	 = 'Please be informed that you have request for conformance.<br> <br>';
+		$subject 	 = ''.$decision.'ED Lot-out Notice: '.$po_number.' '.$device_name;
+		$body 	 	 = 'Please be informed that your request for conformance has been '.$decision.'ED. Kindly re-upload the file <br> <br>';
 		$body 		.= 'Request details: <br>';
 		$body 		.= '&emsp;LON #: '.$lon_no.' <br>';
 		$body 		.= '&emsp;Date Inspected: '.$date_inspected.' <br>';
@@ -1176,13 +1177,97 @@
 		$body 		.= '&emsp;NG: '.$ng_qty.'<br>';
 		
 		/* Select recipients */
-		$to			 = return_user_email_add($conform_by) == 'NONE' ? '' : return_user_email_add($conform_by); 
-		$cc 		 = implode(',', $cc_array);
-		$from 		 = return_user_email_add($username) == 'NONE' ? '' : return_user_email_add($username);
+		$to			 = return_user_email_add('mclegaspi') == 'NONE' ? '' : return_user_email_add('mclegaspi'); 
+		$cc 		 = '';
+		$from 		 = return_user_email_add('cdcasuyon') == 'NONE' ? '' : return_user_email_add('cdcasuyon');
+
+		// $to			 = return_user_email_add($created_by_prodn) == 'NONE' ? '' : return_user_email_add($created_by_prodn); 
+		// $cc 		 = implode(',', $cc_array);
+		// $from 		 = return_user_email_add($username) == 'NONE' ? '' : return_user_email_add($username);
 		
-		// $php_mailer = new email();
-		// $php_mailer->send_email($to, $from, $cc, $subject, $body,'','');
+		$php_mailer = new email();
+		$php_mailer->send_email($to, $from, $cc, $subject, $body,'','');
 	}
+	
+	// function send_email_from_inspector_conformance($pkid) {
+	// 	require_once('../class/oop_tqts.php');
+	// 	require_once('../class/send_email.php');
+	// 	/* Select the report information */
+	// 	$result = "";
+	// 	$array_fields = array('*');
+	// 	$table 	   	= 'tbl_oqc_lon';
+	// 	$joins 	   	= '';
+	// 	$sql_where 	= 'WHERE pkid="'.$pkid.'" AND logdel=0';
+	// 	$sql_order 	= '';
+	// 	$sql_limit 	= 'LIMIT 0, 1';
+	// 	$cc_array	= array();
+	// 	$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+	// 	$script = TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+	// 	if($row = mysqli_fetch_array($result)){
+	// 		$created_by 		= $row['created_by'];
+	// 		$lon_no 			= $row['section'].'-'.date('my', strtotime($row['date_time_created'])).'-'.$row['lon_ctr'];
+	// 		$section 			= $row['section'];
+	// 		$attention_array	= explode(',',$row['attention']);
+	// 		$date_inspected 	= date('M d, Y',strtotime($row['date_inspected']));
+	// 		$po_number 		    = $row['po_number'];
+	// 		$ypics_data 		= get_series_name($row['po_number']);
+	// 		$device_name		= $ypics_data['device_name'];
+	// 		$lot_no 		    = $row['lot_number'];
+	// 		$lot_qty 			= $row['lot_qty'];
+	// 		$disposition 		= $row['disposition'];	
+	// 		$verified_by 		= $row['verified_by'];	
+	// 		$approved_by 		= $row['approved_by'];	
+	// 		$username 			= $row['username'];	
+	// 		$attention			= '';
+	// 		for($i=0;$i<count($attention_array);$i++) {
+	// 			$attention 	   .= get_emp_name_by_username_systemone($attention_array[$i]).', ';
+	// 			$attention 	   .= get_emp_name_by_username_systemone($attention_array[$i]).', ';
+	// 			$cc_array[]		= return_user_email_add($attention_array[$i]) == 'NONE' ? '' : return_user_email_add($attention_array[$i]);
+	// 		}
+	// 			$cc_array[]		= return_user_email_add($created_by) == 'NONE' ? '' : return_user_email_add($created_by); 
+	// 		}
+		
+	// 	$array_fields = array('*');
+	// 	$table 	   	= 'tbl_oqc_lon_production';
+	// 	$joins 	   	= '';
+	// 	$sql_where 	= 'WHERE fklon="'.$pkid.'" AND logdel=0';
+	// 	$sql_order 	= '';
+	// 	$sql_limit 	= 'LIMIT 0, 1';
+	// 	$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+	// 	$script = TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+	// 	if($row = mysqli_fetch_array($result)){
+	// 		$sorted_qty 		= $row['sorted_qty'];
+	// 		$ok_qty 			= $row['ok_qty'];
+	// 		$ng_qty 			= $row['ng_qty'];
+	// 		$guaranteed_lot 	= $row['guaranteed_lot'];
+	// 		$created_by_prodn 		= $row['created_by'];
+	// 	}
+		
+	// 	$subject 	 = 'FOR CONFORMANCE: '.$po_number.' '.$device_name;
+	// 	$body 	 	 = 'Please be informed that you have request for conformance.<br> <br>';
+	// 	$body 		.= 'Request details: <br>';
+	// 	$body 		.= '&emsp;LON #: '.$lon_no.' <br>';
+	// 	$body 		.= '&emsp;Date Inspected: '.$date_inspected.' <br>';
+	// 	$body 		.= '&emsp;Section: '.$section.' <br>';
+	// 	$body 		.= '&emsp;Attention: '.$attention.' <br>';
+	// 	$body 		.= '&emsp;PO Number: '.$po_number.' <br>';
+	// 	$body 		.= '&emsp;Device Name: '.$device_name.' <br>';
+	// 	$body 		.= '&emsp;Lot No.: '.$lot_no.' <br>';
+	// 	$body 		.= '&emsp;Lot Qty.: '.$lot_qty.' <br>';
+	// 	$body 		.= '&emsp;Disposition: '.$disposition.' <br> <br>';
+	// 	$body 		.= '<hr>Production <br>';
+	// 	$body 		.= '&emsp;Sorted Qty.: '.$sorted_qty.'<br>';
+	// 	$body 		.= '&emsp;OK: '.$ok_qty.'<br>';
+	// 	$body 		.= '&emsp;NG: '.$ng_qty.'<br>';
+		
+	// 	/* Select recipients */
+	// 	$to			 = return_user_email_add($created_by_prodn) == 'NONE' ? '' : return_user_email_add($created_by_prodn); 
+	// 	$cc 		 = implode(',', $cc_array);
+	// 	$from 		 = return_user_email_add($username) == 'NONE' ? '' : return_user_email_add($username);
+		
+	// 	// $php_mailer = new email();
+	// 	// $php_mailer->send_email($to, $from, $cc, $subject, $body,'','');
+	// }
 		
 	function save_lqc_cancel() {
 		require_once('../class/oop_tqts.php');
