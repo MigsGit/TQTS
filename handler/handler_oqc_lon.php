@@ -1185,8 +1185,8 @@
 		// $cc 		 = implode(',', $cc_array);
 		// $from 		 = return_user_email_add($username) == 'NONE' ? '' : return_user_email_add($username);
 		
-		$php_mailer = new email();
-		$php_mailer->send_email($to, $from, $cc, $subject, $body,'','');
+		// $php_mailer = new email();
+		// $php_mailer->send_email($to, $from, $cc, $subject, $body,'','');
 	}
 	
 	// function send_email_from_inspector_conformance($pkid) {
