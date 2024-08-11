@@ -20,7 +20,8 @@
 						'`group`.supplier_group',
 						'`supplier`.recipients_to',
 						'`supplier`.recipients_cc',
-						'`supplier`.`pkid`'
+						'`supplier`.`pkid`',
+						'`supplier`.`category`'
 						);
 	
 	/* used this field for searching data typed in the search box */
@@ -197,6 +198,8 @@
 		$row = array();
 		unset($row);
 		$row[] = '<button type="button" class="btn btn-primary fa fa-edit" id="'.$aRow['pkid'].'"> Edit / Delete</button>';
+		// $row[] = '<input type="hidden" id="category" value="'.$aRow['category'].'">'.$aRow['category'] == 1 ? "SAR" :$aRow['category'] == 2 ?"NGR" : "";
+		$row[] = '<input type="hidden" id="category" value="'.$aRow['category'].'">'.$aRow['category'];
 		$row[] = '<input type="hidden" value="'.$aRow['fksupplier_group'].'">'.$aRow['supplier_group'];
 		$row[] = $aRow['supplier'];
 		$row[] = $aRow['recipients_to'];

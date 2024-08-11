@@ -144,8 +144,9 @@
 				/* user configuration only ISS admin and main user should have this */
 				// if($_SESSION['rapid_account_type'] == 1 || $_SESSION['rapid_account_type'] == 2){
 				if($_SESSION['username'] == 'judcata' || // Authorized user; might be change once user is resigned
-					$_SESSION['username'] == 'cnpoblete' || // Authorized user; might be change once user is resigned
-					$_SESSION['username'] == 'joysust' || // Authorized user; might be change once user is resigned
+					$_SESSION['username'] == 'cnpoblete' ||
+					$_SESSION['username'] == 'joysust' ||
+					$_SESSION['username'] == 'joymotin' ||
 					$_SESSION['rapid_account_type'] == 2){ // ISS
 					echo '<li id="li_configuration"><a href="#" data-toggle="tab"><i class="fa fa-cogs"></i> <span>Configuration</span></a></li>';
 				}

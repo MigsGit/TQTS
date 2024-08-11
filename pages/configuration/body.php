@@ -58,6 +58,6 @@ var handler_configuration 	= 'handler/handler_configuration.php';
 </script>
 
 <script type="text/javascript" src="../common_functions/common_functions.j?2"></script>
-<script type="text/javascript" src="js/configuration/supplier.js?2"></script>
+<script type="text/javascript" src="js/configuration/supplier.js?214567"></script>
 <script type="text/javascript" src="js/configuration/approver.js?2"></script>
 <script type="text/javascript" src="js/configuration/user_roles.js?2"></script>

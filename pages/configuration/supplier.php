@@ -18,6 +18,7 @@
 						<thead>
 							<tr>
 								<th style="width:150px;"><i class="fa fa-cogs"></i></th>
+								<th style="width:200px;">Category</th>
 								<th style="width:200px;">Supplier Group</th>
 								<th>Supplier</th>
 								<th>TO</th>
@@ -47,12 +48,19 @@
         <form id="frm_add_supplier">
 			<div class="row">
 				<div class="col-sm-4">
+					<label class="control-label fa condensed"> Category</label>
+				</div>
+				<div class="col-sm-6">
+					<select class="form-control" name="category" required>
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
 					<label class="control-label fa condensed"> Supplier Group</label>
 				</div>
 				<div class="col-sm-6">
 					<select class="form-control" name="fksupplier_group" required>
-						<option value="1">YEC</option>
-						<option value="2">YEU</option>
 					</select>
 				</div>
 			</div>
