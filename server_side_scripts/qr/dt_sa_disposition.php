@@ -209,13 +209,20 @@
 	}
 	
 	/** $sWhere .= " `status` = 1 OR `status` = 5 OR `status` = 6 OR `status` = 7 AND `logdel` = 0 "; */
-	$sWhere .= " (`status` = 0 OR `status` = 1 OR `status` = '5') AND `logdel` = 0";
+	$sWhere .= " (`status` = '0' OR `status` = '1' OR `status` = '5' AND `status` != 'CL') AND `logdel` = 0";
 	// $sWhere .= ' created_by = "'.$username.'"';
 	
 	/*
 	 * SQL queries
 	 * Get data to display
 	 */
+	$script = "
+		SELECT SQL_CALC_FOUND_ROWS ".str_replace(" , ", " ", implode(", ", $aColumns))."
+		FROM   $sTable
+		$sWhere
+		$sOrder
+		$sLimit
+	";
 	$sQuery = "
 		SELECT SQL_CALC_FOUND_ROWS ".str_replace(" , ", " ", implode(", ", $aColumns))."
 		FROM   $sTable
