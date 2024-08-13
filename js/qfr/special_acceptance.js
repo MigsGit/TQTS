@@ -419,7 +419,7 @@ $(document).ready(function(){
 				$('#frm_sa').find('[name="customer_name"]').val(result['customer_name']);
 			}
 			
-			re_initialize_select2_server_side('#modal_sa #supplier','#modal_sa #frm_sa',[],"server_side_scripts/dropdown/qfr/dd_ng_supplier_list.php");
+			re_initialize_select2_server_side('#modal_sa #supplier','#modal_sa #frm_sa',[],"server_side_scripts/dropdown/qfr/dd_sar_supplier_list.php");
 			fn_get_supplier_by_pkid(result['pkid'],'edit');
 			
 			if(mode == 'edit'){
@@ -865,7 +865,7 @@ $(document).ready(function(){
 				var supplier = result['supplier'];
 				if( mode != null){
 					assign_value_select2('#frm_sa #supplier', supplier);
-					re_initialize_select2_server_side('#modal_sa #supplier','#modal_sa #frm_sa',[],"server_side_scripts/dropdown/qfr/dd_ng_supplier_list.php");
+					re_initialize_select2_server_side('#modal_sa #supplier','#modal_sa #frm_sa',[],"server_side_scripts/dropdown/qfr/dd_sar_supplier_list.php");
 					return;
 				}
 				assign_value_select2('#frm_send_report_internal_sa #supplier', supplier); 
@@ -875,7 +875,7 @@ $(document).ready(function(){
 				/* get the email recipients internal */
 				fn_ng_load_email_recipients('cmb_sa_send_to','cmb_sa_send_cc'); 
 				/* get the supplier */
-				re_initialize_select2_server_side('#modal_send_supplier_sa #supplier','#modal_send_supplier_sa #frm_send_report_internal_sa',[],"server_side_scripts/dropdown/qfr/dd_ng_supplier_list.php");
+				re_initialize_select2_server_side('#modal_send_supplier_sa #supplier','#modal_send_supplier_sa #frm_send_report_internal_sa',[],"server_side_scripts/dropdown/qfr/dd_sar_supplier_list.php");
 				/** Get the supplier for modal VIEW	*/
 				
 			}
@@ -1069,21 +1069,21 @@ $(document).ready(function(){
 			change_sar_status('CL',pkid)
 		}
 	});
-
+	var dateFrom =  $('#frm_sar_report').find('#date_from');
+	var dateTo =  $('#frm_sar_report').find('#date_to');
 	$('#frm_sar_report').submit(function (e) {
 		e.preventDefault();
-		let sar_summary_date_from = $('#frm_sar_report').find('#date_from').val();
-		let sar_summary_date_to = $('#frm_sar_report').find('#date_to').val();
-		console.log('sar_summary_date_from',sar_summary_date_from);
-		console.log('sar_summary_date_to',sar_summary_date_to);
+		let sar_summary_date_from = dateFrom.val();
+		let sar_summary_date_to = dateTo.val();
+		
 		if(sar_summary_date_from === "" || sar_summary_date_from === ""){
 			notif_err("Invalid date, Please try again!")
 		}else{
 			window.location.href = "./reports/iqc/excel_iqc_sa_summary_report.php?sar_summary_date_from="+sar_summary_date_from + "&" + "sar_summary_date_to="+sar_summary_date_to ;
 			notif_info("Downloading, Please Wait ...")
 		}
-		$('#frm_sar_report').find('#date_from').val('');
-		$('#frm_sar_report').find('#date_to').val('');
+		dateFrom.val('');
+		dateTo.val('');
 	});
 
 	$('#btn_sa_summary_report').click(function (e) { 
@@ -1091,7 +1091,22 @@ $(document).ready(function(){
 		$('#modal_sar_report').modal();
 	});
 
-	
+	dateFrom.on('change', function() {
+        let fromDate = $(this).val();
+        // Set the minimum value of the "date to" input to the selected "date from" value
+        dateTo.attr('min', fromDate);
+        dateTo.prop('readonly', false);
+    });
+
+	dateTo.on('change', function() {
+        let toDate = $(this).val();
+        let fromDate = dateFrom.val();
+
+        if (toDate < fromDate) {
+            alert('The "Date To" cannot be earlier than the "Date From".');
+            $(this).val(fromDate);
+        }
+    });
 });
 
 

@@ -17,7 +17,7 @@
     
 	$aColumns = array( 
 		'id', 
-		'oqc_lon_id', 
+		'tbl_oqc_lon_id', 
 		'oqc_capa_action', 
 		'oqc_capa_action_incharge', 
 		'oqc_capa_due_date', 
@@ -31,7 +31,7 @@
 	/* used this field for searching data typed in the search box */
 
 	$array_search = array(
-		'oqc_lon_id', 
+		'tbl_oqc_lon_id', 
 		'oqc_capa_action', 
 		'oqc_capa_action_incharge', 
 		'oqc_capa_due_date', 
@@ -135,7 +135,7 @@
 		$sWhere = substr_replace( $sWhere, "", -3 );
 		$sWhere .= ')';
 	}
-
+	
     /* The number of UI column is required to be equal to table column
         Ex. 5 db table column == 5 UI column. Uncomment the script below to show.
         echo json_encode($aColumns);
@@ -178,7 +178,7 @@
 		$sWhere .= " AND logdel=0";
 	} else {
 		$sWhere .= " AND logdel=0 AND created_by='".$username."'";		
-		$sWhere .= " AND oqc_lon_id = '".$_GET['oqc_lon_id']."'";		
+		$sWhere .= " AND tbl_oqc_lon_id = '".$_GET['oqc_lon_id']."'";		
 	}
 	
 	if($sOrder == ""){
@@ -240,6 +240,7 @@
     {
 		$row = array();
 		unset($row);
+		$button = '';
 		if($aRow['created_by'] == $username){
 			$button = '<center><button btn-type="view" tbl-oqc-lon-capa-monitoring-id ="'.$aRow['id'].'"  id="btnViewDocReviewDisposition" class="btn btn-sm btn-info fa fa-edit" type="button"> Edit</button></center>';
 		}

@@ -4,11 +4,11 @@ $ng_report_approver	 			= false;
 $ng_report_requestor 			= false;
 $ng_report_disposition_admin 	= false;
 foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
-	if($subsystem_code == "QFR" && $user_role['module'][$key] == "NG Report" && $user_role['role'][$key] == "APPROVER"){ 
+	if($subsystem_code == "IQC" && $user_role['module'][$key] == "NG Report" && $user_role['role'][$key] == "APPROVER"){ 
 		$ng_report_approver = true;
-	} else if($subsystem_code == "QFR" && $user_role['module'][$key] == "NG Report" && $user_role['role'][$key] == "REQUESTOR"){
+	} else if($subsystem_code == "IQC" && $user_role['module'][$key] == "NG Report" && $user_role['role'][$key] == "REQUESTOR"){
 		$ng_report_requestor = true;
-	} if($subsystem_code == "QFR" && $user_role['module'][$key] == "NG Report - Disposition Admin" && $user_role['read'][$key] == 1){
+	} if($subsystem_code == "IQC" && $user_role['module'][$key] == "NG Report - Disposition Admin" && $user_role['read'][$key] == 1){
 		$ng_report_disposition_admin = true;
 	}
 }
@@ -181,7 +181,7 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
 					<label class="fa fa-md">Failed Mode</label>
 				</div>
 				<div class="col-sm-4">
-					<input type="input" class="form-control" id="failed_mode" name="failed_mode" required>
+					<input type="input" class="form-control" id="fail_mode" name="fail_mode" required>
 				</div>
 				<div class="col-sm-2">
 					<label class="fa fa-md">Supplier: </label>
@@ -315,7 +315,7 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
 					<label class="fa fa-md">Failed Mode</label>
 				</div>
 				<div class="col-sm-4">
-					<input type="input" class="form-control" id="failed_mode" name="failed_mode" required>
+					<input type="input" class="form-control" id="fail_mode" name="fail_mode" required>
 				</div>
 				<div class="col-sm-2">
 					<label class="fa fa-md">Supplier: </label>
@@ -437,7 +437,7 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
 					<label class="fa fa-md">Failed Mode</label>
 				</div>
 				<div class="col-sm-4">
-					<input type="input" class="form-control" id="failed_mode" name="failed_mode" required>
+					<input type="input" class="form-control" id="fail_mode" name="fail_mode" required>
 				</div>
 				<div class="col-sm-2">
 					<label class="fa fa-md">Supplier: </label>

@@ -1308,6 +1308,26 @@ function fn_reload_lon_datatables() {
 	dt_oqc_lon_production.ajax.reload();
 }
 
+var dateFrom =  $('#frm_lon_report').find('#date_from');
+var dateTo =  $('#frm_lon_report').find('#date_to');
+
+dateFrom.on('change', function() {
+	let fromDate = $(this).val();
+	// Set the minimum value of the "date to" input to the selected "date from" value
+	dateTo.attr('min', fromDate);
+	dateTo.prop('readonly', false);
+});
+
+dateTo.on('change', function() {
+	let toDate = $(this).val();
+	let fromDate = dateFrom.val();
+
+	if (toDate < fromDate) {
+		alert('The "Date To" cannot be earlier than the "Date From".');
+		$(this).val(fromDate);
+	}
+});
+
 /* *************************************************
 	Lot-out Notice - Common Functions - End
 ************************************************** */

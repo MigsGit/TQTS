@@ -173,14 +173,12 @@
 		$array_fields = array($field_name);
 		$table 	   	= 'tbl_supplier';
 		$joins 	   	= '';
-		$sql_where 	= 'WHERE supplier="'.$supplier.'" AND logdel=0';
+		$sql_where 	= 'WHERE supplier="'.$supplier.'" AND fksupplier_group = 0 OR category = "SAR" AND logdel=0';
 		$sql_order 	= '';
 		$sql_limit 	= '';
 		$html_select= '';
 		$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 		if($row = mysqli_fetch_array($result)) {
-			
-			// echo $row['recipients_to'];
 			$array_email_add = explode(',',$row[$field_name]);
 			$return['email_add'] = array();
 			foreach($array_email_add as $key => $value){

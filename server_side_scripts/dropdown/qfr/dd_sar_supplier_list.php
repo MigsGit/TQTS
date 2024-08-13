@@ -21,7 +21,7 @@ $search = trim(strip_tags($_GET['q']));
 // $search = trim(strip_tags($_GET['searchTerms']));
 
 /* Query Here  */
-$sql  = "SELECT supplier FROM tbl_supplier WHERE `supplier` LIKE '%$search%' AND fksupplier_group != 0 OR category = 'NGR' AND  logdel=0 LIMIT 0,10";
+$sql  = "SELECT supplier FROM tbl_supplier WHERE `supplier` LIKE '%$search%' AND fksupplier_group = 0 OR category = 'SAR' AND logdel=0 LIMIT 0,10";
 $result = mysqli_query($conn,$sql);
 
 if(!$result){

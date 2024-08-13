@@ -2286,7 +2286,7 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 					<label class="fa fa-md">Oqc Lon Id: </label>
 				</div>
 				<div class="col-sm-10">
-					<input type="number" class="form-control" id="oqc_lon_id" name="oqc_lon_id">
+					<input type="hidden" class="form-control" id="oqc_lon_id" name="oqc_lon_id">
 				</div>
 			</div>	
 			<div class="row" style="margin-top:5px;">
@@ -2294,7 +2294,7 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 					<label class="fa fa-md">Oqc Lon CapaMonitoring Id: </label>
 				</div>
 				<div class="col-sm-10">
-					<input type="number" class="form-control" id="oqc_lon_capa_monitoring_id" name="oqc_lon_capa_monitoring_id">
+					<input type="hidden" class="form-control" id="oqc_lon_capa_monitoring_id" name="oqc_lon_capa_monitoring_id">
 				</div>
 			</div>	
 			<div class="row" style="margin-top:5px;">
@@ -2456,7 +2456,7 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 				<label class="fa fa-md">Date from: </label>
 			</div>
 			<div class="col-sm-8">
-				<input type="month" class="form-control" pattern="[0-9]*" id="date_from" required>
+				<input type="month" class="form-control" pattern="[0-9]*" id="date_from" min="2024-08" required>
 			</div>
 		</div>
 		<div class="row" style="padding-top:3px;">
@@ -2464,7 +2464,7 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 				<label class="fa fa-md">Date to: </label>
 			</div>
 			<div class="col-sm-8">
-				<input type="month" class="form-control" pattern="[0-9]*" id="date_to" required>
+				<input type="month" class="form-control" pattern="[0-9]*" id="date_to" required readonly>
 			</div>
 		</div>
       </div>
@@ -2517,7 +2517,7 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 					<label class="fa fa-md">TblOqcLonProduction: </label>
 				</div>
 				<div class="col-sm-6">
-					<input class="form-control" type="number" id="tbl_oqc_lon_production_id" name="tbl_oqc_lon_production_id">
+					<input class="form-control" type="hidden" id="tbl_oqc_lon_production_id" name="tbl_oqc_lon_production_id">
 				</div>
 			</div>
 			<div class="row">			
