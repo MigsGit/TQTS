@@ -1179,14 +1179,14 @@
 		});
 	}
 	
-	function fn_get_supplier_email_address(supplier, category, id) {
+	function fn_get_supplier_email_address(supplier, category, id) { //nmodify
 		
 		var data = {
-			"action" 		: "get_supplier_email_address",
+			"action" 		: "get_supplier_ng_email_address",
 			"supplier"		: supplier,
 			"field_name"	: category
 		}
-		call_ajax(data, handler_qfr, function(result) {
+		call_ajax(data, handler_qfr_ng, function(result) {
 			assign_value_select2('#'+id,result['email_add']);
 			console.log(result);
 		});

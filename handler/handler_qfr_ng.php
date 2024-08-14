@@ -26,6 +26,9 @@
 				case "get_email_recipients_by_category" 		: get_email_recipients_by_category(); break; 
 				case "get_supplier_by_pkid" 					: get_supplier_by_pkid(); break; 
 				case "view_ng_attachments" 						: view_ng_attachments(); break; 
+
+				case "get_supplier_ng_email_address" 			: get_supplier_ng_email_address(); break; 
+
 			}
 		}
 	}
@@ -123,7 +126,7 @@
 		echo json_encode($return);
 	}
 	
-	function save_ng_report() {
+	function save_ng_report() { //email
 		require_once('../class/oop_tqts.php');
 		$date_time_today = date('Y-m-d H:i:s');
 		$wbs_id 		 = $_POST["wbs_id"];
@@ -134,7 +137,6 @@
 		$fkfile_path     = $file['pkid'];
 		$target_dir      = $file['path'];		
 		$msg			 = '';
-		
 		$table 		  	= 'tbl_qfr_ng';
 		$values		  	= get_fields_values($_POST,array("action","file_ng","device_name","report_approvers_new","lot_numbers","quantity","lot_pkid","username","fkfile_path","wbs_id","approvers","rbtn_new"));
 		$array_fields 	= $values["array_fields"];
@@ -155,9 +157,10 @@
 		$approvers 		 = explode(',',$approvers);
 		foreach($approvers as $approver_username) {
 			$array_values 	= array($date_time_today, $username, $pkid, $approver_username, 'PENDING', $date_time_today, $username);
-			$insert_query	= TQTS::getInstance()->insert_query($table,$array_fields,$array_values);
+			// $insert_query	= TQTS::getInstance()->insert_query($table,$array_fields,$array_values);
 			$script	.= TQTS::getInstance()->insert_query_script($table,$array_fields,$array_values);
 		}	
+		
 		if(!file_exists($target_dir.$pkid.'/')) {
 			$target_dir = $target_dir.$pkid.'/';
 			mkdir($target_dir, 0777, false);
@@ -179,7 +182,7 @@
 						$msg = 'File was successfully uploaded to the system.<br>';
 						/* Send email notification to the first approver */
 						if($i == 0) {
-							ng_send_email_for_approval($pkid);
+							// ng_send_email_for_approval($pkid);
 						}
 					} else {
 						$msg = 'There was an error on renaming the file.';
@@ -812,7 +815,7 @@
 			/* Update the status as WAITING DISPOSITION */
 			$table_details	= 'tbl_qfr_ng';
 			$array_fields 	= array('fkfile_path','file_name','ng_report_no','fail_mode','status', 'supplier', 'lastupdate','username');
-			$array_values 	= array($fkfile_path, (implode(' | ', $_FILES["file_ng"]["name"])), $ng_report_no, 'fail_mode','WAITING DISPOSITION', $_POST['supplier'], $date_time_today,$username);
+			$array_values 	= array($fkfile_path, (implode(' | ', $_FILES["file_ng"]["name"])), $ng_report_no, $return['fail_mode'],'WAITING DISPOSITION', $_POST['supplier'], $date_time_today,$username);
 			$sql_where		= 'WHERE pkid='.$fkng.' AND logdel=0';
 			$msg 			.= TQTS::getInstance()->update_query_detailed($table_details,$array_fields,$array_values,$sql_where);
 			
@@ -1460,6 +1463,7 @@
 		$sql_where 	= 'WHERE pkid="'.$pkid.'" AND logdel=0';
 		$sql_order 	= '';
 		$sql_limit 	= 'LIMIT 0,1';
+		$result = TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 		$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 		if($row=mysqli_fetch_array($result)) {
 			$array_supp	 		= explode(",",$row['supplier']);
@@ -1534,5 +1538,38 @@
 		$return['table_body'] = $table_body;
 		echo json_encode($return);
     }
+
+	function get_supplier_ng_email_address() {
+		require_once('../class/oop_tqts.php');
+		$supplier 		= $_POST['supplier'];
+		$field_name 	= $_POST['field_name'];
+		$array_fields = array($field_name);
+		$table 	   	= 'tbl_supplier';
+		$joins 	   	= '';
+		$sql_where 	= 'WHERE supplier="'.$supplier.'" AND fksupplier_group != 0 OR category = "NGR" AND logdel=0';
+		$sql_order 	= '';
+		$sql_limit 	= '';
+		$html_select= '';
+		$result = TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+		$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+		if($row = mysqli_fetch_array($result)) {
+			
+			// echo $row['recipients_to'];
+			$array_email_add = explode(',',$row[$field_name]);
+			$return['email_add'] = array();
+			foreach($array_email_add as $key => $value){
+				$array_data_email 				= array();
+				$array_data_email['id'] 		= $value;
+				$array_data_email['text'] 		= $value;
+				$return['email_add'][]			= $array_data_email;
+			}
+		} 
+		else {
+			$return['email_add'] = '';
+			$return['script'] = '';
+		}
+		echo json_encode($return);
+	}
+	
 	
 	?>

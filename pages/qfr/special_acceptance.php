@@ -37,10 +37,10 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 		<ul class="nav nav-tabs" role="tablist">
 		<?php 
 			if($sa_report_disposition_admin){
+				// <li class="nav-item">
+				// 	<a class="nav-link " data-toggle="tab" href="#home">Home</a>
+				// </li>
 				echo '
-						<li class="nav-item">
-							<a class="nav-link " data-toggle="tab" href="#home">Home</a>
-						</li>
 						<li class="nav-item active">
 							<a class="nav-link " data-toggle="tab" href="#for_sar_disposition">For Disposition</a>
 						</li>
@@ -201,7 +201,7 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 			<div class="panel panel-info">
 				<div class="panel-heading"><i class="fa fa-file fa-lg">For Approval</i></i></div>
 				<div class="panel-body">
-						<iframe src="../../edocapp_test/index.php?is_tqts_access=true" width="100%" height="100%" style="border:none;" title="Pending">
+						<iframe src="../../edocapp/index.php?is_tqts_access=true" width="100%" height="100%" style="border:none;" title="Pending">
 						</iframe>
 				</div>
 			</div>
@@ -307,11 +307,11 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-2">
+				<div class="col-sm-2" style="display:none;">
 					<label class="fa fa-md">SpecialAcceptanceId</label>
 				</div>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id="special_acceptance_id" name="special_acceptance_id" readonly>
+				<div class="col-sm-4" style="display:none;">
+					<input type="number" class="form-control" id="special_acceptance_id" name="special_acceptance_id" readonly>
 				</div> 
 				<div class="col-sm-2">
 					<label class="fa fa-md">Status: </label>
@@ -1141,7 +1141,7 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 				<label class="fa fa-md">Date from: </label>
 			</div>
 			<div class="col-sm-8">
-				<input type="month" class="form-control" pattern="[0-9]*" id="date_from" required>
+				<input type="month" class="form-control" pattern="[0-9]*" id="date_from" min="2024-08" required>
 			</div>
 		</div>
 		<div class="row" style="padding-top:3px;">
@@ -1149,7 +1149,7 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 				<label class="fa fa-md">Date to: </label>
 			</div>
 			<div class="col-sm-8">
-				<input type="month" class="form-control" pattern="[0-9]*" id="date_to" required>
+				<input type="month" class="form-control" pattern="[0-9]*" id="date_to" required readonly>
 			</div>
 		</div>
       </div>

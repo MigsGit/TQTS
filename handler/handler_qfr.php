@@ -173,14 +173,12 @@
 		$array_fields = array($field_name);
 		$table 	   	= 'tbl_supplier';
 		$joins 	   	= '';
-		$sql_where 	= 'WHERE supplier="'.$supplier.'" AND logdel=0';
+		$sql_where 	= 'WHERE supplier="'.$supplier.'" AND fksupplier_group = 0 OR category = "SAR" AND logdel=0';
 		$sql_order 	= '';
 		$sql_limit 	= '';
 		$html_select= '';
 		$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 		if($row = mysqli_fetch_array($result)) {
-			
-			// echo $row['recipients_to'];
 			$array_email_add = explode(',',$row[$field_name]);
 			$return['email_add'] = array();
 			foreach($array_email_add as $key => $value){
@@ -2911,6 +2909,7 @@
 		}
 		return $approver_username['approver_username'];
 	}
+	
 	function send_email_for_disposition(){ 
 		require_once('../class/oop_tqts.php');
 		require_once('../class/send_email_qfr_sa.php');
@@ -2929,34 +2928,40 @@
         $msg = '';
 		
 		/* NOTE : upload the file with esignature of the approvers */
-			/* ffunction to get the file path:  ..uploaded_file/quality_report/sa */
-			$file  		     = return_file_path_by_div_mod('sa_approved');  
-			$fkfile_path     = $file['pkid'];
-			$target_dir      = $file['path'];
-
-			if(!file_exists($target_dir.$fkid.'/')) {
-				$target_dir = $target_dir.$fkid.'/';
-				mkdir($target_dir, 0777, false); /* 'if not exist make a folder named by pkid' */
-			} 
-
-			$temp_file 	     = $_FILES["file_sa"]["tmp_name"];
-			$file_name 	     = $_FILES["file_sa"]["name"];
+		$file  		     = return_file_path_by_div_mod('sa_approved');
+		$fkfile_path     = $file['pkid'];
+		$target_dir      = $file['path'];
+		
+		if(!file_exists($target_dir.$fkid.'/')) {
+			$target_dir = $target_dir.$fkid.'/';
+			mkdir($target_dir, 0777, false);
+		} 
+		/* Upload the file to target directory */	
+		for($i=0; $i < count($_FILES["file_sa"]["tmp_name"]); $i++) {
+			$temp_file 	     = $_FILES["file_sa"]["tmp_name"][$i];
+			$file_name 	     = $_FILES["file_sa"]["name"][$i];
 			$target_file = $target_dir . $file_name;
-			if(file_exists($target_file)){
-				$msg = 'Sorry, the file already exists.';
-			}else{
-				if (move_uploaded_file($temp_file,$target_file)){	
-					$ext= pathinfo($file_name, PATHINFO_EXTENSION);
-					$new_filename = $fkid.".".$ext;
-					if(rename ($target_file, $target_dir.'/'.$new_filename)){		
+			if (file_exists($target_file)) {
+				echo $msg = "Sorry, your file already exists.";
+				return;
+			} else {
+				if (move_uploaded_file($temp_file, $target_file)) {
+					/* Rename the file based on pkid of Quality Report */					
+					$ext = pathinfo($target_file, PATHINFO_EXTENSION);
+					$new_file_name  = trim(($i+1)).".".$ext;
+					if(rename ($target_file, $target_dir.'/'.$new_file_name)){		
 						$msg = 'File was successfully uploaded to the system.<br>';
 					} else {
-						$msg = 'There was an error on renaming the file.';
-					}	
-				}else{
-					$msg = "Sorry, there was an error uploading your file.";
+						echo $msg = 'There was an error on renaming the file.';
+						
+						return;
+					}					
+				} else {
+					echo $msg = "Sorry, there was an error uploading your file.";
+					return;
 				}
 			}
+		}
 		$table			= 'tbl_qfr_sa_for_disposition_attachment';
 		$array_fields 	= array(
 									'date_time_created','created_by','fkspecial_acceptance',
@@ -2965,11 +2970,10 @@
 								);
 		$array_values	= array(
 									$date_time_today,$username,$fkid,
-									$file_name,4,'',
+									implode(',',$_FILES["file_sa"]["name"]),4,'',
 									$date_time_today,$username
 								);
 		$pkid_attachment = TQTS::getInstance()->insert_query_id($table,$array_fields,$array_values);
-
 		/* Create email notification */
 		$result = "";
 		$date= date('Y-m-d');
@@ -2997,18 +3001,23 @@
 			$lot_no				= $row['lot_number'];
 			$drawing_number 	= $row['drawing_number'];
 			$supplier 			= $row['supplier'];
-			$file_array			= $row['file_name'];
-		
+			
 			$file  		     = return_file_path_by_div_mod('sa_approved');  
 			$fkfile_path     = $file['pkid'];
 			$target_dir      = $file['path'];
-
 			/* get the file_name and file_path */	
-			$tqts_path			= str_replace('/var/www/','',realpath(dirname(__FILE__)."/../")); /* get the folder of TQTS_TS*/
-			$ext= pathinfo($target_dir, PATHINFO_EXTENSION);
-			echo $attachment      	= str_replace('../',$tqts_path.'/',$target_dir.$fkid.'/'.$fkid.'.pdf'); /* get the path of the attachments*/
-			$attachment_name	= $file_name; /* get file names*/
-			
+			$file_array			= $_FILES["file_sa"]["name"];
+			$attachment			= array();
+			$attachment_name	= array();
+			for($i=0; $i<count($file_array); $i++) {
+				$tqts_path			= str_replace('/var/www/','',realpath(dirname(__FILE__)."/../"));
+				$ext                = end(explode('.',$file_array[$i]));
+				$attachment[]       = str_replace('../',$tqts_path.'/',$target_dir.$fkid.'/'.($i+1).'.'.$ext);
+				$attachment_name[]	= $file_array[$i];
+			}
+			$attachment 	 = implode('|', $attachment);
+			$attachment_name = implode('|', $attachment_name);
+
 			if($part_code != '') {
 				$subject 		 	 = 'SPECIAL ACCEPTANCE REPORT : '.$part_code.' ('.$parts_affected_parts.')';
 				$part_details 		= '&emsp;Part Code: '.$part_code.' <br>';
@@ -3059,9 +3068,10 @@
 			// 		array_push($cc, $cc_recip_external[$i]);
 			// 	}
 			// }
-			// $to 		 = 'cdcasuyon@pricon.ph';
-			// $from 	 = 'TQTSystemNotification@pricon.ph';
-			// $cc 		 = 'mclegaspi@pricon.ph';
+
+			// $to 		 = 'mclegaspi@pricon.ph';
+			// $from 	 	= 'cdcasuyon@pricon.ph';
+			// $cc 		 = '';
 
 			$to 		 = implode(',',$to); //To internal, To external
 			$cc 		 = implode(',',$cc); // CC internal 
@@ -3075,7 +3085,6 @@
 
 		echo json_encode($return);
 	}
-
 	function this_get_special_acceptance_by_id ($pkid){
 		require_once('../class/oop_tqts.php');
 		$return = array();

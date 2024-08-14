@@ -53,7 +53,6 @@ const save_oqc_capa_monitoring = function (serialized_data){
 			$('#modal_oqc_capa_monitoring').modal('hide');
 			notif_success(result.message);
 			dt_oqc_lon_capa_monitoring.ajax.url("server_side_scripts/oqc/dt_lon_lqc_inspector_capa_monitoring.php?username="+username +"&"+ "oqc_lon_id="+$frm_oqc_capa_monitoring.find('#oqc_lon_id').val()).draw();
-		
 		}
 	})
 }
@@ -1307,6 +1306,26 @@ function fn_reload_lon_datatables() {
 	dt_oqc_lon_lqc_manager.ajax.reload();
 	dt_oqc_lon_production.ajax.reload();
 }
+
+var dateFrom =  $('#frm_lon_report').find('#date_from');
+var dateTo =  $('#frm_lon_report').find('#date_to');
+
+dateFrom.on('change', function() {
+	let fromDate = $(this).val();
+	// Set the minimum value of the "date to" input to the selected "date from" value
+	dateTo.attr('min', fromDate);
+	dateTo.prop('readonly', false);
+});
+
+dateTo.on('change', function() {
+	let toDate = $(this).val();
+	let fromDate = dateFrom.val();
+
+	if (toDate < fromDate) {
+		alert('The "Date To" cannot be earlier than the "Date From".');
+		$(this).val(fromDate);
+	}
+});
 
 /* *************************************************
 	Lot-out Notice - Common Functions - End

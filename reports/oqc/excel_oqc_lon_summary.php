@@ -241,11 +241,11 @@ $col = 'O'; $row = '9';   $excel->place_value($col.$row,'DUE DATE','string');
 $col = 'P'; $row = '9';   $excel->place_value($col.$row,'Status (Open/Closed)','string');
 
 $col = 'Q'; $row = '8';   $excel->place_value($col.$row,'CAPA Evidence Submission(after 15 working days from the start of implementation)','string'); //Q-R
-$col = 'R'; $row = '9';   $excel->place_value($col.$row,'Required Submission Date','string');
+$col = 'Q'; $row = '9';   $excel->place_value($col.$row,'Required Submission Date','string');
 $col = 'R'; $row = '5';   $excel->place_value($col.$row,'****','string');
 $col = 'R'; $row = '6';   $excel->place_value($col.$row,'**','string');
 $col = 'R'; $row = '4';   $excel->place_value($col.$row,'Legend:                               Please update month','string');
-$col = 'Q'; $row = '9';   $excel->place_value($col.$row,'Actual Submission Date','string');
+$col = 'R'; $row = '9';   $excel->place_value($col.$row,'Actual Submission Date','string');
 $col = 'S'; $row = '8';   $excel->place_value($col.$row,'Remarks','string');
 $col = 'S'; $row = '5';   $excel->place_value($col.$row,' Please update current Fiscal Year','string');
 $col = 'S'; $row = '6';   $excel->place_value($col.$row,'Please update section name','string');

@@ -16,6 +16,7 @@
 //	 ini_set('display_errors', 1);
 
 	$aColumns = array( 
+				'oqc_lon.logdel', 
 				'oqc_lon.pkid', 
 				'oqc_lon.status', 
 				'oqc_lon.lon_ctr', 
@@ -51,7 +52,7 @@
 	// $array_search = array('empno', 'LastName');
 							
 	/* Indexed column (used for fast and accurate table cardinality) */
-	$sIndexColumn = "pkid";
+	$sIndexColumn = "oqc_lon.pkid";
 	
 	/* DB table to use */
 	$sTable = "tbl_oqc_lon oqc_lon";
@@ -174,7 +175,8 @@
 	
 	// $sWhere = "WHERE oqc_lon_production.created_by LIKE '%".$username."%' AND oqc_lon.approved_by_status='APPROVED' OR oqc_lon.status = 'REJECTED BY OQC INSPECTOR' AND oqc_lon.logdel=0"; //REJECTED BY OQC INSPECTOR
 	$sWhere = 'WHERE 1=1';
-	$sWhere .= " AND oqc_lon.approved_by_status='APPROVED' OR oqc_lon.status = 'REJECTED BY OQC INSPECTOR' AND oqc_lon.logdel=0";
+	$sWhere .= " AND oqc_lon.approved_by_status='APPROVED' AND oqc_lon.logdel=0 OR oqc_lon.checked_by LIKE '%".$username."%'";
+	// $sWhere .= " AND oqc_lon_production.created_by LIKE '%".$username."%' AND oqc_lon_production.logdel=0 ";
 	$sWhere .= " AND oqc_lon_production.created_by LIKE '%".$username."%' AND oqc_lon_production.logdel=0 ";
 	
 	$sql_where 	= $_GET['wh'];	
@@ -213,7 +215,23 @@
 	// $query_used = $sQuery;
 	// echo $query_used."<br>";
 	
-	/* Data set length after filtering */
+	/* Data set length after filtering 
+	
+		SELECT SQL_CALC_FOUND_ROWS oqc_lon.logdel, oqc_lon.pkid, oqc_lon.status, oqc_lon.lon_ctr, oqc_lon.section, oqc_lon.attention, oqc_lon.attention_logs, oqc_lon.attention_remarks, oqc_lon.date_inspected, oqc_lon.defect_mode, oqc_lon.po_number, oqc_lon.lot_submission, oqc_lon.lot_number, oqc_lon.lot_qty, oqc_lon.aql, oqc_lon.sample_size, oqc_lon.capa_due_date, oqc_lon.created_by, oqc_lon.date_time_created, oqc_lon.checked_by, oqc_lon.checked_by_status, oqc_lon.checked_by_logs, oqc_lon.checked_by_remarks, oqc_lon.approved_by, oqc_lon.approved_by_status, oqc_lon.approved_by_logs, oqc_lon.approved_by_remarks, oqc_lon_production.created_by AS prodn_created_by
+		FROM   tbl_oqc_lon oqc_lon
+		LEFT JOIN tbl_oqc_lon_production oqc_lon_production ON oqc_lon_production.fklon = oqc_lon.pkid
+		WHERE 1=1 AND oqc_lon.approved_by_status='APPROVED' OR oqc_lon.status = 'REJECTED BY OQC INSPECTOR' AND oqc_lon.logdel=0 AND oqc_lon_production.created_by LIKE '%abgutierrez%' AND oqc_lon_production.logdel=0 
+		ORDER BY pkid DESC
+		LIMIT 0, 10
+	
+		SELECT SQL_CALC_FOUND_ROWS oqc_lon.logdel, oqc_lon.pkid, oqc_lon.status, oqc_lon.lon_ctr, oqc_lon.section, oqc_lon.attention, oqc_lon.attention_logs, oqc_lon.attention_remarks, oqc_lon.date_inspected, oqc_lon.defect_mode, oqc_lon.po_number, oqc_lon.lot_submission, oqc_lon.lot_number, oqc_lon.lot_qty, oqc_lon.aql, oqc_lon.sample_size, oqc_lon.capa_due_date, oqc_lon.created_by, oqc_lon.date_time_created, oqc_lon.checked_by, oqc_lon.checked_by_status, oqc_lon.checked_by_logs, oqc_lon.checked_by_remarks, oqc_lon.approved_by, oqc_lon.approved_by_status, oqc_lon.approved_by_logs, oqc_lon.approved_by_remarks, oqc_lon_production.created_by AS prodn_created_by
+		FROM   tbl_oqc_lon oqc_lon
+		LEFT JOIN tbl_oqc_lon_production oqc_lon_production ON oqc_lon_production.fklon = oqc_lon.pkid
+		WHERE 1=1 AND oqc_lon.approved_by_status='UPLOADED DISPOSITION' AND oqc_lon.logdel=0 AND oqc_lon_production.created_by = 'mcaday' OR oqc_lon.checked_by = 'abgutierrez' AND oqc_lon_production.logdel=0 
+		ORDER BY pkid DESC
+		LIMIT 0, 10
+	
+	*/
 	$sQuery = "
 		SELECT FOUND_ROWS()
 	";
