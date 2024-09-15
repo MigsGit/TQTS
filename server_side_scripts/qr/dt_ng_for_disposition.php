@@ -12,8 +12,8 @@
 	/* Array of database columns which should be read and sent back to DataTables. Use a space where
 	 * you want to insert a non-database field (for example a counter or static image)
 	 */
-	// error_reporting(E_ALL);
-	// ini_set('display_errors', 1);
+	error_reporting(E_ALL);
+	ini_set('display_errors', 1);
 
 	$aColumns = array( 
 				'pkid',
@@ -24,6 +24,7 @@
 				'file_name',
 				'fkfile_path',
 				'supplier',
+				'fail_mode',
 				'issuance_date'
 				);
 	
@@ -82,6 +83,8 @@
 	/*
 	 * Ordering
 	 */
+
+	 $sOrder ="";
 	if ( isset( $_GET['iSortCol_0'] ) )
 	{
 		$sOrder = "ORDER BY  ";
@@ -100,6 +103,9 @@
 			$sOrder = "";
 		}
 	}
+	if($sOrder == '') {
+		$sOrder = 'ORDER BY pkid DESC';
+	} 
 	
 	
 	/* 
@@ -125,21 +131,21 @@
 	}
 	
 	/* Individual column filtering */
-	for ( $i=0 ; $i<count($aColumns) ; $i++ )
-	{
-		if ( $_GET['bSearchable_'.$i] == "true" && $_GET['sSearch_'.$i] != '' )
-		{
-			if ( $sWhere == "" )
-			{
-				$sWhere = "WHERE ";
-			}
-			else
-			{
-				$sWhere .= " AND ";
-			}
-			$sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string($_GET['sSearch_'.$i])."%' ";
-		}
-	}
+	// for ( $i=0 ; $i<count($aColumns) ; $i++ )
+	// {
+	// 	if ( $_GET['bSearchable_'.$i] == "true" && $_GET['sSearch_'.$i] != '' )
+	// 	{
+	// 		if ( $sWhere == "" )
+	// 		{
+	// 			$sWhere = "WHERE ";
+	// 		}
+	// 		else
+	// 		{
+	// 			$sWhere .= " AND ";
+	// 		}
+	// 		$sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string($_GET['sSearch_'.$i])."%' ";
+	// 	}
+	// }
 	
 	/* 
 		dito ka mag add ng where mo, una check mo kung may laman na yung $sWhere pag wala append mo yung where mo na meron
@@ -151,9 +157,7 @@
 	}else{
 		$sWhere .= "AND (status='APPROVED' OR status='WAITING DISPOSITION' OR status LIKE '%WITH %' OR status = 'CANCELLED') AND logdel=0 ";
 	}
-	if($sOrder == '') {
-		$sOrder = 'ORDER BY pkid DESC';
-	} 
+	
 	/*
 	 * SQL queries
 	 * Get data to display
@@ -227,21 +231,46 @@
 		$btn_ng_report 	 = '<button type="button" class="btn btn-link fa fa-paperclip" id="btn_dl_ng_report" value="'.$aRow['pkid'].'"> Download File</button>';
 		
 		
-		// if($aRow['part_code'] != '') {
+		if($aRow['part_code'] != '') {
 			$part_name	    = get_partname_by_partcode($aRow['part_code']);
+			if(	$aRow['fail_mode'] != "" && $aRow['fail_mode'] != 'fail_mode'){
+				$fail_mode = $aRow['fail_mode'];
+			}else{
+				$fail_mode = "";
+			}
+			// $fail_mode	    = $aRow['fail_mode'] != '' $aRow['fail_mode'];
+			$part_details  	= 'Fail Mode: '.$fail_mode.'<br>';
 			$part_details  	= 'Part Code: '.$aRow['part_code'].'<br>';
 			$part_details  .= 'Part Name: '.$part_name.'<br>';
-			// $part_details  .= 'Lot No.: '.$lot_numbers.'<br>';
-		// } 
-		// if($aRow['po_number'] != '') {
+			$part_details  .= 'Lot No.: '.$lot_numbers.'<br>';
+		} 
+		if($aRow['po_number'] != '') {
 			$series_name    = get_series_name_by_po_number($aRow['po_number']);
+			$part_details  .= 'Fail Mode: '.$aRow['fail_mode'].'<br>';
 			$part_details  .= 'PO Number: '.$aRow['po_number'].'<br>';
 			$part_details  .= 'Device Name: '.$series_name.'<br>';
 			$part_details  .= 'Lot No.: '.$lot_numbers.'<br>';
-		// } 
+		} 
+		if($aRow['po_number'] != '' && $aRow['part_code'] != '') {
+			$part_name	    = get_partname_by_partcode($aRow['part_code']);
+			if(	$aRow['fail_mode'] != "" && $aRow['fail_mode'] != 'fail_mode'){
+				$fail_mode = $aRow['fail_mode'];
+			}else{
+				$fail_mode = "";
+			}
+			// $fail_mode	    = $aRow['fail_mode'] != '' $aRow['fail_mode'];
+			$part_details  	= 'Fail Mode: '.$fail_mode.'<br>';
+			$part_details  	= 'Part Code: '.$aRow['part_code'].'<br>';
+			$part_details  .= 'Part Name: '.$part_name.'<br>';
+
+			$series_name    = get_series_name_by_po_number($aRow['po_number']);
+			$part_details  .= 'Fail Mode: '.$aRow['fail_mode'].'<br>';
+			$part_details  .= 'PO Number: '.$aRow['po_number'].'<br>';
+			$part_details  .= 'Device Name: '.$series_name.'<br>';
+			$part_details  .= 'Lot No.: '.$lot_numbers.'<br>';
+		} 
 		
 		$row[] = $badge;
-		$row[] = '<center>'.$aRow['invoice_no'].'</center>';
 		$row[] = $part_details;
 		$row[] = $btn_ng_report;
 		$row[] = '<center>'.$aRow['supplier'].'</center>';

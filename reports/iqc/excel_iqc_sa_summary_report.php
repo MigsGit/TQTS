@@ -228,9 +228,10 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 	$sar_details_sql_where 		= 'WHERE 1=1';
 	$sar_details_sql_where 		.= ' AND (sar.date_issued LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%")';
 	$sar_details_sql_where 		.= ' AND sar.logdel=0';
-	$sar_details_sql_where 		.= ' AND sar_treatment.logdel = 0';
-	$sar_details_script= TQTS::getInstance()->select_query_script($sar_details_sql_array_fields,$sar_details_sql_table,$sar_details_sql_joins,$sar_details_sql_where,$sar_details_sql_order,$sar_details_sql_limit);
+	// $sar_details_sql_where 		.= ' AND sar_treatment.logdel = 0';
+	echo $sar_details_script= TQTS::getInstance()->select_query_script($sar_details_sql_array_fields,$sar_details_sql_table,$sar_details_sql_joins,$sar_details_sql_where,$sar_details_sql_order,$sar_details_sql_limit);
 	$sar_details_result= TQTS::getInstance()->select_query($sar_details_sql_array_fields,$sar_details_sql_table,$sar_details_sql_joins,$sar_details_sql_where,$sar_details_sql_order,$sar_details_sql_limit);
+	// return;
 	while($sar_details_row = mysqli_fetch_assoc($sar_details_result)){
 		if ($lowest_row === null || $highest_row === null) {
 			$lowest_row = $custom_data_row;
@@ -249,15 +250,16 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 		$excel->place_value($custom_col.$custom_data_row, $sar_details_row['disposition'],'string');   $custom_col++;
 		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['other_details'] != "N/A" || $sar_details_row['other_details'] != NULL) ? $sar_details_row['other_details'] : "N/A" ,'string' );   $custom_col++;
 		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['immediate_action'] != "N/A" || $sar_details_row['immediate_action'] != NULL) ? $sar_details_row['immediate_action'] : "N/A" ,'string');   $custom_col++;
-		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['immediate_action_due_date']  != NULL ) ? getDateFormat($sar_details_row['immediate_action_due_date']) : "N/A",'date_format');   $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['immediate_action_due_date']  != "" ) ? getDateFormat($sar_details_row['immediate_action_due_date']) : "N/A",'date_format');   $custom_col++;
 		$excel->place_value($custom_col.$custom_data_row,($sar_details_row['permanent_action'] != "N/A" || $sar_details_row['permanent_action'] != NULL) ? $sar_details_row['permanent_action'] : "N/A" ,'string');   $custom_col++;
-		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['permanent_action_due_date']  != NULL ) ? getDateFormat($sar_details_row['permanent_action_due_date']) : "N/A",'date_format');   $custom_col++;
+		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['permanent_action_due_date']  != "" ) ? getDateFormat($sar_details_row['permanent_action_due_date']) : "N/A",'date_format');   $custom_col++;
 		$excel->place_value($custom_col.$custom_data_row,( $sar_details_row['status']  == "CL" ) ? "CLOSED" : "OPEN",'string');   $custom_col++;
 		$custom_col = 'A';
 		$custom_data_row++;
 	}
 
 }
+// exit;
 // if($sar_details_result->num_rows >= 1){
 // 	echo 'Error export. Please Try Again !';
 // 	exit;

@@ -23,13 +23,11 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
 	<div class="">
 		<ul class="nav nav-tabs" role="tablist">
 			<?php 
-				if($ng_report_requestor){
-					echo '<li role="presentation" class="active"><a href="#pending" aria-controls="pending" role="tab" data-toggle="tab">Pending NG Reports</a></li>
-						  <li role="presentation" class=""><a href="#ng_report" aria-controls="ng_report" role="tab" data-toggle="tab">NG Report</a></li>';
-				}
-				if($ng_report_approver){
-					echo '<li role="presentation" class="active"><a href="#ng_report" aria-controls="ng_report" role="tab" data-toggle="tab">NG Report</a></li>';
-				}
+				// if($ng_report_requestor){
+				// 	echo '<li role="presentation" class="active"><a href="#pending" aria-controls="pending" role="tab" data-toggle="tab">Pending NG Reports</a></li>
+				// 		  <li role="presentation" class=""><a href="#ng_report" aria-controls="ng_report" role="tab" data-toggle="tab">NG Report</a></li>';
+				// }
+				echo '<li role="presentation" class="active"><a href="#ng_report" aria-controls="ng_report" role="tab" data-toggle="tab">NG Report</a></li>';
 				if($ng_report_disposition_admin){
 					echo '<li role="presentation" class=""><a href="#for_disposition" aria-controls="ng_report" role="tab" data-toggle="tab">For Disposition</a></li>';
 				}				
@@ -49,7 +47,7 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
 			$active_class = "";
 		}
 	?>
-	<div role="tabpanel" class="tab-pane <?php echo $active_class; ?>" id="pending">
+	<div role="tabpanel" class="tab-pane" id="pending">
 		<div class="col-sm-12">
 			<div class="panel panel-info">
 				<div class="panel-heading"><i class="fa fa-file fa-lg"> For Filling NG Report</i></div>
@@ -66,7 +64,6 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
 									<th>Inspection Date</th>
 									<th>Inspection Time</th>
 									<th>Sub</th>
-									<th><center>Invoice #</center></th>
 									<th><center>Part Code</center></th>
 									<th><center>Part Name</center></th>
 									<th><center>Lot Number</center></th>
@@ -89,7 +86,7 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
 			$active_class = "active";
 		}
 	?>	
-	<div role="tabpanel" class="tab-pane <?php echo $active_class; ?>" id="ng_report">
+	<div role="tabpanel" class="tab-pane active" id="ng_report">
 		<div class="col-sm-12">
 			<div class="panel panel-info">
 				<div class="panel-heading"><i class="fa fa-file fa-lg"> NG Report</i></div>
@@ -100,7 +97,7 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
 								<!--<button class="btn btn-default fa fa-search" id="btn_ng_advanced_search"> Search</button>-->
 							</div>
 							<div class="col-sm-3">
-								<button class="btn btn-info fa pull-right" id="btn_report_ng"><i class="fa fa-files-o"></i> Report</button>
+								<!-- <button class="btn btn-info fa pull-right" id="btn_report_ng"><i class="fa fa-files-o"></i> Report</button> -->
 								<button class="btn btn-success fa pull-right" id="btn_upload_ng"><i class="fa fa-plus"></i> New</button>
 							</div>
 						</div>
@@ -109,7 +106,6 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
 								<table class="table table-bordered table-condensed" id="tbl_ng">
 									<thead>
 										<th><center>Status</center></th>
-										<th><center>Invoice #</center></th>
 										<th><center>Part Details</center></th>
 										<th><center>Treatment</center></th>
 										<th><center>Final Disposition</center></th>
@@ -137,7 +133,6 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
 							<table class="table table-bordered table-condensed" id="tbl_ng_for_disposition">
 								<thead>
 									<th><center>Status</center></th>
-									<th><center>Invoice #</center></th>
 									<th><center>Part Details</center></th>
 									<th><center>NG Report</center></th>
 									<th><center>Supplier</center></th>
@@ -170,6 +165,12 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
 				<div class="col-sm-12">
 					<div class="alert alert-danger" style="display:none;" role="alert" id="container_upload_ng_message">					
 					</div>
+				</div>
+				<div class="col-sm-2">
+					<label class="fa fa-md">Control No: </label>
+				</div>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id="txt_control_number" name="control_number"required readonly>
 				</div>	
 				<div class="col-sm-2">
 					<label class="fa fa-md">Issuance Date: </label>

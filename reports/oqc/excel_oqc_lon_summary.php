@@ -51,7 +51,10 @@ function daysWithoutSundays($date_from, $date_to) {
             $daysCount++;
         }
     }
-    return $daysCount;
+	if($date_to == "" || $date_to == NULL){
+		return $daysCount = 'N/A';
+	}
+    return $daysCount-1;
 }
 // echo daysWithoutSundays('2024-08-07', '2024-08-18');
 // return;
@@ -61,7 +64,7 @@ function getDateFormat($date) {
 	if($is_date_exist == 'true'){
 		$date = date( 'd-M-y', strtotime( $date ) ) ;
 	}else{
-		$date = "";
+		$date = "N/A";
 	}
     return $date;
 }
@@ -269,11 +272,12 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 	$row++;
 	//Column A-L :for OQC LON
 	// $sql_where 		= 'WHERE (lon.date_inspected LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%") AND lon.logdel=0 AND lon.status="CONFORMED BY OQC INSPECTOR"';
-	$sql_where 		= 'WHERE (lon.date_time_created LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%") AND lon.logdel=0 AND lon.status="CONFORMED BY OQC INSPECTOR"';
-	$sql_where 		.= ' AND lon_production.logdel = 0';
+	$sql_where 		= 'WHERE (lon.date_time_created LIKE "%'.$row_group['year_inspected'].'-'.sprintf("%02d", $row_group['month_inspected']).'%") AND lon.logdel=0'; // AND lon.status="CONFORMED BY OQC INSPECTOR"
+	// $sql_where 		.= ' AND lon_production.logdel = 0';
 	$result_details	= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 	$script	= TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-	while($row_details = mysqli_fetch_assoc($result_details)){
+	
+	while($row_details = mysqli_fetch_array($result_details)){
 		$custom_row_count = $row_details['pkid'];
 		$arr_attention 	= array();
 		$attention 		= explode(',',$row_details['attention']);
@@ -282,6 +286,7 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 			$arr_attention[] = get_emp_name_by_username_systemone($value_attention);
 		}
 		$lon_no = $section.'-'.date('my', strtotime($row_details['date_time_created'])).'-'.$row_details['lon_ctr'];
+
 		//PLACE VALUE
 		$excel->place_value($col.$row,$lon_no,'string'); 							$col++; 
 		$excel->place_value($col.$row,getDateFormat($row_details['date_time_created']),'date_format'); 	$col++; 	
@@ -296,85 +301,88 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 		$excel->place_value($col.$row,getDateFormat($row_details['capa_report_received_date']),'date_format'); 		$col++;
 		$excel->place_value($col.$row,daysWithoutSundays($row_details['date_time_created'],$row_details['capa_report_received_date']),'number'); 		$col++;
 		$col = 'A';
+		$excel->set_format('A'.$row.':'.'T'.$row,$array_format_value);
+		$excel->set_borders('A'.$row.':'.'T'.$row,1,1,1,1, "thin");
+		$excel->wrap_text('A'.$row.':'.'T'.$row);
+	
 		//Column H-T :for OQC CAPA Monitoring
 		$capa_sql_where 		= 'WHERE oqc_lon_id = '.$row_details['pkid'].' AND logdel=0';
 		$script_details_tbl_oqc_lon_capa_monitoring	= TQTS::getInstance()->select_query_script($capa_array_fields,$capa_table,$capa_joins,$capa_sql_where,$capa_sql_order,$capa_sql_limit);
 		$result_details_tbl_oqc_lon_capa_monitoring	= TQTS::getInstance()->select_query($capa_array_fields,$capa_table,$capa_joins,$capa_sql_where,$capa_sql_order,$capa_sql_limit);
 		$lowest_row= null;
 		$highest_row= null;
-		while($row_tbl_oqc_lon_capa_monitoring = mysqli_fetch_assoc($result_details_tbl_oqc_lon_capa_monitoring)){
-			if ($lowest_row == null && $highest_row == null) {
-				$lowest_row = $row;
-			}
-			$highest_row = $row;
-			//Excel Format
-			$excel->set_height($row,50);
-			// SET lowest_row INSIDE the condition & Set highest_row OUTSIDE the condition
-			$cell_range = 'M'.$row.':'.'T'.$row; 
-			$excel->set_format($cell_range,$array_format_value_capa_monitoring);
-			$excel->set_borders($cell_range ,1,1,1,1, "thin");
-
-			//PLACE VALUE CAPA MONITORING
-			$arr_oqc_capa_action_incharge 	= array();
-			$oqc_capa_action_incharge = explode(',',$row_tbl_oqc_lon_capa_monitoring['oqc_capa_action_incharge']);
-			foreach($oqc_capa_action_incharge as $key => $value) {
-				$arr_oqc_capa_action_incharge[] = get_emp_name_by_username_systemone($value);
-			}
-			if($row_tbl_oqc_lon_capa_monitoring['oqc_capa_req_sub_date'] !="" && $row_tbl_oqc_lon_capa_monitoring['oqc_capa_actual_sub_date'] != ""){
-				$capa_evidence_status = 'CLOSED';
-			}else{
-				$capa_evidence_status = 'OPEN';
-			}
-			$excel->place_value('M'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_action'],'string');
-			// $excel->place_value('N'.$row,implode(' / ',$arr_oqc_capa_action_incharge),'string');
-			$excel->place_value('N'.$row,implode(' / ',$arr_oqc_capa_action_incharge),'string');
-			$excel->place_value('O'.$row,getDateFormat($row_tbl_oqc_lon_capa_monitoring['oqc_capa_due_date']),'date_format');	 	
-			$excel->place_value('P'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_status'],'string');
-			$excel->place_value('Q'.$row,getDateFormat($row_tbl_oqc_lon_capa_monitoring['oqc_capa_req_sub_date']),'date_format'); 	
-			$excel->place_value('R'.$row,getDateFormat($row_tbl_oqc_lon_capa_monitoring['oqc_capa_actual_sub_date']),'date_format');	 	
-			$excel->place_value('S'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_remarks'],'string');
-			$excel->place_value('T'.$row,$capa_evidence_status,'string');
-			$excel->wrap_text('M'.$row.':'.'T'.$row);
-			$row++;	
-
-		}
-		if ($lowest_row != null && $highest_row != null) {
-		// Excel Format
-		// Column A-L :GET lowest_row INSIDE the condition & Set highest_row OUTSIDE the condition
-			$cell_range = 'A'.$lowest_row.':'.'A'.$highest_row;
-			$excel->merge_cells($cell_range);
-			$cell_range = 'B'.$lowest_row.':'.'B'.$highest_row;
-			$excel->merge_cells($cell_range);
-			$cell_range = 'C'.$lowest_row.':'.'C'.$highest_row;
-			$excel->merge_cells($cell_range);
-			$cell_range = 'D'.$lowest_row.':'.'D'.$highest_row;
-			$excel->merge_cells($cell_range);
-			$cell_range = 'E'.$lowest_row.':'.'E'.$highest_row;
-			$excel->merge_cells($cell_range);
-			$cell_range = 'F'.$lowest_row.':'.'F'.$highest_row;
-			$excel->merge_cells($cell_range);
-			$cell_range = 'G'.$lowest_row.':'.'G'.$highest_row;
-			$excel->merge_cells($cell_range);
-			$cell_range = 'H'.$lowest_row.':'.'H'.$highest_row;
-			$excel->merge_cells($cell_range);
-			$cell_range = 'I'.$lowest_row.':'.'I'.$highest_row;
-			$excel->merge_cells($cell_range);
-			$cell_range = 'J'.$lowest_row.':'.'J'.$highest_row;
-			$excel->merge_cells($cell_range);
-			$cell_range = 'K'.$lowest_row.':'.'K'.$highest_row;
-			$excel->merge_cells($cell_range);
-			$cell_range = 'L'.$lowest_row.':'.'L'.$highest_row;
-			$excel->merge_cells($cell_range);
-
-			$excel->set_format('A'.$lowest_row.':'.'L'.$highest_row,$array_format_value);
-			$excel->set_borders('A'.$lowest_row.':'.'L'.$highest_row,1,1,1,1, "thin");
-			$excel->wrap_text('A'.$lowest_row.':'.'L'.$highest_row);
-		}else{
-			echo 'Error: '.$lon_no.' has no CAPA Monitoring. Please Try Again !';
-			exit;
-		}
-	}
+		if($result_details_tbl_oqc_lon_capa_monitoring->num_rows != 0){ //Check if result_details_tbl_oqc_lon_capa_monitoring exist
+			while($row_tbl_oqc_lon_capa_monitoring = mysqli_fetch_array($result_details_tbl_oqc_lon_capa_monitoring)){
+				if ($lowest_row == null && $highest_row == null) {
+					$lowest_row = $row;
+				}
+				$highest_row = $row;
+				//Excel Format
+				$excel->set_height($row,50);
+				// SET lowest_row INSIDE the condition & Set highest_row OUTSIDE the condition
+				$cell_range = 'M'.$row.':'.'T'.$row; 
+				$excel->set_format($cell_range,$array_format_value_capa_monitoring);
+				$excel->set_borders($cell_range ,1,1,1,1, "thin");
 	
+				//PLACE VALUE CAPA MONITORING
+				$arr_oqc_capa_action_incharge 	= array();
+				$oqc_capa_action_incharge = explode(',',$row_tbl_oqc_lon_capa_monitoring['oqc_capa_action_incharge']);
+				foreach($oqc_capa_action_incharge as $key => $value) {
+					$arr_oqc_capa_action_incharge[] = get_emp_name_by_username_systemone($value);
+				}
+				if($row_tbl_oqc_lon_capa_monitoring['oqc_capa_req_sub_date'] !="" && $row_tbl_oqc_lon_capa_monitoring['oqc_capa_actual_sub_date'] != ""){
+					$capa_evidence_status = 'CLOSED';
+				}else{
+					$capa_evidence_status = 'OPEN';
+				}
+				$excel->place_value('M'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_action'],'string');
+				// $excel->place_value('N'.$row,implode(' / ',$arr_oqc_capa_action_incharge),'string');
+				$excel->place_value('N'.$row,implode(' / ',$arr_oqc_capa_action_incharge),'string');
+				$excel->place_value('O'.$row,getDateFormat($row_tbl_oqc_lon_capa_monitoring['oqc_capa_due_date']),'date_format');	 	
+				$excel->place_value('P'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_status'],'string');
+				$excel->place_value('Q'.$row,getDateFormat($row_tbl_oqc_lon_capa_monitoring['oqc_capa_req_sub_date']),'date_format'); 	
+				$excel->place_value('R'.$row,getDateFormat($row_tbl_oqc_lon_capa_monitoring['oqc_capa_actual_sub_date']),'date_format');	 	
+				$excel->place_value('S'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_remarks'],'string');
+				$excel->place_value('T'.$row,$capa_evidence_status,'string');
+				$excel->wrap_text('M'.$row.':'.'T'.$row);
+				$row++;	
+	
+			}
+			if ($lowest_row != null && $highest_row != null) {
+			// Excel Format
+			// Column A-L :GET lowest_row INSIDE the condition & Set highest_row OUTSIDE the condition
+				$cell_range = 'A'.$lowest_row.':'.'A'.$highest_row;
+				$excel->merge_cells($cell_range);
+				$cell_range = 'B'.$lowest_row.':'.'B'.$highest_row;
+				$excel->merge_cells($cell_range);
+				$cell_range = 'C'.$lowest_row.':'.'C'.$highest_row;
+				$excel->merge_cells($cell_range);
+				$cell_range = 'D'.$lowest_row.':'.'D'.$highest_row;
+				$excel->merge_cells($cell_range);
+				$cell_range = 'E'.$lowest_row.':'.'E'.$highest_row;
+				$excel->merge_cells($cell_range);
+				$cell_range = 'F'.$lowest_row.':'.'F'.$highest_row;
+				$excel->merge_cells($cell_range);
+				$cell_range = 'G'.$lowest_row.':'.'G'.$highest_row;
+				$excel->merge_cells($cell_range);
+				$cell_range = 'H'.$lowest_row.':'.'H'.$highest_row;
+				$excel->merge_cells($cell_range);
+				$cell_range = 'I'.$lowest_row.':'.'I'.$highest_row;
+				$excel->merge_cells($cell_range);
+				$cell_range = 'J'.$lowest_row.':'.'J'.$highest_row;
+				$excel->merge_cells($cell_range);
+				$cell_range = 'K'.$lowest_row.':'.'K'.$highest_row;
+				$excel->merge_cells($cell_range);
+				$cell_range = 'L'.$lowest_row.':'.'L'.$highest_row;
+				$excel->merge_cells($cell_range);
+	
+				$excel->set_format('A'.$lowest_row.':'.'L'.$highest_row,$array_format_value);
+				$excel->set_borders('A'.$lowest_row.':'.'L'.$highest_row,1,1,1,1, "thin");
+				$excel->wrap_text('A'.$lowest_row.':'.'L'.$highest_row);
+			}
+		}
+		$row++;
+	}
 }
 // return;
 /* 

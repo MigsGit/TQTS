@@ -2909,7 +2909,7 @@
 		}
 		return $approver_username['approver_username'];
 	}
-	
+
 	function send_email_for_disposition(){ 
 		require_once('../class/oop_tqts.php');
 		require_once('../class/send_email_qfr_sa.php');
@@ -2940,7 +2940,8 @@
 		for($i=0; $i < count($_FILES["file_sa"]["tmp_name"]); $i++) {
 			$temp_file 	     = $_FILES["file_sa"]["tmp_name"][$i];
 			$file_name 	     = $_FILES["file_sa"]["name"][$i];
-			$target_file = $target_dir . $file_name;
+			
+			$target_file = $target_dir.'/'.$file_name;
 			if (file_exists($target_file)) {
 				echo $msg = "Sorry, your file already exists.";
 				return;
@@ -2953,7 +2954,6 @@
 						$msg = 'File was successfully uploaded to the system.<br>';
 					} else {
 						echo $msg = 'There was an error on renaming the file.';
-						
 						return;
 					}					
 				} else {
@@ -2970,10 +2970,12 @@
 								);
 		$array_values	= array(
 									$date_time_today,$username,$fkid,
-									implode(',',$_FILES["file_sa"]["name"]),4,'',
+									implode('|',$_FILES["file_sa"]["name"]),4,'',
 									$date_time_today,$username
 								);
 		$pkid_attachment = TQTS::getInstance()->insert_query_id($table,$array_fields,$array_values);
+		$script = TQTS::getInstance()->insert_query_script($table,$array_fields,$array_values);
+		
 		/* Create email notification */
 		$result = "";
 		$date= date('Y-m-d');
@@ -3075,7 +3077,7 @@
 
 			$to 		 = implode(',',$to); //To internal, To external
 			$cc 		 = implode(',',$cc); // CC internal 
-			$from 		 = return_user_email_add($username) == 'NONE' ? '' : return_user_email_add($username); //judcataya/tmmabulac is the sender of SAR
+			$from 		 = return_user_email_add($username) == 'NONE' ? '' : return_user_email_add($username); 
 
 			$php_mailer = new email();
 			$php_mailer->send_email_with_attachment($to, $from, $cc, $subject, $body, $attachment_name, $attachment);

@@ -8,7 +8,7 @@
 	if(is_ajax()) {
 		if(isset($_POST["action"]) && !empty($_POST["action"])) {
 			$action = $_POST["action"];
-			switch($action) {				
+			switch($action) {			
 				case "ng_reload_wbs_record" 					: ng_reload_wbs_record(); break; 
 				case "get_material_type_list" 					: get_material_type_list(); break; 
 				case "save_ng_report" 							: save_ng_report(); break; 
@@ -28,7 +28,6 @@
 				case "view_ng_attachments" 						: view_ng_attachments(); break; 
 
 				case "get_supplier_ng_email_address" 			: get_supplier_ng_email_address(); break; 
-
 			}
 		}
 	}
@@ -141,6 +140,8 @@
 		$values		  	= get_fields_values($_POST,array("action","file_ng","device_name","report_approvers_new","lot_numbers","quantity","lot_pkid","username","fkfile_path","wbs_id","approvers","rbtn_new"));
 		$array_fields 	= $values["array_fields"];
 		$array_values 	= $values["array_values"];
+		$control_number = generate_sa_control_number(date('Y-m-d'),$return['username']);
+		$array_fields[]	= 'control_number'; $array_values[] = $control_number;
 		$array_fields[] = "status"; 			$array_values[] = "FOR APPROVAL";
 		$array_fields[] = "file_name"; 			$array_values[] = $file_names;
 		$array_fields[] = "fkfile_path"; 		$array_values[] = $fkfile_path;
@@ -157,8 +158,8 @@
 		$approvers 		 = explode(',',$approvers);
 		foreach($approvers as $approver_username) {
 			$array_values 	= array($date_time_today, $username, $pkid, $approver_username, 'PENDING', $date_time_today, $username);
-			// $insert_query	= TQTS::getInstance()->insert_query($table,$array_fields,$array_values);
-			$script	.= TQTS::getInstance()->insert_query_script($table,$array_fields,$array_values);
+			$insert_query	= TQTS::getInstance()->insert_query($table,$array_fields,$array_values);
+			// $script	.= TQTS::getInstance()->insert_query_script($table,$array_fields,$array_values);
 		}	
 		
 		if(!file_exists($target_dir.$pkid.'/')) {

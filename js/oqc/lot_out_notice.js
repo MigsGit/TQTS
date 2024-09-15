@@ -53,6 +53,7 @@ const save_oqc_capa_monitoring = function (serialized_data){
 			$('#modal_oqc_capa_monitoring').modal('hide');
 			notif_success(result.message);
 			dt_oqc_lon_capa_monitoring.ajax.url("server_side_scripts/oqc/dt_lon_lqc_inspector_capa_monitoring.php?username="+username +"&"+ "oqc_lon_id="+$frm_oqc_capa_monitoring.find('#oqc_lon_id').val()).draw();
+		
 		}
 	})
 }
@@ -87,7 +88,7 @@ $('#add_capa_monitoring').click(function(){
 	$('#modal_oqc_capa_monitoring').modal();
 	$('.submissionDate').hide();
 	re_initialize_select2_server_side('#modal_oqc_capa_monitoring #oqc_capa_action_incharge','#modal_oqc_capa_monitoring #frm_oqc_capa_monitoring',[],"server_side_scripts/dropdown/common/dd_hris_above_ss_list.php");
-	
+	$frm_oqc_capa_monitoring.find('#oqc_lon_id').val();
 });
 
 $frm_oqc_capa_monitoring.submit(function (e) { 
@@ -298,6 +299,8 @@ $('#' + tbl_oqc_lon_lqc_inspector + ' tbody').on('click','tr .fa-eye',function()
 	var pkid 	= $(this).attr("id");	
 	var row 	= $(this).closest('tr');
 	var status  = row.find('td:eq(0)').text();
+	$frm_oqc_capa_monitoring.find('#oqc_lon_id').val(pkid);
+
 	if(status == " CONFORMED") {
 		$('#'+mdl_inspector_production+' .fa-thumbs-o-up').hide();
 		$('#'+mdl_inspector_production+' .fa-thumbs-o-down').hide();
@@ -440,6 +443,7 @@ $('#' + tbl_oqc_lon_lqc_supervisor + ' tbody').on('click','tr .fa-eye',function(
 	var row 	= $(this).closest('tr');
 	var status_display  = row.find('td:eq(0) span').text();
 	var status  = row.find('td:eq(0) input').val();
+	$frm_oqc_capa_monitoring.find('#oqc_lon_id').val(pkid);
 	if(status_display == ' PENDING') {
 		$('#'+mdl_lqc_supervisor_view+' .fa-thumbs-o-up').show();
 		$('#'+mdl_lqc_supervisor_view+' .fa-thumbs-o-down').show();
@@ -560,6 +564,7 @@ $('#' + tbl_oqc_lon_lqc_manager + ' tbody').on('click','tr .fa-eye',function(){
 	var row 	= $(this).closest('tr');
 	var status_display  = row.find('td:eq(0) span').text();
 	var status  = row.find('td:eq(0) input').val();
+
 	if(status_display == ' PENDING') {
 		$('#'+mdl_lqc_manager+' .fa-thumbs-o-up').show();
 		$('#'+mdl_lqc_manager+' .fa-thumbs-o-down').show();
@@ -1013,7 +1018,7 @@ $('#' + tbl_oqc_lon_lqc_inspector + ' tbody').on('click','tr .fa-tasks',function
 	$('#'+mdl_inspector_production).modal('show');
 	$('#'+mdl_inspector_production + ' #lon_container_message').hide();
 	
-	$frm_oqc_capa_monitoring.find('#oqc_lon_id').val(pkid);
+	// $frm_oqc_capa_monitoring.find('#oqc_lon_id').val(pkid);
 });
 
 $('#'+frm_inspector_production+' button[name="add_mode_defect"]').click(function() {	
@@ -1130,7 +1135,7 @@ function fn_get_oqc_lon_details(pkid,modal_id,frm_id){
 		"pkid"		: pkid
 	}
 	call_ajax(data, handler_lon, function(result){
-		if(result['status'] == 'CONFORMED BY OQC INSPECTOR' && result['created_by_qc'] === username){ //show Add CAPA Monitoring 
+		if(result['status'] == 'CONFORMED BY OQC INSPECTOR'){ //show Add CAPA Monitoring 
 			$('#add_capa_monitoring').show();
 		}else{
 			$('#add_capa_monitoring').hide();

@@ -12,8 +12,8 @@
 	/* Array of database columns which should be read and sent back to DataTables. Use a space where
 	 * you want to insert a non-database field (for example a counter or static image)
 	 */
-	// error_reporting(E_ALL);
-	// ini_set('display_errors', 1);
+	error_reporting(E_ALL);
+	ini_set('display_errors', 1);
 	/* 
 			Invoice #			Application Date		Inspection Date	
 			Inspection 			Time					FY #	
@@ -90,6 +90,7 @@
 	/*
 	 * Ordering
 	 */
+	$sOrder = "";
 	if ( isset( $_GET['iSortCol_0'] ) )
 	{
 		$sOrder = "ORDER BY  ";
@@ -133,21 +134,21 @@
 	}
 	
 	/* Individual column filtering */
-	for ( $i=0 ; $i<count($aColumns) ; $i++ )
-	{
-		if ( $_GET['bSearchable_'.$i] == "true" && $_GET['sSearch_'.$i] != '' )
-		{
-			if ( $sWhere == "" )
-			{
-				$sWhere = "WHERE ";
-			}
-			else
-			{
-				$sWhere .= " AND ";
-			}
-			$sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string($_GET['sSearch_'.$i])."%' ";
-		}
-	}
+	// for ( $i=0 ; $i<count($aColumns) ; $i++ )
+	// {
+	// 	if ( $_GET['bSearchable_'.$i] == "true" && $_GET['sSearch_'.$i] != '' )
+	// 	{
+	// 		if ( $sWhere == "" )
+	// 		{
+	// 			$sWhere = "WHERE ";
+	// 		}
+	// 		else
+	// 		{
+	// 			$sWhere .= " AND ";
+	// 		}
+	// 		$sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string($_GET['sSearch_'.$i])."%' ";
+	// 	}
+	// }
 	
 	/* 
 		dito ka mag add ng where mo, una check mo kung may laman na yung $sWhere pag wala append mo yung where mo na meron
@@ -223,7 +224,6 @@
 		$row[] = $aRow['inspection_date'] == '' ? '' : date('M d, Y', strtotime($aRow['inspection_date']));
 		$row[] = $aRow['inspection_time'];
 		$row[] = $aRow['submission'];
-		$row[] = $aRow['invoice_no'];
 		$row[] = $aRow['partcode'];
 		$row[] = $aRow['partname'];
 		$row[] = $aRow['lot_no'];

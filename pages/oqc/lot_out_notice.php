@@ -890,7 +890,7 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 					<label class="fa fa-md">Carbon copy: </label>
 				</div>
 				<div class="col-sm-10">
-					<select class="" id="cmb_cc" name="cc[]" multiple="multiple"style="width:100%;">
+					<select class="" id="cmb_cc" name="cc[]" multiple="multiple"style="width:100%;" required>
 					</select>
 				</div>
 			</div>
@@ -1097,7 +1097,7 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 					<label class="fa fa-md">Carbon copy: </label>
 				</div>
 				<div class="col-sm-10">
-					<select class="" id="cmb_cc" name="cc[]" multiple="multiple" style="width:100%;">
+					<select class="" id="cmb_cc" name="cc[]" multiple="multiple" style="width:100%;" required>
 					</select>
 				</div>
 			</div>
@@ -2281,15 +2281,13 @@ foreach($user_role['subsystem_code'] as $key => $subsystem_code ){
 	  <form id="frm_oqc_capa_monitoring">
 		  <!-- CORRECTIVE / PREVENTIVE ACTION -->
 		  <div class="modal-body">
-			<div class="row" style="margin-top:5px;style=display:none;">
+			<div class="row" style="margin-top:5px;display:none;">
 				<div class="col-sm-2">
 					<label class="fa fa-md">Oqc Lon Id: </label>
 				</div>
 				<div class="col-sm-10">
 					<input type="number" class="form-control" id="oqc_lon_id" name="oqc_lon_id">
 				</div>
-			</div>	
-			<div class="row" style="margin-top:5px;style=display:none;">
 				<div class="col-sm-2">
 					<label class="fa fa-md">Oqc Lon CapaMonitoring Id: </label>
 				</div>

@@ -86,6 +86,7 @@ function call_ajax_attachment(serialized_data, handler, fn) {
 			/**
 			 * TODO: Debug the for disposition in SAR
 			 */
+			// alert('Error: Please contact ISS');
 			alert('Email Sent');
 		}
 	}); 

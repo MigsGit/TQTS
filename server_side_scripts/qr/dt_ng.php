@@ -43,7 +43,6 @@
 	$aColumns = array( 
 				'pkid',
 				'status',
-                'invoice_no',
                 'part_code',
                 'parts_affected_parts',
                 'po_number',
@@ -52,9 +51,10 @@
 				'fkfile_path',
 				'supplier',
 				'created_by',
+				'fail_mode',
 				'(SELECT GROUP_CONCAT(approver_username) FROM tbl_qfr_ng_approvers WHERE tbl_qfr_ng_approvers.fkng=tbl_qfr_ng.pkid AND tbl_qfr_ng_approvers.logdel=0)',
 				'issuance_date'
-				);
+	);
 	
 	/* used this field for searching data typed in the search box */
 	// $array_search = array('empno', 'LastName',
@@ -153,23 +153,6 @@
 		$sWhere .= ')';
 	}
 	
-	/* Individual column filtering */
-	for ( $i=0 ; $i<count($aColumns) ; $i++ )
-	{
-		if ( $_GET['bSearchable_'.$i] == "true" && $_GET['sSearch_'.$i] != '' )
-		{
-			if ( $sWhere == "" )
-			{
-				$sWhere = "WHERE ";
-			}
-			else
-			{
-				$sWhere .= " AND ";
-			}
-			$sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string($_GET['sSearch_'.$i])."%' ";
-		}
-	}
-	
 	/* 
 		dito ka mag add ng where mo, una check mo kung may laman na yung $sWhere pag wala append mo yung where mo na meron
 		kasama where kapag naman may laman na AND na syempre diba :)
@@ -219,7 +202,6 @@
 		$sOrder
 		$sLimit
 	";
-	echo $sQuery;
 	$rResult = mysql_query( $sQuery, $gaSql['link'] ) or die(mysql_error());
 	
 	$query_used = $sQuery;
@@ -325,7 +307,6 @@
 		
 		
 		$row[] = $badge;
-		$row[] = '<center>'.$aRow['invoice_no'].'</center>';
 		$row[] = $part_details;
 		$row[] = $initial_dispo;
 		$row[] = $final_dispo;

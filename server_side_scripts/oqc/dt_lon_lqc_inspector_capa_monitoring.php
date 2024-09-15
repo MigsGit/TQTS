@@ -17,7 +17,7 @@
     
 	$aColumns = array( 
 		'id', 
-		'tbl_oqc_lon_id', 
+		'oqc_lon_id', 
 		'oqc_capa_action', 
 		'oqc_capa_action_incharge', 
 		'oqc_capa_due_date', 
@@ -31,7 +31,7 @@
 	/* used this field for searching data typed in the search box */
 
 	$array_search = array(
-		'tbl_oqc_lon_id', 
+		'oqc_lon_id', 
 		'oqc_capa_action', 
 		'oqc_capa_action_incharge', 
 		'oqc_capa_due_date', 
@@ -178,7 +178,7 @@
 		$sWhere .= " AND logdel=0";
 	} else {
 		$sWhere .= " AND logdel=0 AND created_by='".$username."'";		
-		$sWhere .= " AND tbl_oqc_lon_id = '".$_GET['oqc_lon_id']."'";		
+		$sWhere .= " AND oqc_lon_id = '".$_GET['oqc_lon_id']."'";		
 	}
 	
 	if($sOrder == ""){
