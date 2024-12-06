@@ -147,6 +147,7 @@
 					$_SESSION['username'] == 'cnpoblete' ||
 					$_SESSION['username'] == 'joysust' ||
 					$_SESSION['username'] == 'joymotin' ||
+					$_SESSION['username'] == 'rancali' ||
 					$_SESSION['rapid_account_type'] == 2){ // ISS
 					echo '<li id="li_configuration"><a href="#" data-toggle="tab"><i class="fa fa-cogs"></i> <span>Configuration</span></a></li>';
 				}

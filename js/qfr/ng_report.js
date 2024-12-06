@@ -209,7 +209,7 @@
 	
 	$('#btn_upload_ng').click(function() {
 		fn_ng_get_material_type_list('frm_upload_ng');
-		
+		// fn_generate_ng_control_number_view();
 		re_initialize_select2_server_side('#modal_upload_ng #supplier','#modal_upload_ng #frm_upload_ng',[],"server_side_scripts/dropdown/qfr/dd_ng_supplier_list.php");
 		re_initialize_select2_server_side('#modal_upload_ng #cmb_approver_username','#modal_upload_ng #frm_upload_ng',[],"server_side_scripts/dropdown/common/dd_hris_above_ss_list.php");
 		$('#modal_upload_ng').modal();
@@ -514,7 +514,15 @@
 		// window.location.href = "./pages/qfr/dl_ng_report.php?id="+$(this).val();
 		fn_view_ng_attachments($(this).val());
 	});
-	
+	function fn_generate_ng_control_number_view(){
+		var data = {
+			"action"	: "generate_ng_control_number_view",
+			"username"	: username
+		}
+		call_ajax(data,handler_qfr,function(result){
+			$('#frm_upload_ng  input[name="control_number"]').val(result);
+		});
+	}
 	$('#frm_send_report_internal').on('submit', function(e) {
 	   e.preventDefault();
 	   $('.btn').prop("disabled",true);

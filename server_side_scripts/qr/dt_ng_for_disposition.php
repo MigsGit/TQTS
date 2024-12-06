@@ -25,7 +25,9 @@
 				'fkfile_path',
 				'supplier',
 				'fail_mode',
-				'issuance_date'
+				'issuance_date',
+				// '(SELECT GROUP_CONCAT(approver_username) FROM tbl_qfr_ng_approvers WHERE tbl_qfr_ng_approvers.fkng=tbl_qfr_ng.pkid AND tbl_qfr_ng_approvers.logdel=0)',
+				'ng_report_no'
 				);
 	
 	/* used this field for searching data typed in the search box */
@@ -225,11 +227,12 @@
 		}else {
 			$badge 		= $aRow['status'];
 		}
+		// $buttons    .= '<button type="button" class="btn btn-info fa fa-send-o" id="btn_add_dispo" value="'.$aRow['pkid'].'"> Send Disposition</button>';
 		
 		$lot_numbers     = return_ng_lot_numbers($aRow['pkid']);
 		$approvers       = return_ng_approvers($aRow['pkid']);
-		$btn_ng_report 	 = '<button type="button" class="btn btn-link fa fa-paperclip" id="btn_dl_ng_report" value="'.$aRow['pkid'].'"> Download File</button>';
-		
+		$btn_ng_report 	 = '<center><button type="button" class="btn btn-link fa fa-paperclip" id="btn_dl_ng_report" value="'.$aRow['pkid'].'"> Download File</button> </center> <br>';
+		$btn_ng_report  .= 'NG Number:  '.$aRow['ng_report_no'].'<br>';
 		
 		if($aRow['part_code'] != '') {
 			$part_name	    = get_partname_by_partcode($aRow['part_code']);

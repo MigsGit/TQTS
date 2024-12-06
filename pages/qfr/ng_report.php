@@ -166,12 +166,12 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
 					<div class="alert alert-danger" style="display:none;" role="alert" id="container_upload_ng_message">					
 					</div>
 				</div>
-				<div class="col-sm-2">
+				<!-- <div class="col-sm-2">
 					<label class="fa fa-md">Control No: </label>
 				</div>
 				<div class="col-sm-4">
 					<input type="text" class="form-control" id="txt_control_number" name="control_number"required readonly>
-				</div>	
+				</div> -->
 				<div class="col-sm-2">
 					<label class="fa fa-md">Issuance Date: </label>
 				</div>
@@ -735,7 +735,7 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
                 <label class="fa fa-md">To (External Recipients): </label>				
 			</div>	
 			<div class="col-sm-10" id="">	
-				<select class="" id="cmb_ng_send_external_to" name="ng_send_external_to[]" multiple="multiple" style="width:100%;" disabled required>
+				<select class="" id="cmb_ng_send_external_to" name="ng_send_external_to[]" multiple="multiple" style="width:100%;" required>
 				</select>
 			</div>	
 		</div>		
@@ -753,7 +753,7 @@ if((!$ng_report_approver) && (!$ng_report_requestor)){
                 <label class="fa fa-md">Cc (External Recipients): </label>				
 			</div>	
 			<div class="col-sm-10" id="">	
-				<select class="" id="cmb_ng_send_external_cc" name="ng_send_external_cc[]" multiple="multiple" style="width:100%;" disabled required>
+				<select class="" id="cmb_ng_send_external_cc" name="ng_send_external_cc[]" multiple="multiple" style="width:100%;" required>
 				</select>
 			</div>	
 		</div>		

@@ -28,6 +28,7 @@
 				case "view_ng_attachments" 						: view_ng_attachments(); break; 
 
 				case "get_supplier_ng_email_address" 			: get_supplier_ng_email_address(); break; 
+				case "generate_ng_control_number_view" 			: generate_ng_control_number_view(); break; 
 			}
 		}
 	}
@@ -140,8 +141,8 @@
 		$values		  	= get_fields_values($_POST,array("action","file_ng","device_name","report_approvers_new","lot_numbers","quantity","lot_pkid","username","fkfile_path","wbs_id","approvers","rbtn_new"));
 		$array_fields 	= $values["array_fields"];
 		$array_values 	= $values["array_values"];
-		$control_number = generate_sa_control_number(date('Y-m-d'),$return['username']);
-		$array_fields[]	= 'control_number'; $array_values[] = $control_number;
+		// $control_number = generate_ng_control_number(date('Y-m-d'),username: $return['username']);
+		// $array_fields[]	= 'control_number'; 	$array_values[] = $control_number;
 		$array_fields[] = "status"; 			$array_values[] = "FOR APPROVAL";
 		$array_fields[] = "file_name"; 			$array_values[] = $file_names;
 		$array_fields[] = "fkfile_path"; 		$array_values[] = $fkfile_path;
@@ -217,6 +218,140 @@
 		echo json_encode($return);
 	}
 	
+	function generate_ng_control_number($date,$username){
+		require_once('../class/oop_tqts.php');
+		$username 	= $_POST['username'];
+		$date		= date("Y-m-d");
+		require_once('../class/oop_tqts.php');
+		$division 	= return_system_division();
+		$section 	= get_assigned_section_sa($username);
+		$sar = 'NGR-';
+		
+		if(date('m') == 4) {
+			$pattern 	= date('ym');
+			$stat 		= 'new FY';
+		} else {
+			$pattern 	= date('ym');
+			$stat 		= 'current FY';
+		}
+		
+		$array_fields = array('control_number');
+		$table 	   	= 'tbl_qfr_ng';
+		$joins 	   	= '';
+		$sql_where 	= 'WHERE date_time_created LIKE "%'.$pattern.'-%" AND logdel=0';
+		$sql_order 	= 'ORDER BY pkid DESC';
+		$sql_limit 	= 'LIMIT 0,1';
+		$control_number= '';
+		$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+		$script = TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+		if($result->num_rows==0) {
+			if($stat == 'current FY') {
+				$sql_where 	= 'WHERE logdel=0';
+				$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+				if($row = mysqli_fetch_array($result)) {
+					$sar = 'NGR-';
+					$control_number = $row['control_number'];
+					$ctr 		 	= end(explode('-',$control_number));
+					$series 	 	= '-'.str_pad(($ctr+1),3,"0",STR_PAD_LEFT);
+					$control_number = $sar.'-'.$division.$section.'-'.$pattern.$series;
+				} else {
+					$sar = 'NGR-';
+					$control_number =$sar.'-'.$division.$section.'-'.$pattern.'-001';
+				}
+			} else {
+				$sql_where 	= 'WHERE control_number LIKE "%-'.date('ym').'-%" AND logdel=0';
+				$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+				if($row = mysqli_fetch_array($result)) {
+					$sar = 'NGR-';
+					$control_number = $row['control_number'];
+					$ctr 		 	= end(explode('-',$control_number));
+					$series 	 	= '-'.str_pad(($ctr+1),3,"0",STR_PAD_LEFT);
+					$control_number = $division.$section.'-'.$pattern.$series;
+				} else {
+					$sar = 'NGR-';
+
+					$control_number = $sar.'-'.$division.$section.'-'.$pattern.'-001';
+				}
+			}
+		} else {
+			if($row = mysqli_fetch_array($result)) {
+				$sar = 'NGR-';
+				$control_number = $row['control_number'];
+				$ctr 		 	= end(explode('-',$control_number));
+				$series 	 	= '-'.str_pad(($ctr+1),3,"0",STR_PAD_LEFT);
+			}		
+			$control_number = $sar.'-'.$division.$section.'-'.$pattern.$series;
+		}
+		
+		return $control_number;
+	}
+	function generate_ng_control_number_view(){
+		require_once('../class/oop_tqts.php');
+		$username 	= $_POST['username'];
+		$date		= date("Y-m-d");
+		require_once('../class/oop_tqts.php');
+		$division 	= return_system_division();
+		$section 	= get_assigned_section_sa($username);
+		$sar = 'NGR-';
+		
+		if(date('m') == 4) {
+			$pattern 	= date('ym');
+			$stat 		= 'new FY';
+		} else {
+			$pattern 	= date('ym');
+			$stat 		= 'current FY';
+		}
+		
+		$array_fields = array('control_number');
+		$table 	   	= 'tbl_qfr_ng';
+		$joins 	   	= '';
+		$sql_where 	= 'WHERE date_time_created LIKE "%'.$pattern.'-%" AND logdel=0';
+		$sql_order 	= 'ORDER BY pkid DESC';
+		$sql_limit 	= 'LIMIT 0,1';
+		$control_number= '';
+		$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+		$script = TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+		if($result->num_rows==0) {
+			if($stat == 'current FY') {
+				$sql_where 	= 'WHERE logdel=0';
+				$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+				if($row = mysqli_fetch_array($result)) {
+					$sar = 'NGR-';
+					$control_number = $row['control_number'];
+					$ctr 		 	= end(explode('-',$control_number));
+					$series 	 	= '-'.str_pad(($ctr+1),3,"0",STR_PAD_LEFT);
+					$control_number = $sar.'-'.$division.$section.'-'.$pattern.$series;
+				} else {
+					$sar = 'NGR-';
+					$control_number =$sar.'-'.$division.$section.'-'.$pattern.'-001';
+				}
+			} else {
+				$sql_where 	= 'WHERE control_number LIKE "%-'.date('ym').'-%" AND logdel=0';
+				$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
+				if($row = mysqli_fetch_array($result)) {
+					$sar = 'NGR-';
+					$control_number = $row['control_number'];
+					$ctr 		 	= end(explode('-',$control_number));
+					$series 	 	= '-'.str_pad(($ctr+1),3,"0",STR_PAD_LEFT);
+					$control_number = $division.$section.'-'.$pattern.$series;
+				} else {
+					$sar = 'NGR-';
+
+					$control_number = $sar.'-'.$division.$section.'-'.$pattern.'-001';
+				}
+			}
+		} else {
+			if($row = mysqli_fetch_array($result)) {
+				$sar = 'NGR-';
+				$control_number = $row['control_number'];
+				$ctr 		 	= end(explode('-',$control_number));
+				$series 	 	= '-'.str_pad(($ctr+1),3,"0",STR_PAD_LEFT);
+			}		
+			$control_number = $sar.'-'.$division.$section.'-'.$pattern.$series;
+		}
+		
+		echo json_encode($control_number);
+	}
 	function check_ng_report_no($ng_report_no) {
 		require_once('../class/oop_tqts.php');
 		$array_fields = array('ng_report_no');
@@ -915,6 +1050,9 @@
 
 			$php_mailer = new email();
 			// $php_mailer->send_email($to, $from, $cc, $subject, $body,$attachment,$attachment_name);
+			/**
+			 
+			 */
 			$php_mailer->send_email_with_attachment($to, $from, $cc, $subject, $body, $attachment_name, $attachment);
 
 			//For follow-up email - this portion is copied from YF TQTS
@@ -1540,14 +1678,15 @@
 		echo json_encode($return);
     }
 
-	function get_supplier_ng_email_address() {
+	function get_supplier_ng_email_address() { //get_supplier_ng_email_address
 		require_once('../class/oop_tqts.php');
 		$supplier 		= $_POST['supplier'];
 		$field_name 	= $_POST['field_name'];
 		$array_fields = array($field_name);
 		$table 	   	= 'tbl_supplier';
 		$joins 	   	= '';
-		$sql_where 	= 'WHERE supplier="'.$supplier.'" AND fksupplier_group != 0 OR category = "NGR" AND logdel=0';
+		// $sql_where 	= 'WHERE supplier="'.$supplier.'" AND fksupplier_group != 0 AND category !="SAR" AND logdel=0';
+		$sql_where 	= 'WHERE supplier="'.$supplier.'" AND logdel=0';
 		$sql_order 	= '';
 		$sql_limit 	= '';
 		$html_select= '';

@@ -88,6 +88,9 @@
 			case 7:
 				$badge = '<span class="badge highlight-color-red">DISAPPORVED BY YEC</span>';
 				break;
+			case 8:
+				$badge = '<span class="badge highlight-color-red">CANCELLED</span>';
+				break;
 			
 			default:
 				$badge = '<span class="badge">Unknown Status</span>';

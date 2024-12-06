@@ -274,6 +274,7 @@
 		} else if($aRow['status'] == 'UPLOADED DISPOSITION') {
 			$badge 	   = '<span class="badge highlight-color-green" > DONE</span>';
 			$buttons  = '<button type="button" class="btn btn-default fa fa-eye" id="'.$aRow['pkid'].'" style="margin-top:5px;"> View</button><br>';
+			$buttons  .= '<button type="button" class="btn btn-primary fa fa-edit" id="'.$aRow['pkid'].'" style="margin-top:5px;"> Edit</button><br>';
 			$buttons  .= '<button type="button" class="btn btn-danger fa fa-close" id="'.$aRow['pkid'].'" style="margin-top:5px;"> Cancel</button><br>';
 			$buttons  .= '<button type="button" class="btn btn-success fa fa-file-excel-o" id="'.$aRow['pkid'].'" style="margin-top:5px;"> Export</button><br>';
 		} else if($aRow['status'] == 'CONFORMED BY LQC SUPERVISOR') {

@@ -27,6 +27,7 @@ if (file_exists($file)) {
 }
 
 function get_file_path_by_pkid($fkdetails, $type) {
+	
 	if($type == 'inspector') {
 		$table_name = 'tbl_oqc_lon';
 		$id 		= 'pkid';
@@ -34,6 +35,7 @@ function get_file_path_by_pkid($fkdetails, $type) {
 		$table_name = 'tbl_oqc_lon_production';
 		$id 		= 'fklon';
 	}
+	
 	require_once('../../class/oop_tqts.php');
 	$array_fields = array('path.file_path','details.file_name');
 	$table 	   	= $table_name.' details ';

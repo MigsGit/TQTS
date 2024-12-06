@@ -179,6 +179,9 @@ $(document).ready(function(){
 		$('#modal_sa_cancel').modal('show');
 	});
 
+	
+	
+
 	$('#frm_sa select[name="category"]').change(function(){
 		var category = $(this).val();
 		fn_sa_hide_text_fields('frm_sa',category);
@@ -670,7 +673,13 @@ $(document).ready(function(){
 		$('#frm_send_report_internal_sa #container_cmb_sa_send_external_cc').hide(); /** NOTE: External CC for Special Acceptance Report */
 		$('#modal_send_supplier_sa').modal('show');
 	});
-	
+	$('#'+tbl_special_acceptance_disposition+' tbody').on('click', 'tr .fa-remove', function(){
+		var parts_and_prod_details = $(this).closest('tr').find('td:eq(1)').text();
+		$('#frm_sa_cancel #label_info').text(parts_and_prod_details);
+		$('#modal_sa_cancel').data('id',this.id);
+		$('#modal_sa_cancel').modal('show');
+	});
+
 	/** MODAL TBL WITH DOWNLOAD ATTACHMENT */
 	$('#tbl_view_attachments_sa tbody').on('click','tr .fa-paperclip', function () {
 		var id = $(this).attr('id');

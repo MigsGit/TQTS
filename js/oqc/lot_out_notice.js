@@ -808,8 +808,21 @@ $('#'+mdl_production_edit+' .fa-paperclip').click(function() {
 
 $('#'+frm_production_edit+' input[name="ok_qty"]').keyup(function(e) {
 	var ok_qty 		= parseFloat($('#'+frm_production_edit+' input[name="ok_qty"]').val());
-	var lot_qty 	= parseFloat($('#'+frm_production_edit+' input[name="lot_qty"]').val());
-	var ng_qty 		= lot_qty  - ok_qty;
+	var sorted_qty 	= parseFloat($('#'+frm_production_edit+' input[name="sorted_qty"]').val());
+	var ng_qty 		= sorted_qty  - ok_qty;
+	
+	$('#'+frm_production_edit+' input[name="ng_qty"]').val(ng_qty);
+	
+	if($('#'+frm_production_edit+' input[name="ng_qty"]').val() == 0 || $('#'+frm_production_edit+' input[name="ng_qty"]').val() == "") {
+		$('#'+frm_production_edit+' .fa-plus').prop("disabled", true);
+	} else {
+		$('#'+frm_production_edit+' .fa-plus').prop("disabled", false);
+	}
+});
+$('#'+frm_production_edit+' input[name="sorted_qty"]').keyup(function(e) {
+	var sorted_qty 		= parseFloat($(this).val());
+	var ok_qty 	= parseFloat($('#'+frm_production_edit+' input[name="ok_qty"]').val());
+	var ng_qty 		= sorted_qty  - ok_qty;
 	
 	$('#'+frm_production_edit+' input[name="ng_qty"]').val(ng_qty);
 	
@@ -828,8 +841,8 @@ $('#'+frm_production_edit+' input[name="ng_qty"]').keyup(function(e) {
 	}
 	
 	var ng_qty 		= parseFloat($('#'+frm_production_edit+' input[name="ng_qty"]').val());
-	var lot_qty 	= parseFloat($('#'+frm_production_edit+' input[name="lot_qty"]').val());
-	var ok_qty 		= lot_qty  - ng_qty;
+	var sorted_qty 	= parseFloat($('#'+frm_production_edit+' input[name="sorted_qty"]').val());
+	var ok_qty 		= sorted_qty  - ng_qty;
 	
 	$('#'+frm_production_edit+' input[name="ok_qty"]').val(ok_qty);
 });

@@ -210,7 +210,7 @@
 	}
 	
 	/** $sWhere .= " `status` = 1 OR `status` = 5 OR `status` = 6 OR `status` = 7 AND `logdel` = 0 "; */
-	$sWhere .= " (`status` = '0' OR `status` = '1' OR `status` = '5' AND `status` != 'CL') AND `logdel` = 0";
+	$sWhere .= " (`status` = '0' OR `status` = '1' OR `status` = '5' OR `status` = '8' AND `status` != 'CL' ) AND `logdel` = 0";
 	// $sWhere .= ' created_by = "'.$username.'"';
 	
 	/*
@@ -335,16 +335,21 @@
 		$button[] = '<center>';
 		// if($user_sa_access['qc_supervisor'] && $username == $aRow['created_by']){
 		$button[] = '<button class="btn btn-default fa fa-eye" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> View</button>';
+		
 		if($username == $aRow['created_by']){
+
 			if( $user_sa_access['update']){
 				$button[] = '<button class="btn btn-primary fa fa-edit" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Edit</button>';
 			}
 			if($aRow['status'] == '1'){
 				$button[] = '<button class="btn btn-info fa fa-send-o" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Send Disposition</button>';
+				$button[] = '<button class="btn btn-danger fa fa-remove" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Cancel</button>';
 			}
 			if($aRow['status'] == '5'){
 				$button[] = '<button class="btn btn-success fa fa-plus" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Add Disposition</button>';
+				$button[] = '<button class="btn btn-danger fa fa-remove" style="margin-bottom:5px;" id="'.$aRow['pkid'].'"> Cancel</button>';
 			}
+			
 			// $button[] = $aRow['created_by'];
 		}
 		$button[] = '</center>';

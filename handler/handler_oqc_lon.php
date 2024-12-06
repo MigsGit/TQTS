@@ -115,7 +115,7 @@
 				$array_fields[]	= 'created_by'; 	$array_values[] = $_POST['username'];
 				$array_fields[]	= 'created_at'; 	$array_values[] = date('Y-m-d H:i:s');
 				$script 		= TQTS::getInstance()->insert_query_script($table,$array_fields,$array_values);
-				$query 		= TQTS::getInstance()->insert_query($table,$array_fields,$array_values);
+				$query 			= TQTS::getInstance()->insert_query($table,$array_fields,$array_values);
 			}else{ //EDIT
 				
 				/* add additional fields */

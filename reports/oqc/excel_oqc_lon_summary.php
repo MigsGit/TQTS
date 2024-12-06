@@ -1,6 +1,7 @@
 <?php
 $oop 		= './../../class/oop_tqts.php';
 $handler 	= '../../handler/common_function.php';
+
 if(file_exists($oop)){
 	require_once($oop);
 }else{
@@ -59,7 +60,6 @@ function daysWithoutSundays($date_from, $date_to) {
 // echo daysWithoutSundays('2024-08-07', '2024-08-18');
 // return;
 function getDateFormat($date) {
-	// return $date;
 	$is_date_exist = $date != "" ? 'true' : 'false';
 	if($is_date_exist == 'true'){
 		$date = date( 'd-M-y', strtotime( $date ) ) ;
@@ -259,6 +259,7 @@ $col = 'T'; $row = '3';   $excel->place_value($col.$row,'PQS-I01-028','string');
 /* Set data value */
 $col = 'A';
 $row = 10;
+
 //Column A-T :MONTH YEAR
 while($row_group = mysqli_fetch_assoc($result_group)){	
 	//Excel Format
@@ -289,7 +290,7 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 
 		//PLACE VALUE
 		$excel->place_value($col.$row,$lon_no,'string'); 							$col++; 
-		$excel->place_value($col.$row,getDateFormat($row_details['date_time_created']),'date_format'); 	$col++; 	
+		$excel->place_value($col.$row,getDateFormat($row_details['date_time_created']),'string'); 	$col++; 	
 		$excel->place_value($col.$row,$row_details['line'],'string'); 				$col++; 	
 		$excel->place_value($col.$row,$row_details['device_name'],'string'); 		$col++; 	
 		$excel->place_value($col.$row,$row_details['factory_location'],'string'); 	$col++;
@@ -297,8 +298,8 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 		$excel->place_value($col.$row,$row_details['defect_mode'],'string'); 		$col++;
 		$excel->place_value($col.$row,implode(' / ',$operator),'string'); 		$col++;
 		$excel->place_value($col.$row,implode(' / ',$arr_attention),'string'); 		$col++;
-		$excel->place_value($col.$row,getDateFormat($row_details['capa_due_date']),'date_format'); 		$col++;
-		$excel->place_value($col.$row,getDateFormat($row_details['capa_report_received_date']),'date_format'); 		$col++;
+		$excel->place_value($col.$row,getDateFormat($row_details['capa_due_date']),'string'); 		$col++;
+		$excel->place_value($col.$row,getDateFormat($row_details['capa_report_received_date']),'string'); 		$col++;
 		$excel->place_value($col.$row,daysWithoutSundays($row_details['date_time_created'],$row_details['capa_report_received_date']),'number'); 		$col++;
 		$col = 'A';
 		$excel->set_format('A'.$row.':'.'T'.$row,$array_format_value);
@@ -338,10 +339,10 @@ while($row_group = mysqli_fetch_assoc($result_group)){
 				$excel->place_value('M'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_action'],'string');
 				// $excel->place_value('N'.$row,implode(' / ',$arr_oqc_capa_action_incharge),'string');
 				$excel->place_value('N'.$row,implode(' / ',$arr_oqc_capa_action_incharge),'string');
-				$excel->place_value('O'.$row,getDateFormat($row_tbl_oqc_lon_capa_monitoring['oqc_capa_due_date']),'date_format');	 	
+				$excel->place_value('O'.$row,getDateFormat($row_tbl_oqc_lon_capa_monitoring['oqc_capa_due_date']),'string');	 	
 				$excel->place_value('P'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_status'],'string');
-				$excel->place_value('Q'.$row,getDateFormat($row_tbl_oqc_lon_capa_monitoring['oqc_capa_req_sub_date']),'date_format'); 	
-				$excel->place_value('R'.$row,getDateFormat($row_tbl_oqc_lon_capa_monitoring['oqc_capa_actual_sub_date']),'date_format');	 	
+				$excel->place_value('Q'.$row,getDateFormat($row_tbl_oqc_lon_capa_monitoring['oqc_capa_req_sub_date']),'string'); 	
+				$excel->place_value('R'.$row,getDateFormat($row_tbl_oqc_lon_capa_monitoring['oqc_capa_actual_sub_date']),'string');	 	
 				$excel->place_value('S'.$row,$row_tbl_oqc_lon_capa_monitoring['oqc_capa_remarks'],'string');
 				$excel->place_value('T'.$row,$capa_evidence_status,'string');
 				$excel->wrap_text('M'.$row.':'.'T'.$row);

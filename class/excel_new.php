@@ -258,11 +258,16 @@ class EXCEL extends PHPExcel{
 		place values
 	*/
 	public function place_value($cell,$value,$data_type){
+
 		if(!isset($data_type)){
 			$data_type = '';
 		}
 		if(isset($data_type) && $data_type == 'string'){
-			$this->objPHPExcel->setCellValueExplicit($cell, $value, PHPExcel_Cell_DataType::TYPE_STRING);
+			if($value == 'N/A' || $value == ''){ //return date if value exist
+				$this->objPHPExcel->setCellValueExplicit($cell, 'N/A', PHPExcel_Cell_DataType::TYPE_STRING);
+			}else{
+				$this->objPHPExcel->setCellValueExplicit($cell, $value, PHPExcel_Cell_DataType::TYPE_STRING);
+			}
 		}else if($data_type == 'number_2_decimal'){
 			$this->objPHPExcel->getCell($cell)->setValue($value);
 			$this->objPHPExcel->getStyle($cell)->getNumberFormat()->setFormatCode('0.00');
@@ -290,7 +295,8 @@ class EXCEL extends PHPExcel{
 				$timestamp = PHPExcel_Shared_Date::PHPToExcel(strtotime($value));
 				// Set the cell value as the timestamp
 				$this->objPHPExcel->setCellValue($cell, $timestamp);
-				$this->objPHPExcel->getStyle($cell)->getNumberFormat()->setFormatCode('dd-mmm-yy');
+				$this->objPHPExcel->getStyle($cell);
+				// $this->objPHPExcel->getStyle($cell)->getNumberFormat()->setFormatCode('dd-mmm-yy');
 			}
 			// if($value != ''){ //return date if value exist
 			// 	$timestamp = PHPExcel_Shared_Date::PHPToExcel(strtotime($value));
