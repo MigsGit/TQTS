@@ -852,127 +852,6 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
 	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<div class="modal fade" tabindex="-1" role="dialog" id="modal_sa_add_disposition">
-  <div class="modal-dialog modal-md" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"><i class="fa fa-plus-circle"></i> Add Disposition</h4>
-      </div>
-      <form id="frm_sa_add_disposition" method="post" enctype="multipart/form-data">
-        <input type="hidden" id="txt_hidden_disposition_type" name="disposition_status">
-	    <div class="modal-body">
-            <div class="panel panel-default">
-                <div class="panel-heading">Sent Details:</div>
-                <div class="panel-body">
-					<div class="row">
-						<div class="col-sm-12">
-							<input class="form-control" type="text" id="pkid" name = "pkid" style = "display:none;">		
-						</div>
-					</div>
-                    <div class="row">        
-                        <div class="col-sm-3">
-                            <label class="fa fa-md">Sent By: </label>
-                        </div>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="disposition_sent_by" name="disposition_sent_by" disabled>
-                        </div>
-                    </div>
-                    <div class="row">        
-                        <div class="col-sm-3">
-                            <label class="fa fa-md">Date/Time Sent: </label>
-                        </div>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="disposition_sent_date" name="disposition_sent_date" disabled>
-                        </div>
-                    </div>
-                    <div class="row">        
-                        <div class="col-sm-3">
-                            <label class="fa fa-md">Remarks: </label>
-                        </div>
-                        <div class="col-sm-9">
-                            <textarea class="form-control" style="width:100%;" rows="3" id="disposition_sent_remarks" name="disposition_sent_remarks" disabled></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-			<div class="panel panel-success" id="container_sa_disposition">
-                <div class="panel-heading">YEC Disposition</div>
-                <div class="panel-body">
-                    <div class="row">        
-                        <div class="col-sm-3">
-                            <label class="fa fa-md">Status: </label>
-                        </div>
-                        <div class="col-sm-9">
-                            <select class="form-control" id="status" name="status" required>
-								<option value="" selected disabled>-Select Status-</option>
-								<option value="APPROVED">APPROVED</option>
-								<option value="DISAPPROVED">DISAPPROVED</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <label class="fa fa-md">Disposition By: </label>
-                        </div>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="disposition_by" name="disposition_by" required>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <label class="fa fa-md">Disposition Date: </label>
-                        </div>
-                        <div class="col-sm-9">
-                            <input type="date" class="form-control" id="disposition_date" max="<?php echo date('Y-m-d'); ?>" name="disposition_date" required>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <label class="fa fa-md">Disposition Time: </label>
-                        </div>
-                        <div class="col-sm-9">
-                            <input type="time" class="form-control" id="disposition_time" name="disposition_time" required>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <label class="fa fa-md" id="lbl_ng_initial_dispo"> Disposition File: </label>
-                        </div>
-                        <div class="col-sm-9">
-                            <input type="file" class="form-control" id="treatment_file" name="treatment_file" data="Click to choose file." style="width:100%;display:inline-block;" required>
-						</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <label class="fa fa-md">Disposition: </label>
-                        </div>
-                        <div class="col-sm-9">
-							<select class="form-control"  name="disposition" id="disposition" required>
-								<!-- 
-								<option value="OK,PONO">OK,SPECIFIC PO# ONLY</option>
-								<option value="OK,LOTQTY">OK, SPECIFIC LOT# OR QTY ONLY</option>
-								<option value="OTHERS">OTHERS,PLEASE SPECIFY</option>
-								<option value="OK,ALL INCOMING PO"></option>
-								<option value="OK,SPECIFIC PO# ONLY"></option>
-								<option value="OK, SPECIFIC LOT# OR QTY ONLY"></option>
-								<option value="OTHERS,PLEASE SPECIFY"></option> -->
-							</select>
-                            <textarea class="form-control" style="width:100%; display:none;" rows="3" id="disposition_remarks" name="disposition_remarks" ></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-       </div>
-	   <div class="modal-footer">
-	   	<button type="submit" class="btn btn-info fa fa-save" id="btn_sa_submit_disposition"> Save</button>
-		<button type="button" class="btn btn-default fa fa-close" data-dismiss="modal" id="btn_close"> Close</button>
-	   </div>
-      </form>
-    </div><!-- /.modal-content -->    
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
 <div class="modal fade" tabindex="-1" role="dialog" id="modal_sa_edit_disposition">
   <div class="modal-dialog modal-md" role="document">
     <div class="modal-content">
@@ -1061,7 +940,7 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
                             <label class="fa fa-md" id="lbl_ng_initial_dispo"> Disposition File: </label>
                         </div>
                         <div class="col-sm-9">
-                            <input type="file" class="form-control" id="treatment_file" name="treatment_file" data="Click to choose file." style="width:85%;display:inline-block;">
+							<input multiple type="file" class="form-control" id="treatment_file" name="treatment_file[]" data="Click to choose file." style="width:100%;display:inline-block;">
 							<a class = "fa fa-paperclip" href="#" id = "fa_paperclip" style="width:13%;display:inline-block;"></a>
 						</div>
 					
@@ -1117,6 +996,127 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal_sa_add_disposition">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-plus-circle"></i> Add Disposition</h4>
+      </div>
+      <form id="frm_sa_add_disposition" method="post" enctype="multipart/form-data">
+        <input type="hidden" id="txt_hidden_disposition_type" name="disposition_status">
+	    <div class="modal-body">
+            <div class="panel panel-default">
+                <div class="panel-heading">Sent Details:</div>
+                <div class="panel-body">
+					<div class="row">
+						<div class="col-sm-12">
+							<input class="form-control" type="text" id="pkid" name = "pkid" style = "display:none;">		
+						</div>
+					</div>
+                    <div class="row">        
+                        <div class="col-sm-3">
+                            <label class="fa fa-md">Sent By: </label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="disposition_sent_by" name="disposition_sent_by" disabled>
+                        </div>
+                    </div>
+                    <div class="row">        
+                        <div class="col-sm-3">
+                            <label class="fa fa-md">Date/Time Sent: </label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="disposition_sent_date" name="disposition_sent_date" disabled>
+                        </div>
+                    </div>
+                    <div class="row">        
+                        <div class="col-sm-3">
+                            <label class="fa fa-md">Remarks: </label>
+                        </div>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" style="width:100%;" rows="3" id="disposition_sent_remarks" name="disposition_sent_remarks" disabled></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+			<div class="panel panel-success" id="container_sa_disposition">
+                <div class="panel-heading">YEC Disposition</div>
+                <div class="panel-body">
+                    <div class="row">        
+                        <div class="col-sm-3">
+                            <label class="fa fa-md">Status: </label>
+                        </div>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="status" name="status" required>
+								<option value="" selected disabled>-Select Status-</option>
+								<option value="APPROVED">APPROVED</option>
+								<option value="DISAPPROVED">DISAPPROVED</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label class="fa fa-md">Disposition By: </label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="disposition_by" name="disposition_by" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label class="fa fa-md">Disposition Date: </label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="date" class="form-control" id="disposition_date" max="<?php echo date('Y-m-d'); ?>" name="disposition_date" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label class="fa fa-md">Disposition Time: </label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="time" class="form-control" id="disposition_time" name="disposition_time" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label class="fa fa-md" id="lbl_ng_initial_dispo"> Disposition File: </label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input multiple required type="file" class="form-control" id="treatment_file" name="treatment_file[]" data="Click to choose file." style="width:100%;display:inline-block;">
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label class="fa fa-md">Disposition: </label>
+                        </div>
+                        <div class="col-sm-9">
+							<select class="form-control"  name="disposition" id="disposition" required>
+								<!-- 
+								<option value="OK,PONO">OK,SPECIFIC PO# ONLY</option>
+								<option value="OK,LOTQTY">OK, SPECIFIC LOT# OR QTY ONLY</option>
+								<option value="OTHERS">OTHERS,PLEASE SPECIFY</option>
+								<option value="OK,ALL INCOMING PO"></option>
+								<option value="OK,SPECIFIC PO# ONLY"></option>
+								<option value="OK, SPECIFIC LOT# OR QTY ONLY"></option>
+								<option value="OTHERS,PLEASE SPECIFY"></option> -->
+							</select>
+                            <textarea class="form-control" style="width:100%; display:none;" rows="3" id="disposition_remarks" name="disposition_remarks" ></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       </div>
+	   <div class="modal-footer">
+	   	<button type="submit" class="btn btn-info fa fa-save" id="btn_sa_submit_disposition"> Save</button>
+		<button type="button" class="btn btn-default fa fa-close" data-dismiss="modal" id="btn_close"> Close</button>
+	   </div>
+      </form>
+    </div><!-- /.modal-content -->    
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 <!-- Modal for report generation -->
 <div class="modal" tabindex="-1" role="dialog" id="modal_sar_report">

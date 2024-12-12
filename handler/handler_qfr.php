@@ -697,7 +697,7 @@
 		return $returns;
 	}
 	
-	function save_special_acceptance(){ //xmodify
+	function save_special_acceptance(){
 		try {
 			require_once('../class/oop_tqts.php');
 			$return 		= $_POST;
@@ -2486,14 +2486,11 @@
 		echo json_encode($return);
 	}
 
-	function save_add_disposition(){
+	function save_add_disposition(){ //xmodify
 		require_once('../class/oop_tqts.php');
-		
+		$implode_file_name = implode (' | ',$_FILES["treatment_file"]["name"]);
 		$date_time_today 	 = date('Y-m-d H:i:s');
 		$return  = $_POST;
-		$return_file_tmp = $_FILES['treatment_file']['tmp_name'];
-		$return_file_name = $_FILES['treatment_file']['name'];
-
 		$fkid 					= $return['pkid'];
 		$status 		= $return['status'];
 		$disposition 			= $return['disposition'] == null? " ": $return['disposition'] ;;
@@ -2506,50 +2503,69 @@
 		$table = 'tbl_qrf_sa_treatment';
 		$array_fields=array('fkid,
 		disposition,disposition_by,disposition_date,
-		disposition_time,file_name,status,disposition_remarks,created_by,
+		disposition_time,status,disposition_remarks,created_by,
 		username,created_at'
 		);
 		$array_values=array($fkid,
 		$disposition,$disposition_by,$disposition_date,
-		$disposition_time,$return_file_name,$status,$disposition_remarks,$username,
+		$disposition_time,$status,$disposition_remarks,$username,
 		$username,$date_time_today
 		);
 		$insert_query= TQTS::getInstance()->insert_query($table,$array_fields,$array_values);
 		// echo $script= TQTS::getInstance()->insert_query_script($table,$array_fields,$array_values);
 
-
 		/* NOTE : upload the file with esignature of the approvers */
-			/* ffunction to get the file path:  ../uploaded_file/quality_report/sa/treatment */
-			$file  		     = return_file_path_by_div_mod('sa_treatment');  
-			$fkfile_path     = $file['pkid']; //path_id = 32 
-			$target_dir      = $file['path']; //path = ../uploaded_file/quality_report/sa/treatment
-			$target_file = $target_dir . $return_file_name;
-
-				if (move_uploaded_file($return_file_tmp,$target_file)){	
-					/** if the file name is XLSX change it to xlsx, else get the original extension */
-					$ext= pathinfo($return_file_name, PATHINFO_EXTENSION);
-					$get_file_extension = $ext == 'XLSX' ? 'xlsx' : $ext;
-
-					$new_filename = $fkid.".".$get_file_extension;
-					if(rename ($target_file, $target_dir.'/'.$new_filename)){		
+		/* ffunction to get the file path:  ../uploaded_file/quality_report/sa/treatment */
+		if($_FILES["treatment_file"]["tmp_name"][0] != ""){
+			$file  		     = return_file_path_by_div_mod('sa_treatment');
+			$fkfile_path     = $file['pkid'];
+			$target_dir      = $file['path'].$fkid.'/';
+			$new_target_dir      = $file['path'].$fkid.'_'.time();
+			
+			if (file_exists($target_dir)) {
+				rename ($target_dir, $new_target_dir);
+				$msg = "Sorry, your file already exists.";
+			}
+			mkdir($target_dir, 0777, false);
+		
+			/* Upload the file to target directory */	
+			for($i=0; $i < count($_FILES["treatment_file"]["tmp_name"]); $i++) {
+				$temp_file 	     = $_FILES["treatment_file"]["tmp_name"][$i];
+				$file_name 	     = $_FILES["treatment_file"]["name"][$i];
+				$target_file = $target_dir.$file_name;
+				
+				if (move_uploaded_file($temp_file, $target_file)) { //xmodify
+					/* Rename the file based on pkid of Quality Report */					
+					$ext = pathinfo($target_file, PATHINFO_EXTENSION);
+					$new_file_name  = trim(($i+1)).".".$ext;
+					if(rename ($target_file, $target_dir.'/'.$new_file_name)){	
+					
 						$msg = 'File was successfully uploaded to the system.<br>';
 					} else {
 						$msg = 'There was an error on renaming the file.';
-					}	
-				}else{
+						return;
+					}					
+				} else {
 					$msg = "Sorry, there was an error uploading your file.";
 				}
-	// /* ffunction change the status to 6-APPROVED OR 7-DISAPPROVED */	
-		// $new_status = $status == "APPROVED" ? 6	:  $status == "PMI" ? 9 : 7 ;
+				
+			}
+			$table = 'tbl_qrf_sa_treatment';
+			$array_fields=array('file_name');
+			$array_values=array($implode_file_name);
+			$where =  'WHERE `fkid` = "'.$fkid.'"' ;
+			$result = TQTS::getInstance()->update_query_detailed($table,$array_fields,$array_values,$where);	
+		}
+		/* ffunction change the status to 6-APPROVED OR 7-DISAPPROVED */	
 		$new_status = $status == "APPROVED" ? 6	:  7 ;
 		change_status($new_status,$fkid);
-		echo json_encode($insert_query);
+		echo json_encode($msg);
 	}
 	function update_sa_disposition(){
 		require_once('../class/oop_tqts.php');
 		$date_time_today 	 = date('Y-m-d H:i:s');
 		$return  = $_POST;
-
+		$implode_file_name = implode (' | ',$_FILES["treatment_file"]["name"]);
 		$fkid 					= $return['pkid'];
 		$status 				= $return['status'];
 		$disposition 			= $return['disposition'] == null? " ": $return['disposition'];
@@ -2571,42 +2587,54 @@
 		);
 		$where =  'WHERE `fkid` = "'.$fkid.'"' ;
 		$result = TQTS::getInstance()->update_query_detailed($table,$array_fields,$array_values,$where);
+		/* NOTE : upload the file with esignature of the approvers */
+			/* ffunction to get the file path:  ../uploaded_file/quality_report/sa/treatment */
+			//  
 
-		/** If the temp file is defined save the file to treatment */
-		$return_file_tmp = $_FILES['treatment_file']['tmp_name'];
-		$return_file_name = $_FILES['treatment_file']['name'];
-		if ($return_file_tmp == '' || !isset($return_file_tmp)){
-			$msg	= "File was successfully uploaded! "; 
-		}else{
-			$return['ext']  		= pathinfo($return_file_name, PATHINFO_EXTENSION);
-			$directory_path 		= return_file_path_by_div_mod('sa_treatment'); /* Get the file path */
-
-			$array_fields = array('file_name');
-			$table 	   	= 'tbl_qrf_sa_treatment';
-			$joins 	   	= '';
-			$sql_where 	= 'WHERE fkid="'.$fkid.'" AND logdel=0';
-			$sql_order 	= '';
-			$sql_limit 	= '';
-			$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-			if($row = mysqli_fetch_array($result)){
-				/* Reupload the file. Delete the current file and replace by new one */
-				$target_ext = end(explode('.',$row['file_name']));
-				$target_file = $directory_path['path'].$fkid .'.'. $target_ext;
-				unlink($target_file);
-				move_uploaded_file($return_file_tmp,$directory_path['path'].$fkid.'.'.$return['ext']);
-				/** Update the name of with treatment file */
-
-				$table = 'tbl_qrf_sa_treatment';
-				$array_fields=array('file_name');
-				$array_values=array($return_file_name);
-				$where =  'WHERE `fkid` = "'.$fkid.'"' ;
-				$result = TQTS::getInstance()->update_query_detailed($table,$array_fields,$array_values,$where);
-
+		/* NOTE : upload the file with esignature of the approvers */
+		if($_FILES["treatment_file"]["tmp_name"][0] != ""){
+			$file  		     = return_file_path_by_div_mod('sa_treatment');
+			$fkfile_path     = $file['pkid'];
+			$target_dir      = $file['path'].$fkid.'/';
+			$new_target_dir      = $file['path'].$fkid.'_'.time();
+			
+			if (file_exists($target_dir)) {
+				rename ($target_dir, $new_target_dir);
+				$msg = "Sorry, your file already exists.";
+			}
+			mkdir($target_dir, 0777, false);
+		
+			/* Upload the file to target directory */	
+			for($i=0; $i < count($_FILES["treatment_file"]["tmp_name"]); $i++) {
+				$temp_file 	     = $_FILES["treatment_file"]["tmp_name"][$i];
+				$file_name 	     = $_FILES["treatment_file"]["name"][$i];
+				$target_file = $target_dir.$file_name;
+				
+				if (move_uploaded_file($temp_file, $target_file)) { //xmodify
+					/* Rename the file based on pkid of Quality Report */					
+					$ext = pathinfo($target_file, PATHINFO_EXTENSION);
+					$new_file_name  = trim(($i+1)).".".$ext;
+					if(rename ($target_file, $target_dir.'/'.$new_file_name)){	
+					
+						$msg = 'File was successfully uploaded to the system.<br>';
+					} else {
+						$msg = 'There was an error on renaming the file.';
+						return;
+					}					
+				} else {
+					$msg = "Sorry, there was an error uploading your file.";
+					return;
 				}
+			}
+			$table = 'tbl_qrf_sa_treatment';
+			$array_fields=array('file_name');
+			$array_values=array($implode_file_name);
+			$where =  'WHERE `fkid` = "'.$fkid.'"' ;
+			$result = TQTS::getInstance()->update_query_detailed($table,$array_fields,$array_values,$where);	
+			$new_status = ($status=="DISAPPROVED")?'7':'6';
 		}
-		$new_status = ($status=="DISAPPROVED")?'7':'6';
 		change_status($new_status,$fkid);
-		echo json_encode($new_status);
+		echo json_encode($msg);
 	}
 	function get_disposition_list(){
 		require_once('../class/oop_tqts.php');
@@ -2634,31 +2662,6 @@
 
 		$return = $_POST;
 		$fkid = $return['fkid'];
-		// $array_fields = array('file_name');
-		// $table 	   	= 'tbl_qfr_special_acceptance_attachment';
-		// $joins 	   	= '';
-		// $sql_where 	= 'WHERE `fkspecial_acceptance`= "'.$fkid.'" AND logdel=0';
-		// $sql_order 	= '';
-		// $sql_limit 	= '';
-		// $return['table_body'] = "";
-		// $result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-		// $script = TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
-		// if($row = mysqli_fetch_array($result)){
-		// 	$file_names = $row['file_name'];
-		// 	$table_body = '<tr>';
-		// 	$table_body .= '<td><b>Without Signature</b></td>';
-		// 	$table_body .= '</tr>';
-		// 	$table_body .= '<tr>';
-		// 	$table_body .= '	<td><a href="#" class="without_signature" id="'.$fkid.'" folder="new" style="display:inline-block;"> '.$file_names.'</a></td>';
-		// 	$table_body .= '</tr>';
-		// 	$table_body .= '<tr>';
-		// 	$table_body .= '<td><b>With Signatures</b></td>';
-		// 	$table_body .= '</tr>';
-		// 	$table_body .= '<tr>';
-		// 	$table_body .= '	<td><a href="#" class="fa fa-files-o" id="'.$fkid.'" folder="new" style="display:inline-block;"> '.$file_names.'</a></td>';
-		// 	$table_body .= '</tr>';
-		// }
-
 		$array_fields = array('file_name');
 		$table 	   	= 'tbl_qrf_sa_treatment';
 		$joins 	   	= '';
@@ -2668,14 +2671,16 @@
 		$result = TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 		$script = TQTS::getInstance()->select_query_script($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 		if($row = mysqli_fetch_array($result)){
-			$file_names = $row['file_name'];
-			// $file_names  = explode(' | ', $row['file_name']);
+			$file_names = explode(' | ',$row['file_name']);
 			$table_body = '<tr>';
 			$table_body .= '<td><b>With YEC Judgement</b></td>';
 			$table_body .= '</tr>';
-			$table_body .= '<tr>';
-			$table_body .= '	<td><a href="#" class="fa fa-paperclip" id="'.$fkid.'" folder="new" style="display:inline-block;"> '.$file_names.'</a></td>';
-			$table_body .= '</tr>';
+			foreach ($file_names as $key => $value) {
+				$key++;
+				$table_body .= '<tr>';
+				$table_body .= '	<td><a href="#" class="fa fa-paperclip" id="'.$fkid.'" key-id="'.$key.'" file-name="'.$value.'" folder="new" style="display:inline-block;"> '.$value.'</a></td>';
+				$table_body .= '</tr>';
+			}
 		}
 
 		$return['table_body'] = $table_body;

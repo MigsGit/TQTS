@@ -5,9 +5,10 @@ error_reporting(E_ALL);
 
     /* Download the Default Excel from Directory */
 $fkid 		= trim($_GET['id'],' ');
+$key_id 		= trim($_GET['key_id'],' ');
 $file = get_file_path_by_fkid($fkid);
 $file_path = $file['file_path'];
-$file_name = fn_get_file_name($fkid);
+// $file_name = fn_get_file_name($fkid);
 $new_file_name 	= $file_name['file_name'];
 
 

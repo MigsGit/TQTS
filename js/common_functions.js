@@ -81,13 +81,9 @@ function call_ajax_attachment(serialized_data, handler, fn) {
 		success			: function(result)  
 		{
 			fn(result);
-		}, error : function (result) {
-			// alert('ERROR: '+result['upload_msg']);
-			/**
-			 * TODO: Debug the for disposition in SAR
-			 */
-			// alert('Error: Please contact ISS');
-			alert('Email Sent');
+		},error: function (data, xhr, status){
+			console.log(`Error: ${data.status}`);
+			// $('#modal-loading').modal('hide');
 		}
 	}); 
 }

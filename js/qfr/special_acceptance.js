@@ -654,6 +654,7 @@ $(document).ready(function(){
 		fn_load_special_acceptance(this.id,'view');
 	});
 	$('#'+tbl_special_acceptance_disposition +' tbody').on('click', 'tr .fa-edit', function(){
+		
 		$('#modal_sa').data('id',this.id);
 		$('#modal_sa').modal({backdrop: 'static',
 		keyboard: false},'show');
@@ -683,7 +684,9 @@ $(document).ready(function(){
 	/** MODAL TBL WITH DOWNLOAD ATTACHMENT */
 	$('#tbl_view_attachments_sa tbody').on('click','tr .fa-paperclip', function () {
 		var id = $(this).attr('id');
-		window.location.href = "reports/excel_qfr_sa_for_disposition_download.php?id="+id;
+		var key_id = $(this).attr('key-id');
+		var file_name = $(this).attr('file-name');
+		window.location.href = "reports/excel_qfr_sa_for_disposition_download.php?id="+id+"&key_id="+key_id+"&file_name="+file_name;
 	});
 	$('#tbl_view_attachments_sa tbody').on('click','tr .fa-files-o', function () {
 		var id = $(this).attr('id');
@@ -737,12 +740,22 @@ $(document).ready(function(){
 		serialized_data.append("action","save_add_disposition");
 		serialized_data.append("username",username);
 		call_ajax_attachment(serialized_data, handler_qfr, function(result){
-			console.log(result);
-			return;
 			$('#modal_sa_add_disposition').modal('hide');
 			dt_special_acceptance_disposition.draw();
 			dt_special_acceptance_with_treatment.draw();
 			notif_success('Saved Successfully');
+		});
+	});
+	$('#frm_sa_edit_disposition').submit(function(e){
+		e.preventDefault();
+		serialized_data = new FormData(this);
+		serialized_data.append("action","update_sa_disposition");
+		serialized_data.append("username",username);
+		call_ajax_attachment(serialized_data, handler_qfr, function(result){
+			$('#modal_sa_edit_disposition').modal('hide');
+			dt_special_acceptance_disposition.draw();
+			dt_special_acceptance_with_treatment.draw();
+			// notif_success('Saved Successfully');
 		});
 	});
 
@@ -854,9 +867,9 @@ $(document).ready(function(){
 				$('#' + frm_id +' #disposition_sent_by').val(sent_by);
 				$('#' + frm_id +' #disposition_sent_date').val(date_time_sent);
 				$('#' + frm_id +' #disposition_sent_remarks').val(remarks);
-				dt_special_acceptance.draw();
-				dt_special_acceptance_disposition.draw();
-				dt_special_acceptance_with_treatment.draw();
+				// dt_special_acceptance.draw();
+				// dt_special_acceptance_disposition.draw();
+				// dt_special_acceptance_with_treatment.draw();
 			}
 		});
 	}
