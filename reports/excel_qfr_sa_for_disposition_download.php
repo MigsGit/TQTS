@@ -11,7 +11,6 @@ $file_path 	= $file['file_path'];
 $file_name = fn_get_file_name($fkid,$key_id);
 $new_file_name 	= $file_name['file_name'];
 
-
 function get_file_path_by_fkid($fkid) {
 	require_once('../class/oop_tqts.php');
 	$result 		= '';
@@ -49,43 +48,57 @@ function fn_get_file_name($fkid,$key_id){
 	}
 	return $return;
 }
+//File INSIDE the DIR
 $file = ''. $file_path . $fkid ."/". $key_id. '.xls'; 
 $file_x = ''. $file_path . $fkid ."/". $key_id. '.xlsx';
 $file_pdf = $file_path .$fkid ."/". $key_id. '.pdf';
-if (file_exists($file)) {
-    header('Content-Description: File Transfer');
-	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment; filename="'.basename($new_file_name).'"');
-    header('Expires: 0');
-    header('Cache-Control: must-revalidate');
-    header('Pragma: public');
-    header('Content-Length: ' . filesize($file));
-    ob_end_clean();
-    readfile($file);
-}else if(file_exists($file_x)){
-    header('Content-Description: File Transfer');
-	header('Content-type: application/vnd.ms-excel');
-    header('Content-Disposition: attachment; filename="'.basename($new_file_name).'"');
-    header('Expires: 0');
-    header('Cache-Control: must-revalidate');
-    header('Pragma: public');
-    header('Content-Length: ' . filesize($file_x));
-    ob_end_clean();
-    readfile($file_x);
-}
-else if(file_exists($file_pdf)){
-	// echo 'file_pdf File Exist';
-	// return;
-    header('Content-Description: File Transfer');
-	header('Content-type: application/vnd.ms-excel');
-    header('Content-Disposition: attachment; filename="'.basename($new_file_name).'"');
-    header('Expires: 0');
-    header('Cache-Control: must-revalidate');
-    header('Pragma: public');
-    header('Content-Length: ' . filesize($file_pdf));
-    ob_end_clean();
-    readfile($file_pdf);
-}else{
-	 echo 'File Not Exist';
+//File OUTSIDE the DIR
+$file_outside_dir = ''. $file_path . $fkid . '.xls'; 
+$file_x_outside_dir = ''. $file_path . $fkid . '.xlsx';
+$file_pdf_outside_dir = $file_path .$fkid . '.pdf';
 
+//XLS
+if (file_exists($file)) {
+	$header ='Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+	$file_name= $new_file_name;
+    $path =$file;
 }
+if (file_exists($file_outside_dir)) {
+	$header ='Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+	$file_name= $new_file_name;
+    $path =$file_outside_dir;
+}
+//XLSX
+if(file_exists($file_x)){
+	$header ='Content-type: application/vnd.ms-excel';
+	$file_name= $new_file_name;
+    $path =$file_x;
+}
+if(file_exists($file_x_outside_dir)){
+	$header ='Content-type: application/vnd.ms-excel';
+	$file_name= $new_file_name;
+    $path =$file_x_outside_dir;
+}
+//PDF
+if(file_exists($file_pdf)){
+	$header ='Content-type: application/vnd.ms-excel';
+	$file_name= $new_file_name;
+    $path =$file_pdf;
+}
+if(file_exists($file_pdf_outside_dir)){
+	$header ='Content-type: application/vnd.ms-excel';
+	$file_name= $new_file_name;
+    $path =$file_pdf_outside_dir;
+}
+
+header('Content-Description: File Transfer');
+header($content_type);
+header('Content-Disposition: attachment; filename="'.basename($file_name).'"');
+header('Expires: 0');
+header('Cache-Control: must-revalidate');
+header('Pragma: public');
+header('Content-Length: ' . filesize($path));
+ob_end_clean();
+readfile($path);
+
+?>
