@@ -2537,7 +2537,7 @@
 				if (move_uploaded_file($temp_file, $target_file)) { //xmodify
 					/* Rename the file based on pkid of Quality Report */					
 					$ext = pathinfo($target_file, PATHINFO_EXTENSION);
-					$new_file_name  = trim(($i+1)).".".$ext;
+					$new_file_name  = trim(($i)).".".$ext;
 					if(rename ($target_file, $target_dir.'/'.$new_file_name)){	
 					
 						$msg = 'File was successfully uploaded to the system.<br>';
@@ -2609,11 +2609,10 @@
 				$temp_file 	     = $_FILES["treatment_file"]["tmp_name"][$i];
 				$file_name 	     = $_FILES["treatment_file"]["name"][$i];
 				$target_file = $target_dir.$file_name;
-				
 				if (move_uploaded_file($temp_file, $target_file)) { //xmodify
 					/* Rename the file based on pkid of Quality Report */					
 					$ext = pathinfo($target_file, PATHINFO_EXTENSION);
-					$new_file_name  = trim(($i+1)).".".$ext;
+					$new_file_name  = trim(($i)).".".$ext;
 					if(rename ($target_file, $target_dir.'/'.$new_file_name)){	
 					
 						$msg = 'File was successfully uploaded to the system.<br>';
@@ -2631,10 +2630,10 @@
 			$array_values=array($implode_file_name);
 			$where =  'WHERE `fkid` = "'.$fkid.'"' ;
 			$result = TQTS::getInstance()->update_query_detailed($table,$array_fields,$array_values,$where);	
-			$new_status = ($status=="DISAPPROVED")?'7':'6';
 		}
+		$new_status = ($status=="DISAPPROVED")?'7':'6';
 		change_status($new_status,$fkid);
-		echo json_encode($msg);
+		echo json_encode($new_status);
 	}
 	function get_disposition_list(){
 		require_once('../class/oop_tqts.php');
@@ -2676,13 +2675,11 @@
 			$table_body .= '<td><b>With YEC Judgement</b></td>';
 			$table_body .= '</tr>';
 			foreach ($file_names as $key => $value) {
-				$key++;
 				$table_body .= '<tr>';
-				$table_body .= '	<td><a href="#" class="fa fa-paperclip" id="'.$fkid.'" key-id="'.$key.'" file-name="'.$value.'" folder="new" style="display:inline-block;"> '.$value.'</a></td>';
+				$table_body .= '	<td><a href="#" class="fa fa-paperclip" id="'.$fkid.'" key-id="'.$key.'" folder="new" style="display:inline-block;"> '.$value.'</a></td>';
 				$table_body .= '</tr>';
 			}
 		}
-
 		$return['table_body'] = $table_body;
 		echo json_encode($return['table_body']);
 	}

@@ -941,7 +941,6 @@ $is_active = ($sa_report_disposition_admin || $sa_report_manager)?"active":"";
                         </div>
                         <div class="col-sm-9">
 							<input multiple type="file" class="form-control" id="treatment_file" name="treatment_file[]" data="Click to choose file." style="width:100%;display:inline-block;">
-							<a class = "fa fa-paperclip" href="#" id = "fa_paperclip" style="width:13%;display:inline-block;"></a>
 						</div>
 					
                     </div>

@@ -685,8 +685,7 @@ $(document).ready(function(){
 	$('#tbl_view_attachments_sa tbody').on('click','tr .fa-paperclip', function () {
 		var id = $(this).attr('id');
 		var key_id = $(this).attr('key-id');
-		var file_name = $(this).attr('file-name');
-		window.location.href = "reports/excel_qfr_sa_for_disposition_download.php?id="+id+"&key_id="+key_id+"&file_name="+file_name;
+		window.location.href = "reports/excel_qfr_sa_for_disposition_download.php?id="+id+"&key_id="+key_id;
 	});
 	$('#tbl_view_attachments_sa tbody').on('click','tr .fa-files-o', function () {
 		var id = $(this).attr('id');

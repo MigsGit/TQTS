@@ -5,12 +5,11 @@ error_reporting(E_ALL);
 
     /* Download the Default Excel from Directory */
 $fkid 		= trim($_GET['id'],' ');
-$key_id 		= trim($_GET['key_id'],' ');
-$file = get_file_path_by_fkid($fkid);
-$file_path = $file['file_path'];
-// $file_name = fn_get_file_name($fkid);
+$key_id 	= trim($_GET['key_id'],' ');
+$file 		= get_file_path_by_fkid($fkid);
+$file_path 	= $file['file_path'];
+$file_name = fn_get_file_name($fkid,$key_id);
 $new_file_name 	= $file_name['file_name'];
-
 
 
 function get_file_path_by_fkid($fkid) {
@@ -30,7 +29,7 @@ function get_file_path_by_fkid($fkid) {
 	}
 	return $file;
 }
-function fn_get_file_name($fkid){
+function fn_get_file_name($fkid,$key_id){
 	//NOTE : fsignature get the signature of every approver according to the EMPLOYEE NUMBER
 	require_once('../class/oop_tqts.php');
 	$return 		= $_POST;
@@ -43,15 +42,16 @@ function fn_get_file_name($fkid){
 	$sql_limit 		= '';
 	$result 	= TQTS::getInstance()->select_query($array_fields,$table,$joins,$sql_where,$sql_order,$sql_limit);
 	if($row = mysqli_fetch_assoc($result)){
-		$return['file_name'] = $row ['file_name'];
+		$arr_file_name = explode(' | ',$row ['file_name']);
+		$return['file_name'] = $arr_file_name[$key_id];
 	}else{
 		$return['file_name'] = 'Special Acceptance.xlsx';
 	}
 	return $return;
 }
-$file = ''. $file_path . $fkid . '.xls'; 
-$file_x = ''. $file_path . $fkid . '.xlsx';
-$file_pdf = $file_path .$fkid . '.pdf';
+$file = ''. $file_path . $fkid ."/". $key_id. '.xls'; 
+$file_x = ''. $file_path . $fkid ."/". $key_id. '.xlsx';
+$file_pdf = $file_path .$fkid ."/". $key_id. '.pdf';
 if (file_exists($file)) {
     header('Content-Description: File Transfer');
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -74,6 +74,8 @@ if (file_exists($file)) {
     readfile($file_x);
 }
 else if(file_exists($file_pdf)){
+	// echo 'file_pdf File Exist';
+	// return;
     header('Content-Description: File Transfer');
 	header('Content-type: application/vnd.ms-excel');
     header('Content-Disposition: attachment; filename="'.basename($new_file_name).'"');
@@ -84,5 +86,6 @@ else if(file_exists($file_pdf)){
     ob_end_clean();
     readfile($file_pdf);
 }else{
-	//  echo 'File Not Exist';
+	 echo 'File Not Exist';
+
 }
